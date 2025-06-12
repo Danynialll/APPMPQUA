@@ -1,0 +1,478 @@
+#######################-ORIGINAL EDIT MODAL(editModal.php)-############################
+
+<div class="modal fade custom-modal" id="editAssessorModal" tabindex="-1" aria-labelledby="editAssessorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="editAssessorModalLabel">Edit Assessor</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="<?= base_url('appmpqua/editAssessor') ?>" method="post" id="editAssessorForm">
+        <?= csrf_field() ?>
+        <div class="modal-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="asr_name" id="modalNameInput" value="" class="form-control" required>
+                    <input type="text" name="asr_id" id="modalIdInput" value="" class="form-control" hidden>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">University</label>
+                    <input type="text" name="asr_university" class="form-control" value="<?= get_university_name($assessor_info->asr_qu_id) ?>" disabled>
+                    <input type="text" name="asr_qu_id" class="form-control" required style="display: none;" value="<?= $assessor_info->asr_qu_id ?>">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Telephone No.</label>
+                    <input type="text" name="asr_phone" id="modalTelephoneInput" value="" class="form-control" >
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Fax</label>
+                    <input type="text" name="asr_fax" class="form-control" id="modalFaxInput" value="">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="asr_email" class="form-control" id="modalEmailInput" value="" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Service Address</label>
+                    <input type="text" name="asr_service_address" class="form-control" id="modalAddressInput" value="">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Retirement Date</label>
+                    <input type="date" name="asr_retirement_date" class="form-control" id="modalRetirementInput" value="">
+                </div>
+
+                <!-- My Expertise -->
+                <div class="mb-3">
+                    <label for="expertise" class="form-label" id="modalExpertiseInput">Selected Expertise:</label><br>
+                </div>
+
+                <!-- Expertise Select2 Fields -->
+                <div id="expertiseFields">
+                    <div class="mb-3 expertise-field">
+                        <label for="expertise" class="form-label">Expertise</label>
+                        <select class="form-select select2" name="expertise[]" id="editExpertise">
+                            <option value="">Select Expertise</option>
+                            <?php foreach ($expertise_list as $expertise): ?>
+                                <option value="<?= $expertise->ef_id ?>"><?= $expertise->ef_desc ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Button to add another expertise -->
+                <button type="button" class="btn btn-primary btn-sm" id="addExpertiseBtnEdit">
+                    <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add Expertise
+                </button>
+
+                <!-- My NEC Field -->
+                <div class="mb-3">
+                    <label for="nec" class="form-label" id="modalNECInput">Selected NEC Field:</label><br>
+                </div>
+
+                <!-- NEC Selection -->
+                <div class="mb-3">
+                    <label for="nec_broad" class="form-label">NEC Broad</label>
+                    <select class="form-select select2" id="edit_nec_broad" name="nec_broad">
+                        <option value="">Select NEC Broad</option>
+                        <?php foreach ($nec_broad as $broad): ?>
+                            <option value="<?= $broad->nb_id ?>"><?= $broad->nb_code ?> <?= $broad->nb_name ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="nec_narrow" class="form-label">NEC Narrow</label>
+                    <select class="form-select select2" id="edit_nec_narrow" name="nec_narrow">
+                        <option value="">Select NEC Narrow</option>
+                        <!-- Options will be populated via JS -->
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="nec_detail" class="form-label">NEC Detail</label>
+                    <select class="form-select select2" id="edit_nec_detail" name="nec_detail[]">
+                        <option value="">Select NEC Detail</option>
+                        <!-- Options will be populated via JS -->
+                    </select>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-sm" id="addNECBtnEdit">
+                    <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add NEC Field
+                </button>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+    jQuery(document).ready(function($) {
+        // Add Expertise
+        $('#addExpertiseBtnEdit').on('click', function() {
+            var expertiseId = $('#editExpertise').val();
+            var expertiseText = $('#editExpertise option:selected').text();
+            console.log('Selected expertiseId:', expertiseId, 'Text:', expertiseText);
+
+            if (!expertiseId) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Please select expertise',
+                    text: 'You must select an expertise before adding.',
+                });
+                return;
+            }
+
+            // Prevent duplicate Expertise
+            var exists = false;
+            $('.delete-expertise').each(function() {
+                if ($(this).closest('span').data('exp-id') == expertiseId) {
+                    exists = true;
+                }
+            });
+            if (exists) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Already Added',
+                    text: 'This expertise is already added.',
+                });
+                return;
+            }
+
+            // Optionally, send AJAX to save to DB here, or just append visually
+            let badge = `
+                <span class="badge my-2 badge-secondary" data-exp-id="${expertiseId}">
+                    ${expertiseText}
+                    <i class="fas fa-times text-danger ms-2 delete-exp" style="cursor: pointer;"></i>
+                </span>
+                <input type="hidden" name="expertise[]" value="${expertiseId}" data-exp-id="${expertiseId}">
+            `;
+            // Append after #expertiseSelect
+            $(badge).insertAfter('#modalExpertiseInput').hide().fadeIn(200);
+
+            // Collect all NEC Detail IDs from badges
+            let expIds = [];
+            $('.badge[data-exp-id]').each(function() {
+                expIds.push($(this).data('exp-id'));
+            });
+
+            $('#editExpertise').val('').trigger('change');
+        });
+    });
+</script>
+
+<script>
+    jQuery(document).ready(function($) {
+        // Hide narrow and detail fields initially
+        $('#edit_nec_narrow').closest('.mb-3').hide();
+        $('#edit_nec_detail').closest('.mb-3').hide();
+
+        // Show NEC Narrow after selecting Broad
+        $('#edit_nec_broad').on('change', function() {
+            var broad_id = $(this).val();
+            $('#edit_nec_narrow').html('<option value="">Loading...</option>');
+            $('#edit_nec_detail').html('<option value="">Select NEC Detail</option>');
+            if (broad_id) {
+                $('#edit_nec_narrow').closest('.mb-3').show();
+                $.ajax({
+                    url: "<?= base_url('appmpqua/get_nec_narrow') ?>",
+                    type: "POST",
+                    data: {
+                        broad_id: broad_id,
+                        csrf_test_name: $("input[name='csrf_test_name']").val()
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success) {
+                            var options = '<option value="">Select NEC Narrow</option>';
+                            $.each(response.data, function(i, item) {
+                                options += `<option value="${item.nn_id}">${item.nn_code} ${item.nn_name}</option>`;
+                            });
+                            $('#edit_nec_narrow').html(options).trigger('change');
+                            $("input[name='csrf_test_name']").val(response.csrf_token);
+                        } else {
+                            $('#edit_nec_narrow').html('<option value="">Select NEC Narrow</option>');
+                        }
+                    }
+                });
+            } else {
+                $('#edit_nec_narrow').closest('.mb-3').hide();
+                $('#edit_nec_detail').closest('.mb-3').hide();
+            }
+            $('#edit_nec_detail').closest('.mb-3').hide();
+        });
+
+        // Show NEC Detail after selecting Narrow
+        $('#edit_nec_narrow').on('change', function() {
+            var narrow_id = $(this).val();
+            $('#edit_nec_detail').html('<option value="">Loading...</option>');
+            if (narrow_id) {
+                $('#edit_nec_detail').closest('.mb-3').show();
+                $.ajax({
+                    url: "<?= base_url('appmpqua/get_nec_detail') ?>",
+                    type: "POST",
+                    data: {
+                        narrow_id: narrow_id,
+                        csrf_test_name: $("input[name='csrf_test_name']").val()
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success) {
+                            var options = '<option value="">Select NEC Detail</option>';
+                            $.each(response.data, function(i, item) {
+                                options += `<option value="${item.nd_id}">${item.nd_code} ${item.nd_name}</option>`;
+                            });
+                            $('#edit_nec_detail').html(options).trigger('change');
+                            $("input[name='csrf_test_name']").val(response.csrf_token);
+                        } else {
+                            $('#edit_nec_detail').html('<option value="">Select NEC Detail</option>');
+                        }
+                    }
+                });
+            } else {
+                $('#edit_nec_detail').html('<option value="">Select NEC Detail</option>');
+            }
+        });
+    });
+</script>
+
+<script>
+    jQuery(document).ready(function($) {
+        // Add NEC Field
+        $('#addNECBtnEdit').on('click', function() {
+            // Get selected NEC Detail
+            var necDetailId = $('#edit_nec_detail').val();
+            var necDetailText = $('#edit_nec_detail option:selected').text();
+
+            if (!necDetailId) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Please select NEC Detail',
+                    text: 'You must select a NEC Detail before adding.',
+                });
+                return;
+            }
+
+            // Prevent duplicate NEC
+            var exists = false;
+            $('.delete-nec').each(function() {
+                if ($(this).closest('span').data('nd-id') == necDetailId) {
+                    exists = true;
+                }
+            });
+            if (exists) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Already Added',
+                    text: 'This NEC Detail is already added.',
+                });
+                return;
+            }
+
+            // Optionally, send AJAX to save to DB here, or just append visually
+            let necBadge = `
+                <span class="badge my-2 badge-secondary" data-nd-id="${necDetailId}">
+                    ${necDetailText}
+                    <i class="fas fa-times text-danger ms-2 delete-nec" style="cursor: pointer;"></i>
+                </span>
+                <input type="hidden" name="nec_detail[]" value="${necDetailId}" data-nd-id="${necDetailId}">
+            `;
+            $(necBadge).insertAfter('#modalNECInput').hide().fadeIn(200);
+
+            // Collect all NEC Detail IDs from badges
+            let necIds = [];
+            $('.badge[data-nd-id]').each(function() {
+                necIds.push($(this).data('nd-id'));
+            });
+
+            // Optionally, clear selection
+            $('#edit_nec_broad').val('').trigger('change');
+            $('#edit_nec_narrow').val('').trigger('change').closest('.mb-3').hide();
+            $('#edit_nec_detail').val('').trigger('change').closest('.mb-3').hide();
+        });
+    });
+</script>
+
+<script>
+    document.getElementById('F').addEventListener('submit', function(e) {
+        // e.preventDefault();
+
+        // const formData = new FormData(this);
+
+        // for (let [key, value] of formData.entries()) {
+        //     console.log(key, value);
+        // }
+
+        // fetch("<?= base_url('appmpqua/editAssessor') ?>", {
+        //         method: 'POST',
+        //         body: formData
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             Swal.fire({
+        //                 icon: 'success',
+        //                 title: 'Success',
+        //                 text: data.message,
+        //             }).then(() => {
+        //                 location.reload();
+        //             });
+        //         } else {
+        //             Swal.fire({
+        //                 icon: 'error',
+        //                 title: 'Error',
+        //                 text: data.message || 'Failed to update profile.',
+        //             });
+        //         }
+        //     })
+        //     .catch(() => {
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Error',
+        //             text: 'An unexpected error occurred.',
+        //         });
+        //     });
+    });
+</script>
+
+<script>
+jQuery(document).ready(function($) {
+    // Delegate event for dynamically added .delete-nec buttons
+    $(document).on('click', '.delete-necEdit', function() {
+        var badge = $(this).closest("span"); // Select the parent badge
+        var necId = badge.data("nd-id"); // Get the NEC Detail ID
+
+        Swal.fire({
+            title: "Are you sure to delete NEC?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Remove the badge visually
+                badge.fadeOut(300, function() {
+                    $(this).remove();
+                    $('input[type="hidden"][name="nec_detail[]"][data-nd-id="' + necId + '"]').remove();
+
+                    // After removal, collect all remaining NEC IDs
+                    let necIds = [];
+                    $('.badge[data-nd-id]').each(function() {
+                        necIds.push($(this).data('nd-id'));
+                    });
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-expEdit', function() {
+        var badge = $(this).closest("span"); // Select the parent badge
+        var expId = badge.data("exp-id"); // Get the Expertise ID
+
+        Swal.fire({
+            title: "Are you sure to delete expertise?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Remove the badge visually
+                badge.fadeOut(300, function() {
+                    $(this).remove();
+                    $('input[type="hidden"][name="expertise[]"][data-exp-id="' + expId + '"]').remove();
+
+                    // After removal, collect all remaining NEC IDs
+                    let expIds = [];
+                    $('.badge[data-exp-id]').each(function() {
+                        expIds.push($(this).data('exp-id'));
+                    });
+                });
+            }
+        });
+    });
+});
+</script>
+
+#######################-ORIGINAL EDIT ASSESSOR FUNCTION(MPQUA_UniController)-############################
+
+   public function editAssessor()
+    {
+
+        $assessor_id           = $this->request->getPost('asr_id');
+        $asr_phone             = $this->request->getPost('asr_phone');
+        $asr_fax               = $this->request->getPost('asr_fax');
+        $asr_email             = $this->request->getPost('asr_email');
+        $asr_service_address   = $this->request->getPost('asr_service_address');
+        $asr_retirement_date   = $this->request->getPost('asr_retirement_date');
+        $expertise             = $this->request->getPost('expertise');
+        $nec_detail_id         = $this->request->getPost('nec_detail');
+dd($nec_detail_id);
+        // Update main assessor data
+        $data = [
+            'asr_phone'           => $asr_phone,
+            'asr_fax'             => $asr_fax,
+            'asr_email'           => $asr_email,
+            'asr_service_address' => $asr_service_address,
+            'asr_retirement_date' => $asr_retirement_date,
+        ];
+
+
+        $this->assessor_model->update($assessor_id, $data);
+
+        $expertise = array_filter($expertise, function ($value) {
+            return trim($value) !== "";
+        });
+
+        // --- EXPERTISE ---
+        if (!empty($expertise) && is_array($expertise)) {
+            $expertise_data = [];
+            foreach ($expertise as $exp_id) {
+                $expertise_data[] = [
+                    'aef_asr_id' => $assessor_id,
+                    'aef_ef_id'  => $exp_id
+                ];
+            }
+
+            if (!empty($expertise_data)) {
+                $this->assessorExpertiseModel->insertBatch($expertise_data);
+            }
+        }
+
+        // --- NEC ---
+        if (!empty($nec_detail_id)) {
+            $nec_detail_ids = (array)$nec_detail_id;
+dd($nec_detail_ids);
+            $nec_data = [];
+            foreach ($nec_detail_ids as $nd_id) {
+                if(trim($nd_id) === "") {
+                    $nec_data[] = [
+                        'anm_asr_id' => $assessor_id,
+                        'anm_nd_id'  => $nd_id
+                    ];
+                }
+                
+            }
+            if (!empty($nec_data)) {
+      
+                $this->asrNECMapping_model->insertBatch($nec_data);
+            }
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Assessor updated successfully.',
+            'csrf_token' => csrf_hash()
+        ]);
+    }
+}
