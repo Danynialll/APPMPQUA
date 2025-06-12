@@ -66,7 +66,7 @@
     }
 
     .action-container {
-        display: flex;
+        
         gap: 5px;
     }
 
@@ -214,7 +214,7 @@
                         </div>
                         <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
                             <div class="d-flex align-items-center justify-content-md-end">
-                                <button class="btn bg-gradient-primary me-2" data-bs-toggle="modal" data-bs-target="#addAssessorModal">
+                                <button class="btn bg-gradient-primary me-2" data-bs-toggle="modal" data-bs-target="#addAssessorModal" style="font-size: 12px;">
                                     <i class="fas fa-plus"></i> Add Assessor
                                 </button>
                             </div>
@@ -261,13 +261,15 @@
                                                 </h6>
                                             </td>
                                             <td class="text-center">
-                                                <div class="action-container">
-                                                    <button class="btn btn-primary btn-view-details"
-                                                        data-asr-id="<?= esc($asr->asr_id) ?>"
-                                                        data-bs-toggle="modal" data-bs-target="#viewModal">
-                                                        <i class="fas fa-eye" style="font-size: 1rem !important;"></i>&nbsp;
-                                                    </button>
-                                                </div>
+                                                <center>
+                                                    <div class="action-container">
+                                                        <button class="btn btn-primary btn-view-details"
+                                                            data-asr-id="<?= esc($asr->asr_id) ?>"
+                                                            data-bs-toggle="modal" data-bs-target="#viewModal">
+                                                            <i class="fas fa-eye" style="font-size: 1rem !important;"></i>&nbsp;
+                                                        </button>
+                                                    </div>
+                                                </center>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
