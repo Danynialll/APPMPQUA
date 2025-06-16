@@ -468,5 +468,45 @@ class MPQUA_UniController extends BaseController
             'csrf_token' => csrf_hash()
         ]);
     }
+
+    public function necAssessorFilter()
+    {
+        $nec_broad = $this->NECBroad_model->findAll();
+        $nec_narrow = $this->NECNarrow_model->findAll();
+        $nec_detail = $this->NECDetail_model->findAll();
+
+        $data = [
+            'nec_broad' => $nec_broad,
+            'nec_narrow' => $nec_narrow,
+            'nec_detail' => $nec_detail,
+        ];
+
+        return $this->render_mpqua('necPage', $data);
+    }
+
+    public function get_assessors_by_nec_detail()
+    {
+        $nec_detail_id = $this->request->getPost('nec_detail_id');
+        $assessor_ids = $this->asrNECMapping_model
+            ->where('anm_nd_id', $nec_detail_id)
+            ->findAll();
+        $ids = array_column($assessor_ids, 'anm_asr_id');
+        $assessors = [];
+        if (!empty($ids)) {
+            $assessors = $this->assessor_model
+                ->whereIn('asr_id', $ids)
+                ->findAll();
+        }
+        // Return all variables for debugging
+        return $this->response->setJSON([
+            'success' => true,
+            'nec_detail_id' => $nec_detail_id,
+            'assessor_ids' => $assessor_ids,
+            'ids' => $ids,
+            'assessors' => $assessors,
+            'csrf_token' => csrf_hash()
+        ]);
+    }
+
 }
 
