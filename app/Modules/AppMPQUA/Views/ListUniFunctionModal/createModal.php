@@ -109,13 +109,13 @@
 
                 <div class="mb-3">
                     <label for="asr_image" class="form-label">Profile Picture</label>
-                    <input type="file" name="asr_image" class="form-control" accept=".image/*">
+                    <input type="file" name="asr_image" class="form-control" accept=".jpeg,.png, .jpg">
                     <small class="form-text text-muted">Accepted formats: PNG, JPEG</small>
                 </div>
 
                 <div class="mb-3">
                     <label for="asr_cv" class="form-label">CV</label>
-                    <input type="file" name="asr_cv" class="form-control" accept=".pdf,.image/*">
+                    <input type="file" name="asr_cv" class="form-control" accept=".pdf, .jpeg,.png, .jpg">
                     <small class="form-text text-muted">Accepted formats: PDF, PNG, JPEG</small>
                 </div>
             </div>
