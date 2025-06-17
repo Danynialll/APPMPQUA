@@ -231,10 +231,10 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width:60px;">No.</th>
+                                    <th>Image</th>
                                     <th>Name</th>
-                                    <th>Contact No.</th>
-                                    <th>Email</th>
-                                    <th>Retirement Date</th>
+                                    <th>Expertise</th>
+                                    <th>NEC Field</th>
                                     <th style="width:120px;" class="text-center">Details</th>
                                 </tr>
                             </thead>
@@ -243,21 +243,34 @@
                                     $i = 1; foreach ($assessor_list as $asr): ?>
                                         <tr>
                                             <td><h6 class="mb-0 text-sm"><?= $i++ ?></h6></td>
+                                            <td>
+                                                <?php if (!empty($asr->asr_image)): ?>
+                                                    <img src="<?= base_url($asr->asr_image) ?>" alt="Profile Image" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;">
+                                                <?php else: ?>
+                                                    <img src="<?= base_url() ?>assets/img/default-profile.jpg" alt="Default Profile" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;">
+                                                <?php endif; ?>
+                                            </td>
                                             <td><h6 class="mb-0 text-sm"><?= esc($asr->asr_name) ?></h6></td>
                                             <td>
-                                                <strong>Telephone:</strong> <?= esc($asr->asr_phone) ?><br>
-                                                <strong>Fax:</strong> <?= esc($asr->asr_fax) ?>
+                                                <h6 class="mb-0 text-sm">
+                                                    <?php if (!empty($asr->expertise_list)): ?>
+                                                        <?php foreach($asr->expertise_list as $exp): ?>
+                                                            <span class="badge bg-primary text-white mb-1" style="word-break:break-word;"><?= esc($exp) ?></span><br>
+                                                        <?php endforeach; ?>  
+                                                    <?php else: ?>
+                                                        <span>-</span>  
+                                                    <?php endif; ?>
+                                                </h6>
                                             </td>
-                                            <td><?= esc($asr->asr_email) ?></td>
                                             <td>
                                                 <h6 class="mb-0 text-sm">
-                                                    <?php
-                                                        if (!empty($asr->asr_retirement_date) && $asr->asr_retirement_date !== '0000-00-00') {
-                                                            echo date('d-m-Y', strtotime($asr->asr_retirement_date));
-                                                        } else {
-                                                            echo '-';
-                                                        }
-                                                    ?>
+                                                    <?php if (!empty($asr->nec_list)): ?>
+                                                        <?php foreach ($asr->nec_list as $nec): ?>
+                                                            <span class="badge bg-success text-white mb-1" style="word-break:break-word;"><?= esc($nec['nec_code']) ?> <?= esc($nec['nec_name']) ?></span><br>
+                                                        <?php endforeach; ?>
+                                                    <?php else: ?>
+                                                        <span>-</span>
+                                                    <?php endif; ?>
                                                 </h6>
                                             </td>
                                             <td class="text-center">
@@ -462,6 +475,19 @@
                         } else {
                             document.getElementById('modalUniCV').innerText = '-';
                         }
+
+                        document.getElementById('modalUniImg').innerHTML = '';
+                        if (data.asr_image) {
+                            const img = document.createElement('img');
+                            img.src = '<?= base_url() ?>' + data.asr_image; // assuming asr_image is the image path
+                            img.alt = 'Assessor Image';
+                            img.className = 'img-fluid rounded'; // bootstrap styles, adjust as needed
+                            img.style.maxWidth = '150px'; // optional styling
+                            document.getElementById('modalUniImg').appendChild(img);
+                        } else {
+                            document.getElementById('modalUniImg').innerText = 'No Image';
+                        }
+
 
                         // Expertise
                         const expertiseContainer = document.getElementById('modalUniExpertise');

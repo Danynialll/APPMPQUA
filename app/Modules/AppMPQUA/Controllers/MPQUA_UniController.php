@@ -168,17 +168,29 @@ class MPQUA_UniController extends BaseController
         $expertise              = $this->request->getPost('expertise');
         $nec_detail_id          = $this->request->getPost('nec_detail');
 
+        $asr_path = null;
+        $imgFile = $this->request->getFile('asr_image');
+        if ($imgFile && $imgFile->isValid() && !$imgFile->hasMoved()) {
+            $newImgName = uniqid('img_') . '.' . $imgFile->getExtension();
+            $uploadImgPath = FCPATH . 'uploads/assessors/images/';
+            if (!is_dir($uploadImgPath)) {
+                mkdir($uploadImgPath, 0777, true);
+            }
+            $imgFile->move($uploadImgPath, $newImgName);
+            $asr_path = 'uploads/assessors/images/' . $newImgName;
+        }
+
         // --- Handle file upload ---
         $cvPath = null;
         $cvFile = $this->request->getFile('asr_cv');
         if ($cvFile && $cvFile->isValid() && !$cvFile->hasMoved()) {
-            $newName = uniqid('cv_') . '.' . $cvFile->getExtension();
-            $uploadPath = FCPATH . 'uploads/assessors/cv/';
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+            $newCvName = uniqid('cv_') . '.' . $cvFile->getExtension();
+            $uploadCvPath = FCPATH . 'uploads/assessors/cv/';
+            if (!is_dir($uploadCvPath)) {
+                mkdir($uploadCvPath, 0777, true);
             }
-            $cvFile->move($uploadPath, $newName);
-            $cvPath = 'uploads/assessors/cv/' . $newName;
+            $cvFile->move($uploadCvPath, $newCvName);
+            $cvPath = 'uploads/assessors/cv/' . $newCvName;
         }
 
         $data = [
@@ -191,6 +203,7 @@ class MPQUA_UniController extends BaseController
             'asr_service_address' => $asr_service_address,
             'asr_retirement_date' => $asr_retirement_date,
             'asr_cv_path'         => $cvPath, // Save path to DB
+            'asr_image'           => $asr_path, // Save path to DB
         ];
 
         $this->assessor_model->insert($data);
@@ -330,16 +343,31 @@ class MPQUA_UniController extends BaseController
         $cvPath = null;
         $cvFile = $this->request->getFile('asr_cv');
         if ($cvFile && $cvFile->isValid() && !$cvFile->hasMoved()) {
-            $newName = uniqid('cv_') . '.' . $cvFile->getExtension();
-            $uploadPath = FCPATH . 'uploads/assessors/cv/';
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+            $newCvName = uniqid('cv_') . '.' . $cvFile->getExtension();
+            $uploadCvPath = FCPATH . 'uploads/assessors/cv/';
+            if (!is_dir($uploadCvPath)) {
+                mkdir($uploadCvPath, 0777, true);
             }
-            $cvFile->move($uploadPath, $newName);
-            $cvPath = 'uploads/assessors/cv/' . $newName;
+            $cvFile->move($uploadCvPath, $newCvName);
+            $cvPath = 'uploads/assessors/cv/' . $newCvName;
         } else {
             // Keep old path if no new file uploaded
             $cvPath = $this->assessor_model->find($assessor_id)->asr_cv_path ?? null;
+        }
+
+        $imgPath = null;
+        $imgFile = $this->request->getFile('asr_image');
+        if ($imgFile && $imgFile->isValid() && !$imgFile->hasMoved()) {
+            $newImgName = uniqid('cv_') . '.' . $imgFile->getExtension();
+            $uploadImgPath = FCPATH . 'uploads/assessors/images/';
+            if (!is_dir($uploadImgPath)) {
+                mkdir($uploadImgPath, 0777, true);
+            }
+            $imgFile->move($uploadImgPath, $newImgName);
+            $imgPath = 'uploads/assessors/images/' . $newImgName;
+        } else {
+            // Keep old path if no new file uploaded
+            $imgPath = $this->assessor_model->find($assessor_id)->asr_image ?? null;
         }
 
         // Update main assessor data
@@ -351,6 +379,7 @@ class MPQUA_UniController extends BaseController
             'asr_service_address' => $asr_service_address,
             'asr_retirement_date' => $asr_retirement_date,
             'asr_cv_path'         => $cvPath,
+            'asr_image'           => $imgPath,
         ];
 
         $this->assessor_model->update($assessor_id, $data);

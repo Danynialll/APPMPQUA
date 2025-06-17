@@ -101,6 +101,12 @@
                 <button type="button" class="btn btn-primary btn-sm" id="addNECBtnEdit">
                     <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add NEC Field
                 </button>
+
+                <div class="mb-3">
+                    <label for="asr_image" class="form-label">Profile Picture</label>
+                    <input type="file" name="asr_image" class="form-control" accept=".image/*">
+                    <small class="form-text text-muted">(optional)</small>
+                </div>
                 
                 <!-- edit cv -->
                 <div class="mb-3">
