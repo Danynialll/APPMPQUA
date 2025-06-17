@@ -67,13 +67,13 @@
         <div class="collapse " id="appmpqua_SB_Section">
           <ul class="nav ms-4 ps-3">
             <li class="nav-item ">
-              <a class="nav-link " href="<?= base_url() ?>appmpqua/viewAllNew">
+              <a class="nav-link " href="<?= base_url() ?>appmpqua/viewAll">
                 <span class="sidenav-mini-icon"> All </span>
                 <span class="sidenav-normal">List: All</span>
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link " href="<?= base_url() ?>appmpqua/viewUniNew">
+              <a class="nav-link " href="<?= base_url() ?>appmpqua/viewUni">
                 <span class="sidenav-mini-icon"> Uni </span>
                 <span class="sidenav-normal">List: <?= get_university_name($mpq->mpq_qu_id) ?></span>
               </a>

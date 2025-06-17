@@ -66,7 +66,6 @@
     }
 
     .action-container {
-        display: flex;
         gap: 5px;
     }
 
@@ -223,11 +222,10 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width:60px;">No.</th>
+                                    <th>Image</th>
                                     <th>Name</th>
-                                    <th style="width:150px;">Institute</th>
-                                    <th>Contact No.</th>
-                                    <th>Email</th>
-                                    <th>Retirement Date</th>
+                                    <th style="width:150px;">Expertise</th>
+                                    <th style="width:150px;">NEC Field</th>
                                     <th style="width:120px;" class="text-center">Details</th>
                                 </tr>
                             </thead>
@@ -238,28 +236,31 @@
                                             <td>
                                                 <h6 class="mb-0 text-sm"><?= $i++ ?></h6>
                                             </td>
+                                            
+                                            <td>Image here</td>
                                             <td>
-                                                <h6 class="mb-0 text-sm"><?= esc($asr->asr_name) ?></h6>
+                                                <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->asr_name) ?></h6>
                                             </td>
                                             <td>
-                                                <h6 class="mb-0 text-sm" style="white-space:normal; word-break:break-word;">
-                                                    <?= esc($asr->qu_code) ?>
+                                                <h6 class="mb-0 text-sm">
+                                                    <?php if (!empty($asr->expertise_list)): ?>
+                                                        <?php foreach($asr->expertise_list as $exp): ?>
+                                                            <span class="badge bg-primary text-white mb-1" style="word-break:break-word;"><?= esc($exp) ?></span><br>
+                                                        <?php endforeach; ?>  
+                                                    <?php else: ?>
+                                                        <span>-</span>  
+                                                    <?php endif; ?>
                                                 </h6>
                                             </td>
                                             <td>
-                                                <strong>Telephone:</strong> <?= esc($asr->asr_phone) ?><br>
-                                                <strong>Fax:</strong> <?= esc($asr->asr_fax) ?>
-                                            </td>
-                                            <td><?= esc($asr->asr_email) ?></td>
-                                            <td>
                                                 <h6 class="mb-0 text-sm">
-                                                    <?php
-                                                        if (!empty($asr->asr_retirement_date) && $asr->asr_retirement_date !== '0000-00-00') {
-                                                            echo date('d-m-Y', strtotime($asr->asr_retirement_date));
-                                                        } else {
-                                                            echo '-';
-                                                        }
-                                                    ?>
+                                                    <?php if (!empty($asr->nec_list)): ?>
+                                                        <?php foreach ($asr->nec_list as $nec): ?>
+                                                            <span class="badge bg-success text-white mb-1" style="word-break:break-word;"><?= esc($nec['nec_code']) ?> <?= esc($nec['nec_name']) ?></span><br>
+                                                        <?php endforeach; ?>
+                                                    <?php else: ?>
+                                                        <span>-</span>
+                                                    <?php endif; ?>
                                                 </h6>
                                             </td>
                                             <td class="text-center">
@@ -323,11 +324,11 @@
             ],
             columnDefs: [{
                     orderable: false,
-                    targets: [6]
+                    targets: [1, 5]
                 }, // Disable sorting on the Actions column
                 {
                     className: "text-center",
-                    targets: [0, 5, 6]
+                    targets: [0, 5]
                 } // Center align these columns
             ],
             order: [

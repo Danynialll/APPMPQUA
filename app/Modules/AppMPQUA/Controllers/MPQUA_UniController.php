@@ -173,12 +173,12 @@ class MPQUA_UniController extends BaseController
         $cvFile = $this->request->getFile('asr_cv');
         if ($cvFile && $cvFile->isValid() && !$cvFile->hasMoved()) {
             $newName = uniqid('cv_') . '.' . $cvFile->getExtension();
-            $uploadPath = FCPATH . 'uploads/assessors/';
+            $uploadPath = FCPATH . 'uploads/assessors/cv/';
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
             $cvFile->move($uploadPath, $newName);
-            $cvPath = 'uploads/assessors/' . $newName;
+            $cvPath = 'uploads/assessors/cv/' . $newName;
         }
 
         $data = [
@@ -331,12 +331,12 @@ class MPQUA_UniController extends BaseController
         $cvFile = $this->request->getFile('asr_cv');
         if ($cvFile && $cvFile->isValid() && !$cvFile->hasMoved()) {
             $newName = uniqid('cv_') . '.' . $cvFile->getExtension();
-            $uploadPath = FCPATH . 'uploads/assessors/';
+            $uploadPath = FCPATH . 'uploads/assessors/cv/';
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
             $cvFile->move($uploadPath, $newName);
-            $cvPath = 'uploads/assessors/' . $newName;
+            $cvPath = 'uploads/assessors/cv/' . $newName;
         } else {
             // Keep old path if no new file uploaded
             $cvPath = $this->assessor_model->find($assessor_id)->asr_cv_path ?? null;
