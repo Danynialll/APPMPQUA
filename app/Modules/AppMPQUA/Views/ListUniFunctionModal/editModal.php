@@ -108,6 +108,8 @@
                     <span id="modalCVinput"></span>
                     <input type="file" name="asr_cv" class="form-control" accept=".pdf,.image/*">
                     <small class="form-text text-muted">Upload CV file (optional)</small>
+                </div>
+            </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger me-auto" id="deleteAssessorBtn">

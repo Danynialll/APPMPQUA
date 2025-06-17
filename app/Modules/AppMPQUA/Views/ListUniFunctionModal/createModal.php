@@ -1,4 +1,3 @@
-
 <div class="modal fade custom-modal" id="addAssessorModal" tabindex="-1" aria-labelledby="addAssessorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -112,7 +111,7 @@
                     <label for="asr_cv" class="form-label">CV</label>
                     <input type="file" name="asr_cv" class="form-control" accept=".pdf,.image/*">
                     <small class="form-text text-muted">Accepted formats: PDF, PNG, JPEG</small>
-                </div>
+            </div>
             </div>
         </div>
         <div class="modal-footer">
@@ -123,6 +122,7 @@
     </div>
   </div>
 </div>
+
 
 <script>
     jQuery(document).ready(function($) {
@@ -350,64 +350,64 @@
 </script>
 
 <script>
-jQuery(document).ready(function($) {
-    // Delegate event for dynamically added .delete-nec buttons
-    $(document).on('click', '.delete-nec', function() {
-        var badge = $(this).closest("span"); // Select the parent badge
-        var necId = badge.data("nd-id"); // Get the NEC Detail ID
+    jQuery(document).ready(function($) {
+        // Delegate event for dynamically added .delete-nec buttons
+        $(document).on('click', '.delete-nec', function() {
+            var badge = $(this).closest("span"); // Select the parent badge
+            var necId = badge.data("nd-id"); // Get the NEC Detail ID
 
-        Swal.fire({
-            title: "Are you sure to delete NEC?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Remove the badge visually
-                badge.fadeOut(300, function() {
-                    $(this).remove();
-                    $('input[type="hidden"][name="nec_detail[]"][data-nd-id="' + necId + '"]').remove();
+            Swal.fire({
+                title: "Are you sure to delete NEC?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Remove the badge visually
+                    badge.fadeOut(300, function() {
+                        $(this).remove();
+                        $('input[type="hidden"][name="nec_detail[]"][data-nd-id="' + necId + '"]').remove();
 
-                    // After removal, collect all remaining NEC IDs
-                    let necIds = [];
-                    $('.badge[data-nd-id]').each(function() {
-                        necIds.push($(this).data('nd-id'));
+                        // After removal, collect all remaining NEC IDs
+                        let necIds = [];
+                        $('.badge[data-nd-id]').each(function() {
+                            necIds.push($(this).data('nd-id'));
+                        });
                     });
-                });
-            }
+                }
+            });
+        });
+
+        $(document).on('click', '.delete-exp', function() {
+            var badge = $(this).closest("span"); // Select the parent badge
+            var expId = badge.data("exp-id"); // Get the Expertise ID
+
+            Swal.fire({
+                title: "Are you sure to delete expertise?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Remove the badge visually
+                    badge.fadeOut(300, function() {
+                        $(this).remove();
+                        $('input[type="hidden"][name="expertise[]"][data-exp-id="' + expId + '"]').remove();
+
+                        // After removal, collect all remaining NEC IDs
+                        let expIds = [];
+                        $('.badge[data-exp-id]').each(function() {
+                            expIds.push($(this).data('exp-id'));
+                        });
+                    });
+                }
+            });
         });
     });
-
-    $(document).on('click', '.delete-exp', function() {
-        var badge = $(this).closest("span"); // Select the parent badge
-        var expId = badge.data("exp-id"); // Get the Expertise ID
-
-        Swal.fire({
-            title: "Are you sure to delete expertise?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Remove the badge visually
-                badge.fadeOut(300, function() {
-                    $(this).remove();
-                    $('input[type="hidden"][name="expertise[]"][data-exp-id="' + expId + '"]').remove();
-
-                    // After removal, collect all remaining NEC IDs
-                    let expIds = [];
-                    $('.badge[data-exp-id]').each(function() {
-                        expIds.push($(this).data('exp-id'));
-                    });
-                });
-            }
-        });
-    });
-});
 </script>
