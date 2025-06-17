@@ -104,74 +104,7 @@ class MPQUA_UniController extends BaseController
 
         $this->render_mpqua('listUni', $data);
     }
-    public function viewUniNew()
-    {
-        // Get current user's university ID from session or user profile
-        $user_id = $this->session->get('user_id');
-        $user = $this->MPQUA_model->find($user_id);
-        $user_university_id = $user ? $user->mpq_qu_id : null;
-
-        $expertise_list = $this->expertise_model->findAll();
-        $nec_broad = $this->NECBroad_model->findAll();
-        $nec_narrow = $this->NECNarrow_model->findAll();
-        $nec_detail = $this->NECDetail_model->findAll();
-
-        $totalAssessors = $this->assessor_model->where('asr_qu_id', $user_university_id)->countAllResults();
-        $maleAssessors = $this->assessor_model->where('asr_gender', 'Male')->where('asr_qu_id', $user_university_id)->countAllResults();
-        $femaleAssessors = $this->assessor_model->where('asr_gender', 'Female')->where('asr_qu_id', $user_university_id)->countAllResults();
-
-        // Filter assessors by the same university
-        $builder = $this->assessor_model->table('assessor');
-        $builder->select('assessor.*, qvc_university.qu_name');
-        $builder->join('qvc_university', 'qvc_university.qu_id = assessor.asr_qu_id', 'left');
-        if ($user_university_id) {
-            $builder->where('assessor.asr_qu_id', $user_university_id);
-        }
-        // Exclude soft-deleted assessors
-        $builder->where('assessor.asr_deleted_at', null);
-
-        $assessor_list = $builder->get()->getResult();
-
-
-        foreach ($assessor_list as &$assessor) {
-            // Get all expertise for this assessor
-            $expertise = $this->assessorExpertiseModel
-                ->select('expertise_field.ef_desc')
-                ->join('qvc_upsi.expertise_field', 'expertise_field.ef_id = assessor_expertise_field.aef_ef_id', 'left')
-                ->where('aef_asr_id', $assessor->asr_id)
-                ->findAll();
-            $assessor->expertise_list = array_column($expertise, 'ef_desc');
-
-            // Get all NEC mappings for this assessor
-            $nec_mappings = $this->asrNECMapping_model->where('anm_asr_id', $assessor->asr_id)->findAll();
-            $nec_detail_list = [];
-            foreach ($nec_mappings as $nec) {
-                $detail = $this->NECDetail_model->find($nec->anm_nd_id);
-                if ($detail) {
-                    $nec_detail_list[] = [
-                        'nd_id' => $detail->nd_id,
-                        'nd_desc' => $detail->nd_code . ' ' . $detail->nd_name
-                    ];
-                }
-            }
-            $assessor->nec_detail_list = $nec_detail_list;
-        }
-        unset($assessor);
-
-        $data = [
-            'total_assessors'      => $totalAssessors,
-            'male_assessors'      => $maleAssessors,
-            'female_assessors'    => $femaleAssessors,
-            'assessor_list'        => $assessor_list,
-            'expertise_list'       => $expertise_list,
-            'nec_broad'            => $nec_broad,
-            'nec_narrow'           => $nec_narrow,
-            'nec_detail'           => $nec_detail,
-        ];
-
-        $this->render_mpqua('listUniNew', $data);
-    }
-
+    
     public function get_expertise_list()
     {
 

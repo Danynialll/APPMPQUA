@@ -7,12 +7,8 @@ use App\Modules\AppMPQUA\Controllers\MPQUA_UniController;
 $routes->group('appmpqua', function ($routes) {
 
     $routes->get('viewAll',                 [AppMPQUAController::class,      'viewAll']);
-    $routes->get('viewAllNew',              [AppMPQUAController::class,      'viewAllNew']);
-
-
 
     $routes->get('viewUni',                 [MPQUA_UniController::class,     'viewUni']);
-    $routes->get('viewUniNew',              [MPQUA_UniController::class,     'viewUniNew']);
     $routes->post('get_nec_narrow',         [MPQUA_UniController::class,     'get_nec_narrow']);
     $routes->post('get_nec_detail',         [MPQUA_UniController::class,     'get_nec_detail']);
     $routes->post('get_expertise_list',     [MPQUA_UniController::class,     'get_expertise_list']);
@@ -24,7 +20,4 @@ $routes->group('appmpqua', function ($routes) {
     $routes->get('necFilter',               [MPQUA_UniController::class,     'necAssessorFilter']);
     $routes->post('get_assessors_by_nec_detail', [MPQUA_UniController::class, 'get_assessors_by_nec_detail']);
 
-
-    $routes->get('admin',                   [AppMPQUAController::class,      'admin']);
-    $routes->get('adminUni',                [AppMPQUAController::class,      'adminUni']);
 });
