@@ -149,6 +149,7 @@
                             <th>Phone</th>
                             <th>Email</th>
                             <th>Institute</th>
+                            <th class="text-center" style="width:120px;">Details</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -159,6 +160,15 @@
                         <td>${a.asr_phone}</td>
                         <td>${a.asr_email}</td>
                         <td>${a.asr_qu_id}</td>
+                        <td class="text-center">
+                            <div class="action-container">
+                                <button class="btn btn-primary btn-view-details"
+                                    data-asr-id="${a.asr_id}"
+                                    data-bs-toggle="modal" data-bs-target="#viewModal">
+                                    <i class="fas fa-eye" style="font-size: 1rem !important;"></i>
+                                </button>
+                            </div>
+                        </td>
                     </tr>`;
                 });
                 html += '</tbody></table>';
@@ -169,5 +179,78 @@
         });
     });
 </script>
+
+<script>
+    document.addEventListener("click", function(e) {
+        const target = e.target.closest(".btn-view-details");
+        if (!target) return;
+
+        const asrId = target.getAttribute("data-asr-id");
+        fetch('<?= base_url('appmpqua/get_assessor/') ?>' + asrId)
+            .then(response => response.json())
+            .then(result => {
+                if (!result.success) {
+                    alert('Assessor not found.');
+                    return;
+                }
+                const data = result.data;
+
+                document.getElementById('modalName').innerText = data.asr_name || '';
+                document.getElementById('modalGender').innerText = data.asr_gender || '';
+                document.getElementById('modalTelephone').innerText = data.asr_phone || '';
+                document.getElementById('modalFax').innerText = data.asr_fax || '';
+                document.getElementById('modalEmail').innerText = data.asr_email || '';
+                document.getElementById('modalInst').innerText = data.qu_name || '';
+                document.getElementById('modalAddress').innerText = data.asr_service_address || '';
+                document.getElementById('modalRetirement').innerText = data.asr_retirement_date || '';
+                document.getElementById('modalid').innerText = data.asr_id || '';
+
+                // CV
+                const cvContainer = document.getElementById('modalCV');
+                cvContainer.innerHTML = '';
+                if (data.asr_cv_path) {
+                    const link = document.createElement('a');
+                    link.href = '<?= base_url() ?>' + data.asr_cv_path;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.innerHTML = '<span class="badge bg-secondary"><i class="fas fa-file-alt me-1"></i> Document</span>';
+                    link.className = 'btn btn-link p-0';
+                    cvContainer.appendChild(link);
+                } else {
+                    cvContainer.innerText = '-';
+                }
+
+                // Expertise
+                const expertiseContainer = document.getElementById('modalExpertise');
+                expertiseContainer.innerHTML = '';
+                if (data.expertise_list && data.expertise_list.length > 0) {
+                    data.expertise_list.forEach(item => {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-info text-dark me-1';
+                        badge.innerText = item;
+                        expertiseContainer.appendChild(badge);
+                    });
+                } else {
+                    expertiseContainer.innerText = '-';
+                }
+
+                // NEC
+                const necContainer = document.getElementById('modalNEC');
+                necContainer.innerHTML = '';
+                if (data.nec_detail_list && data.nec_detail_list.length > 0) {
+                    data.nec_detail_list.forEach(item => {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-success text-dark me-1';
+                        badge.innerText = item.nd_desc;
+                        necContainer.appendChild(badge);
+                    });
+                } else {
+                    necContainer.innerText = '-';
+                }
+            });
+    });
+</script>
+
+<?php include 'ListAllModal/viewModal.php'; ?>
 
 
