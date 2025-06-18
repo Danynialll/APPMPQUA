@@ -269,7 +269,7 @@
                                                 <h6 class="mb-0 text-sm">
                                                     <?php if (!empty($asr->nec_detail_list)): ?>
                                                         <?php foreach ($asr->nec_detail_list as $nec): ?>
-                                                            <span class="badge bg-success text-white mb-1" style="word-break:break-word;"><?= esc($nec['nd_id']) ?> <?= esc($nec['nd_desc']) ?></span><br>
+                                                            <span class="badge bg-success text-white mb-1" style="word-break:break-word;"> <?= esc($nec['nd_desc']) ?></span><br>
                                                         <?php endforeach; ?>
                                                     <?php else: ?>
                                                         <span>-</span>

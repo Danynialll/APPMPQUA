@@ -17,7 +17,9 @@ $routes->group('appmpqua', function ($routes) {
     $routes->post('deleteAssessor/(:num)',  [MPQUA_UniController::class,     'deleteAssessor/$1']);
     $routes->get('get_assessor/(:num)',     [MPQUA_UniController::class,     'getAssessor/$1']);
     
-    $routes->get('necFilter',               [MPQUA_UniController::class,     'necAssessorFilter']);
-    $routes->post('get_assessors_by_nec_detail', [MPQUA_UniController::class, 'get_assessors_by_nec_detail']);
+    $routes->get('necFilter',               [AppMPQUAController::class,     'necAssessorFilter']);
+    $routes->get('necFilterUni',               [MPQUA_UniController::class,     'necAssessorFilterUni']);
+    $routes->post('get_assessors_by_nec_detail', [AppMPQUAController::class, 'get_assessors_by_nec_detail']);
+    $routes->post('get_assessors_by_nec_detail_uni', [MPQUA_UniController::class, 'get_assessors_by_nec_detail_uni']);
 
 });

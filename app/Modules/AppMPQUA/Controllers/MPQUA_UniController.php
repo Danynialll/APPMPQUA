@@ -431,7 +431,7 @@ class MPQUA_UniController extends BaseController
         ]);
     }
 
-    public function necAssessorFilter()
+    public function necAssessorFilterUni()
     {
         $nec_broad = $this->NECBroad_model->findAll();
         $nec_narrow = $this->NECNarrow_model->findAll();
@@ -443,11 +443,15 @@ class MPQUA_UniController extends BaseController
             'nec_detail' => $nec_detail,
         ];
 
-        return $this->render_mpqua('necPage', $data);
+        return $this->render_mpqua('necPageUni', $data);
     }
 
-    public function get_assessors_by_nec_detail()
+    public function get_assessors_by_nec_detail_uni()
     {
+        $user_id = $this->session->get('user_id');
+        $user = $this->MPQUA_model->find($user_id);
+        $user_university_id = $user ? $user->mpq_qu_id : null;
+
         $nec_detail_id = $this->request->getPost('nec_detail_id');
         $assessor_ids = $this->asrNECMapping_model
             ->where('anm_nd_id', $nec_detail_id)
@@ -459,8 +463,11 @@ class MPQUA_UniController extends BaseController
                 ->select('assessor.*, qvc_university.qu_name')
                 ->join('qvc_university', 'qvc_university.qu_id = assessor.asr_qu_id', 'left')
                 ->whereIn('asr_id', $ids)
+                ->where('asr_qu_id', $user_university_id)
                 ->findAll();
         }
+        //filter by university
+
         // Return all variables for debugging
         return $this->response->setJSON([
             'success' => true,

@@ -1,0 +1,365 @@
+<!-- Modern CSS Libraries -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<!-- Required JS Libraries -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- FontAwesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<!-- Bootstrap CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Import table styling -->
+<link rel="stylesheet" href="<?= base_url('assets/css/custom_table.css'); ?>">
+<link rel="stylesheet" href="<?= base_url('assets/css/custom_card.css'); ?>">
+
+<style>
+    .nav-link {
+        font-weight: 500;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .nav-link.active {
+        background-color: #5e72e4;
+        /* color: white !important; */
+        box-shadow: 0 3px 5px rgba(94, 114, 228, 0.3);
+    }
+
+    .action-btn {
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .pending-card {
+        border-left: 4px solid #5e72e4;
+        transition: all 0.3s;
+    }
+
+    .pending-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .badge {
+        padding: 6px 10px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    .status-badge {
+        border-radius: 6px;
+        padding: 8px 10px;
+        display: inline-block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .action-container {
+        
+        gap: 5px;
+    }
+
+    .action-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .action-icon:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #c8c8c8;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a1a1a1;
+    }
+</style>
+
+<form id="filterAssessorForm">
+    <?= csrf_field() ?>
+    <div class="container py-4">
+        <h4>Filter Assessors by NEC </h4>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="nec_broad">NEC Broad</label>
+                <select id="add_nec_broad" class="form-select select2" name="nec_broad">
+                    <option value="">Select NEC Broad</option>
+                    <?php foreach ($nec_broad as $broad): ?>
+                        <option value="<?= esc($broad->nb_id) ?>"><?= esc($broad->nb_code) ?> - <?= esc($broad->nb_name) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="nec_narrow">NEC Narrow</label>
+                <select id="add_nec_narrow" class="form-select select2" name="nec_narrow">
+                    <option value="">Select NEC Narrow</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>NEC Detail</label>
+                <select id="add_nec_detail" class="form-select select2" name="nec_detail_id">
+                    <option value="">Select NEC Detail</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" id="necFilterSubmit" class="btn btn-success mt-2">Show Assessors</button>
+        <div id="assessor-table-container"></div>
+    </div>
+</form>
+
+<script>
+    jQuery(document).ready(function($) {
+        // Hide narrow and detail fields initially
+        $('#add_nec_narrow').closest('.col-md-4').hide();
+        $('#add_nec_detail').closest('.col-md-4').hide();
+        $('#necFilterSubmit').closest('.mt-2').hide();
+
+        // Show NEC Narrow after selecting Broad
+        $('#add_nec_broad').on('change', function() {
+            var broad_id = $(this).val();
+            $('#add_nec_narrow').html('<option value="">Loading...</option>');
+            $('#add_nec_detail').html('<option value="">Select NEC Detail</option>');
+            if (broad_id) {
+                $('#add_nec_narrow').closest('.col-md-4').show();
+                $.ajax({
+                    url: "<?= base_url('appmpqua/get_nec_narrow') ?>",
+                    type: "POST",
+                    data: {
+                        broad_id: broad_id,
+                        csrf_test_name: $("input[name='csrf_test_name']").val()
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success) {
+                            var options = '<option value="">Select NEC Narrow</option>';
+                            $.each(response.data, function(i, item) {
+                                options += `<option value="${item.nn_id}">${item.nn_code} ${item.nn_name}</option>`;
+                            });
+                            $('#add_nec_narrow').html(options).trigger('change');
+                            $("input[name='csrf_test_name']").val(response.csrf_token);
+                        } else {
+                            $('#add_nec_narrow').html('<option value="">Select NEC Narrow</option>');
+                        }
+                    }
+                });
+            } else {
+                $('#add_nec_narrow').closest('.col-md-4').hide();
+                $('#add_nec_detail').closest('.col-md-4').hide();
+            }
+            $('#add_nec_detail').closest('.col-md-4').hide();
+        });
+
+        // Show NEC Detail after selecting Narrow
+        $('#add_nec_narrow').on('change', function() {
+            var narrow_id = $(this).val();
+            $('#add_nec_detail').html('<option value="">Loading...</option>');
+            if (narrow_id) {
+                $('#add_nec_detail').closest('.col-md-4').show();
+                $.ajax({
+                    url: "<?= base_url('appmpqua/get_nec_detail') ?>",
+                    type: "POST",
+                    data: {
+                        narrow_id: narrow_id,
+                        csrf_test_name: $("input[name='csrf_test_name']").val()
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success) {
+                            var options = '<option value="">Select NEC Detail</option>';
+                            $.each(response.data, function(i, item) {
+                                options += `<option value="${item.nd_id}">${item.nd_code} ${item.nd_name}</option>`;
+                            });
+                            $('#add_nec_detail').html(options).trigger('change');
+                            $("input[name='csrf_test_name']").val(response.csrf_token);
+                        } else {
+                            $('#add_nec_detail').html('<option value="">Select NEC Detail</option>');
+                        }
+                    }
+                });
+            } else {
+                $('#add_nec_detail').html('<option value="">Select NEC Detail</option>');
+            }
+        });
+
+        document.getElementById('add_nec_detail').addEventListener('change', function() {
+            const submitBtn = document.getElementById('necFilterSubmit');
+            if (this.value) {
+                submitBtn.style.display = '';
+            } else {
+                submitBtn.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<script>
+    document.getElementById('filterAssessorForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const form = this;
+        const formData = new FormData(form);
+
+        fetch("<?= base_url('appmpqua/get_assessors_by_nec_detail_uni') ?>", {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('assessor-table-container');
+
+            console.log('Fetch response:', data);
+
+            // ✅ Update CSRF token in form
+            if (data.csrf_token) {
+                document.querySelector("input[name='csrf_test_name']").value = data.csrf_token;
+            }
+            
+            if (data.success && Array.isArray(data.assessors) && data.assessors.length > 0) {
+                let html = `<table class="table table-bordered table-striped table-hover mt-3 align-middle" style="background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                <thead class="table-success">
+                    <tr>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Institute</th>
+                        <th class="text-center" style="width:120px;">Details</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+                data.assessors.forEach((a, idx) => {
+                    html += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${a.asr_name}</td>
+                    <td>${a.asr_gender}</td>
+                    <td>${a.asr_phone}</td>
+                    <td>${a.asr_email}</td>
+                    <td>${a.qu_name || a.asr_qu_id}</td>
+                    <td class="text-center">
+                        <div class="action-container">
+                            <button class="btn btn-primary btn-view-details"
+                                data-asr-id="${a.asr_id}"
+                                data-bs-toggle="modal" data-bs-target="#viewModal">
+                                <i class="fas fa-eye" style="font-size: 1rem !important;"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+                });
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="alert alert-warning mt-3">No assessors found for this NEC detail.</div>';
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("click", function(e) {
+        const target = e.target.closest(".btn-view-details");
+        if (!target) return;
+
+        const asrId = target.getAttribute("data-asr-id");
+        fetch('<?= base_url('appmpqua/get_assessor/') ?>' + asrId)
+            .then(response => response.json())
+            .then(result => {
+                if (!result.success) {
+                    alert('Assessor not found.');
+                    return;
+                }
+                const data = result.data;
+
+                document.getElementById('modalName').innerText = data.asr_name || '';
+                document.getElementById('modalGender').innerText = data.asr_gender || '';
+                document.getElementById('modalTelephone').innerText = data.asr_phone || '';
+                document.getElementById('modalFax').innerText = data.asr_fax || '';
+                document.getElementById('modalEmail').innerText = data.asr_email || '';
+                document.getElementById('modalInst').innerText = data.qu_name || '';
+                document.getElementById('modalAddress').innerText = data.asr_service_address || '';
+                document.getElementById('modalRetirement').innerText = data.asr_retirement_date || '';
+                document.getElementById('modalid').innerText = data.asr_id || '';
+
+                // CV
+                const cvContainer = document.getElementById('modalCV');
+                cvContainer.innerHTML = '';
+                if (data.asr_cv_path) {
+                    const link = document.createElement('a');
+                    link.href = '<?= base_url() ?>' + data.asr_cv_path;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.innerHTML = '<span class="badge bg-secondary"><i class="fas fa-file-alt me-1"></i> Document</span>';
+                    link.className = 'btn btn-link p-0';
+                    cvContainer.appendChild(link);
+                } else {
+                    cvContainer.innerText = '-';
+                }
+
+                // Expertise
+                const expertiseContainer = document.getElementById('modalExpertise');
+                expertiseContainer.innerHTML = '';
+                if (data.expertise_list && data.expertise_list.length > 0) {
+                    data.expertise_list.forEach(item => {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-info text-dark me-1';
+                        badge.innerText = item;
+                        expertiseContainer.appendChild(badge);
+                    });
+                } else {
+                    expertiseContainer.innerText = '-';
+                }
+
+                // NEC
+                const necContainer = document.getElementById('modalNEC');
+                necContainer.innerHTML = '';
+                if (data.nec_detail_list && data.nec_detail_list.length > 0) {
+                    data.nec_detail_list.forEach(item => {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-success text-dark me-1';
+                        badge.innerText = item.nd_desc;
+                        necContainer.appendChild(badge);
+                    });
+                } else {
+                    necContainer.innerText = '-';
+                }
+            });
+    });
+</script>
+
+<?php include 'ListAllModal/viewModal.php'; ?>
+
+
