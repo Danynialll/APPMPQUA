@@ -208,14 +208,17 @@
                         <div class="col-lg-8 col-md-7">
                             <div class="d-flex flex-wrap gap-2">
                                 <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    Export
+                                    Export to Excel
                                 </button>
+                                <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilter') ?>">
+                                    <i class="fas fa-magnifying-glass"></i>&nbsp; Search by NEC
+                                </a>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
                             <div class="d-flex align-items-center justify-content-md-end">
                                 <button class="btn bg-gradient-primary me-2" data-bs-toggle="modal" data-bs-target="#addAssessorModal" style="font-size: 12px;">
-                                    <i class="fas fa-plus"></i> Add Assessor
+                                    <i class="fas fa-plus"></i>&nbsp; Add Assessor
                                 </button>
                             </div>
                         </div>
@@ -264,9 +267,9 @@
                                             </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm">
-                                                    <?php if (!empty($asr->nec_list)): ?>
-                                                        <?php foreach ($asr->nec_list as $nec): ?>
-                                                            <span class="badge bg-success text-white mb-1" style="word-break:break-word;"><?= esc($nec['nec_code']) ?> <?= esc($nec['nec_name']) ?></span><br>
+                                                    <?php if (!empty($asr->nec_detail_list)): ?>
+                                                        <?php foreach ($asr->nec_detail_list as $nec): ?>
+                                                            <span class="badge bg-success text-white mb-1" style="word-break:break-word;"><?= esc($nec['nd_id']) ?> <?= esc($nec['nd_desc']) ?></span><br>
                                                         <?php endforeach; ?>
                                                     <?php else: ?>
                                                         <span>-</span>
@@ -476,17 +479,17 @@
                             document.getElementById('modalUniCV').innerText = '-';
                         }
 
-                        document.getElementById('modalUniImg').innerHTML = '';
-                        if (data.asr_image) {
-                            const img = document.createElement('img');
-                            img.src = '<?= base_url() ?>' + data.asr_image; // assuming asr_image is the image path
-                            img.alt = 'Assessor Image';
-                            img.className = 'img-fluid rounded'; // bootstrap styles, adjust as needed
-                            img.style.maxWidth = '150px'; // optional styling
-                            document.getElementById('modalUniImg').appendChild(img);
-                        } else {
-                            document.getElementById('modalUniImg').innerText = 'No Image';
-                        }
+                        // document.getElementById('modalUniImg').innerHTML = '';
+                        // if (data.asr_image) {
+                        //     const img = document.createElement('img');
+                        //     img.src = '<?= base_url() ?>' + data.asr_image; // assuming asr_image is the image path
+                        //     img.alt = 'Assessor Image';
+                        //     img.className = 'img-fluid rounded'; // bootstrap styles, adjust as needed
+                        //     img.style.maxWidth = '150px'; // optional styling
+                        //     document.getElementById('modalUniImg').appendChild(img);
+                        // } else {
+                        //     document.getElementById('modalUniImg').innerText = 'No Image';
+                        // }
 
 
                         // Expertise

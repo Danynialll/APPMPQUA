@@ -1,3 +1,110 @@
+<!-- Modern CSS Libraries -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<!-- Required JS Libraries -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- FontAwesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<!-- Bootstrap CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Import table styling -->
+<link rel="stylesheet" href="<?= base_url('assets/css/custom_table.css'); ?>">
+<link rel="stylesheet" href="<?= base_url('assets/css/custom_card.css'); ?>">
+
+<style>
+    .nav-link {
+        font-weight: 500;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .nav-link.active {
+        background-color: #5e72e4;
+        /* color: white !important; */
+        box-shadow: 0 3px 5px rgba(94, 114, 228, 0.3);
+    }
+
+    .action-btn {
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .pending-card {
+        border-left: 4px solid #5e72e4;
+        transition: all 0.3s;
+    }
+
+    .pending-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .badge {
+        padding: 6px 10px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    .status-badge {
+        border-radius: 6px;
+        padding: 8px 10px;
+        display: inline-block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .action-container {
+        
+        gap: 5px;
+    }
+
+    .action-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .action-icon:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #c8c8c8;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a1a1a1;
+    }
+</style>
+
 <form id="filterAssessorForm">
     <?= csrf_field() ?>
     <div class="container py-4">
@@ -141,35 +248,37 @@
             }
             
             if (data.success && Array.isArray(data.assessors) && data.assessors.length > 0) {
-                let html = `<table class="table table-bordered mt-3">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Gender</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>Institute</th>
-                            <th class="text-center" style="width:120px;">Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
-                data.assessors.forEach(a => {
+                let html = `<table class="table table-bordered table-striped table-hover mt-3 align-middle" style="background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                <thead class="table-success">
+                    <tr>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Institute</th>
+                        <th class="text-center" style="width:120px;">Details</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+                data.assessors.forEach((a, idx) => {
                     html += `<tr>
-                        <td>${a.asr_name}</td>
-                        <td>${a.asr_gender}</td>
-                        <td>${a.asr_phone}</td>
-                        <td>${a.asr_email}</td>
-                        <td>${a.asr_qu_id}</td>
-                        <td class="text-center">
-                            <div class="action-container">
-                                <button class="btn btn-primary btn-view-details"
-                                    data-asr-id="${a.asr_id}"
-                                    data-bs-toggle="modal" data-bs-target="#viewModal">
-                                    <i class="fas fa-eye" style="font-size: 1rem !important;"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>`;
+                    <td>${idx + 1}</td>
+                    <td>${a.asr_name}</td>
+                    <td>${a.asr_gender}</td>
+                    <td>${a.asr_phone}</td>
+                    <td>${a.asr_email}</td>
+                    <td>${a.qu_name || a.asr_qu_id}</td>
+                    <td class="text-center">
+                        <div class="action-container">
+                            <button class="btn btn-primary btn-view-details"
+                                data-asr-id="${a.asr_id}"
+                                data-bs-toggle="modal" data-bs-target="#viewModal">
+                                <i class="fas fa-eye" style="font-size: 1rem !important;"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
                 });
                 html += '</tbody></table>';
                 container.innerHTML = html;

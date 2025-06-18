@@ -456,6 +456,8 @@ class MPQUA_UniController extends BaseController
         $assessors = [];
         if (!empty($ids)) {
             $assessors = $this->assessor_model
+                ->select('assessor.*, qvc_university.qu_name')
+                ->join('qvc_university', 'qvc_university.qu_id = assessor.asr_qu_id', 'left')
                 ->whereIn('asr_id', $ids)
                 ->findAll();
         }
