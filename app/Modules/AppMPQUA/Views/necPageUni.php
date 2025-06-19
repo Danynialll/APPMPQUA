@@ -15,6 +15,12 @@
 <!-- Bootstrap CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <!-- Import table styling -->
 <link rel="stylesheet" href="<?= base_url('assets/css/custom_table.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/css/custom_card.css'); ?>">
@@ -139,10 +145,16 @@
 
 <script>
     jQuery(document).ready(function($) {
+        $('.select2').select2({
+            placeholder: "Please select",
+            allowClear: true,
+            width: '100%' // ensures it fits Bootstrap form-control width
+        });
+
         // Hide narrow and detail fields initially
         $('#add_nec_narrow').closest('.col-md-4').hide();
         $('#add_nec_detail').closest('.col-md-4').hide();
-        $('#necFilterSubmit').closest('.mt-2').hide();
+        $('#necFilterSubmit').hide();
 
         // Show NEC Narrow after selecting Broad
         $('#add_nec_broad').on('change', function() {
@@ -211,12 +223,12 @@
             }
         });
 
-        document.getElementById('add_nec_detail').addEventListener('change', function() {
-            const submitBtn = document.getElementById('necFilterSubmit');
-            if (this.value) {
-                submitBtn.style.display = '';
+        $('#add_nec_detail').on('change', function() {
+            var detail_id = $(this).val();
+            if (detail_id) {
+                $('#necFilterSubmit').show();
             } else {
-                submitBtn.style.display = 'none';
+                $('#necFilterSubmit').hide();
             }
         });
     });
