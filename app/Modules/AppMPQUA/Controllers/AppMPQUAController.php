@@ -109,6 +109,33 @@ class AppMPQUAController extends BaseController
                 ->whereIn('asr_id', $ids)
                 ->findAll();
         }
+        // Get expertise for each assessor
+        foreach ($assessors as &$assessor) {
+            $expertise = $this->assessorExpertiseModel
+                ->select('expertise_field.ef_desc')
+                ->join('qvc_upsi.expertise_field', 'expertise_field.ef_id = assessor_expertise_field.aef_ef_id', 'left')
+                ->where('aef_asr_id', $assessor->asr_id)
+                ->findAll();
+            $assessor->expertise_list = array_column($expertise, 'ef_desc');
+        }
+
+        // Get NEC for each assessor
+        foreach ($assessors as &$assessor) {
+            $nec_mappings = $this->asrNECMapping_model->where('anm_asr_id', $assessor->asr_id)->findAll();
+            $nec_list = [];
+            foreach ($nec_mappings as $nec) {
+                $detail = $this->NECDetail_model->find($nec->anm_nd_id);
+                if ($detail) {
+                    $nec_list[] = [
+                        'nec_code' => $detail->nd_code,
+                        'nec_name' => $detail->nd_name
+                    ];
+                }
+            }
+            $assessor->nec_list = $nec_list;
+        }
+        
+
         // Return all variables for debugging
         return $this->response->setJSON([
             'success' => true,

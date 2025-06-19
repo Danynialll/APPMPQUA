@@ -10,6 +10,13 @@
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
 <!-- FontAwesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <!-- Bootstrap CSS -->
@@ -139,10 +146,16 @@
 
 <script>
     jQuery(document).ready(function($) {
+        $('.select2').select2({
+            placeholder: "Please select",
+            allowClear: true,
+            width: '100%' // ensures it fits Bootstrap form-control width
+        });
+        
         // Hide narrow and detail fields initially
         $('#add_nec_narrow').closest('.col-md-4').hide();
         $('#add_nec_detail').closest('.col-md-4').hide();
-        $('#necFilterSubmit').closest('.mt-2').hide();
+        $('#necFilterSubmit').hide();
 
         // Show NEC Narrow after selecting Broad
         $('#add_nec_broad').on('change', function() {
@@ -211,12 +224,12 @@
             }
         });
 
-        document.getElementById('add_nec_detail').addEventListener('change', function() {
-            const submitBtn = document.getElementById('necFilterSubmit');
-            if (this.value) {
-                submitBtn.style.display = '';
+        $('#add_nec_detail').on('change', function() {
+            var detail_id = $(this).val();
+            if (detail_id) {
+                $('#necFilterSubmit').show();
             } else {
-                submitBtn.style.display = 'none';
+                $('#necFilterSubmit').hide();
             }
         });
     });
@@ -252,23 +265,39 @@
                 <thead class="table-success">
                     <tr>
                         <th>No.</th>
+                        <th>Image</th>
                         <th>Name</th>
-                        <th>Gender</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Institute</th>
+                        <th>Expertise</th>
+                        <th>NEC Field</th>
                         <th class="text-center" style="width:120px;">Details</th>
                     </tr>
                 </thead>
                 <tbody>`;
                 data.assessors.forEach((a, idx) => {
+                    let expertiseHTML = '-';
+                    if (Array.isArray(a.expertise_list) && a.expertise_list.length > 0) {
+                        expertiseHTML = a.expertise_list.map(exp => 
+                            `<span class="badge bg-primary text-white mb-1" style="word-break:break-word;">${exp}</span><br>`
+                        ).join('');
+                    }
+
+                    let necHTML = '-';
+                    if (Array.isArray(a.nec_list) && a.nec_list.length > 0) {
+                        necHTML = a.nec_list.map(nec => 
+                            `<span class="badge bg-success text-white mb-1" style="word-break:break-word;">${nec.nec_name}</span><br>`
+                        ).join('');
+                    }
+                    let imgHTML = '<img src="<?= base_url('assets/img/default-profile.jpg') ?>" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">';
+                    if (a.asr_image) {
+                        imgHTML = `<img src="<?= base_url() ?>${a.asr_image}" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">`;
+                    }
+
                     html += `<tr>
                     <td>${idx + 1}</td>
-                    <td>${a.asr_name}</td>
-                    <td>${a.asr_gender}</td>
-                    <td>${a.asr_phone}</td>
-                    <td>${a.asr_email}</td>
-                    <td>${a.qu_name || a.asr_qu_id}</td>
+                    <td>${imgHTML}</td>
+                    <td style="word-break:break-word;">${a.asr_name}</td>
+                    <td><h6 class="mb-0 text-sm">${expertiseHTML}</h6></td>
+                    <td><h6 class="mb-0 text-sm">${necHTML}</h6></td>
                     <td class="text-center">
                         <div class="action-container">
                             <button class="btn btn-primary btn-view-details"

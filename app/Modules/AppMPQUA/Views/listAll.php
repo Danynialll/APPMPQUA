@@ -206,8 +206,11 @@
                         <div class="col-lg-8 col-md-7">
                             <div class="d-flex flex-wrap gap-2">
                                 <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    Export
+                                    Export to Excel
                                 </button>
+                                <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilter') ?>">
+                                    <i class="fas fa-magnifying-glass"></i>&nbsp; Search by NEC
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -237,7 +240,13 @@
                                                 <h6 class="mb-0 text-sm"><?= $i++ ?></h6>
                                             </td>
                                             
-                                            <td>Image here</td>
+                                            <td>
+                                                <?php if (!empty($asr->asr_image)): ?>
+                                                    <img src="<?= base_url($asr->asr_image) ?>" alt="Profile Image" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;">
+                                                <?php else: ?>
+                                                    <img src="<?= base_url() ?>assets/img/default-profile.jpg" alt="Default Profile" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;">
+                                                <?php endif; ?>
+                                            </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->asr_name) ?></h6>
                                             </td>

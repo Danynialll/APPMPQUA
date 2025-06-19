@@ -210,7 +210,7 @@
                                 <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
                                     Export to Excel
                                 </button>
-                                <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilter') ?>">
+                                <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilterUni') ?>">
                                     <i class="fas fa-magnifying-glass"></i>&nbsp; Search by NEC
                                 </a>
                             </div>

@@ -252,23 +252,39 @@
                 <thead class="table-success">
                     <tr>
                         <th>No.</th>
+                        <th>Image</th>
                         <th>Name</th>
-                        <th>Gender</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Institute</th>
+                        <th>Expertise</th>
+                        <th>NEC Field</th>
                         <th class="text-center" style="width:120px;">Details</th>
                     </tr>
                 </thead>
                 <tbody>`;
                 data.assessors.forEach((a, idx) => {
+                    let expertiseHTML = '-';
+                    if (Array.isArray(a.expertise_list) && a.expertise_list.length > 0) {
+                        expertiseHTML = a.expertise_list.map(exp => 
+                            `<span class="badge bg-primary text-white mb-1" style="word-break:break-word;">${exp}</span><br>`
+                        ).join('');
+                    }
+
+                    let necHTML = '-';
+                    if (Array.isArray(a.nec_list) && a.nec_list.length > 0) {
+                        necHTML = a.nec_list.map(nec => 
+                            `<span class="badge bg-success text-white mb-1" style="word-break:break-word;">${nec.nec_name}</span><br>`
+                        ).join('');
+                    }
+                    let imgHTML = '<img src="<?= base_url('assets/img/default-profile.jpg') ?>" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">';
+                    if (a.asr_image) {
+                        imgHTML = `<img src="<?= base_url() ?>${a.asr_image}" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">`;
+                    }
+                    
                     html += `<tr>
                     <td>${idx + 1}</td>
-                    <td>${a.asr_name}</td>
-                    <td>${a.asr_gender}</td>
-                    <td>${a.asr_phone}</td>
-                    <td>${a.asr_email}</td>
-                    <td>${a.qu_name || a.asr_qu_id}</td>
+                    <td>${imgHTML}</td>
+                    <td style="word-break:break-word;">${a.asr_name}</td>
+                    <td><h6 class="mb-0 text-sm">${expertiseHTML}</h6></td>
+                    <td><h6 class="mb-0 text-sm">${necHTML}</h6></td>
                     <td class="text-center">
                         <div class="action-container">
                             <button class="btn btn-primary btn-view-details"
