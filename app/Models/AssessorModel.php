@@ -21,6 +21,7 @@ class AssessorModel extends Model
         'asr_retirement_date',
         'asr_gender',
         'asr_cv_path',
+        'asr_title_desc',
     ];
     
     protected $useSoftDeletes = true;

@@ -1,3 +1,12 @@
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
 <div class="modal fade custom-modal" id="addAssessorModal" tabindex="-1" aria-labelledby="addAssessorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -9,6 +18,10 @@
         <?= csrf_field() ?>
         <div class="modal-body">
             <div class="row g-3">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="asr_title_desc" class="form-control" required>
+                </div>
                 <div class="col-md-6">
                 <label class="form-label">Name</label>
                 <input type="text" name="asr_name" class="form-control" required>
@@ -129,7 +142,6 @@
   </div>
 </div>
 
-
 <script>
     jQuery(document).ready(function($) {
         // Add Expertise
@@ -187,6 +199,14 @@
 
 <script>
     jQuery(document).ready(function($) {
+        // Initialize Select2 for expertise and NEC fields
+        $('.select2').select2({
+            allowClear: true,
+            dropdownParent: $('#addAssessorModal'),
+            width: '100%',
+        });
+
+
         // Hide narrow and detail fields initially
         $('#add_nec_narrow').closest('.mb-3').hide();
         $('#add_nec_detail').closest('.mb-3').hide();

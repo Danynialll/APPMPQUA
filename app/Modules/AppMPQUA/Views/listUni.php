@@ -253,7 +253,7 @@
                                                     <img src="<?= base_url() ?>assets/img/default-profile.jpg" alt="Default Profile" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;">
                                                 <?php endif; ?>
                                             </td>
-                                            <td><h6 class="mb-0 text-sm"><?= esc($asr->asr_name) ?></h6></td>
+                                            <td><h6 class="mb-0 text-sm"><?= esc($asr->asr_title_desc) ?> <?= esc($asr->asr_name) ?></h6></td>
                                             <td>
                                                 <h6 class="mb-0 text-sm">
                                                     <?php if (!empty($asr->expertise_list)): ?>
@@ -456,7 +456,7 @@
                         }
                         const data = result.data;
 
-                        document.getElementById('modalUniName').innerText = data.asr_name || '';
+                        document.getElementById('modalUniName').innerText = data.asr_title_desc + ' ' +  data.asr_name || '';
                         document.getElementById('modalUniGender').innerText = data.asr_gender || '';
                         document.getElementById('modalUniTelephone').innerText = data.asr_phone || '';
                         document.getElementById('modalUniFax').innerText = data.asr_fax || '';

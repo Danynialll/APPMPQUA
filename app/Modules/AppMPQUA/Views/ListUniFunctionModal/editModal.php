@@ -10,6 +10,10 @@
         <?= csrf_field() ?>
         <div class="modal-body">
             <div class="row g-3">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="asr_title_desc" id="modalTitleInput" value="" class="form-control" required>
+                </div>
                 <div class="col-md-6">
                     <label class="form-label">Name</label>
                     <input type="text" name="asr_name" id="modalNameInput" value="" class="form-control" required>
@@ -318,6 +322,7 @@
 
                 // Fill other fields...
                 document.getElementById('modalIdInput').value = data.asr_id || '';
+                document.getElementById('modalTitleInput').value = data.asr_title_desc || '';
                 document.getElementById('modalNameInput').value = data.asr_name || '';
                 document.getElementById('modalTelephoneInput').value = data.asr_phone || '';
                 document.getElementById('modalFaxInput').value = data.asr_fax || '';

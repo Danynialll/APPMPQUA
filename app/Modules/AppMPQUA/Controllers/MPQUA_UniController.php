@@ -167,6 +167,7 @@ class MPQUA_UniController extends BaseController
         $asr_retirement_date    = $this->request->getPost('asr_retirement_date');
         $expertise              = $this->request->getPost('expertise');
         $nec_detail_id          = $this->request->getPost('nec_detail');
+        $asr_title_desc         = $this->request->getPost('asr_title_desc');
 
         $asr_path = null;
         $imgFile = $this->request->getFile('asr_image');
@@ -204,6 +205,7 @@ class MPQUA_UniController extends BaseController
             'asr_retirement_date' => $asr_retirement_date,
             'asr_cv_path'         => $cvPath, // Save path to DB
             'asr_image'           => $asr_path, // Save path to DB
+            'asr_title_desc'      => $asr_title_desc,
         ];
 
         $this->assessor_model->insert($data);

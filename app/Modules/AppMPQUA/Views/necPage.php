@@ -147,7 +147,6 @@
 <script>
     jQuery(document).ready(function($) {
         $('.select2').select2({
-            placeholder: "Please select",
             allowClear: true,
             width: '100%' // ensures it fits Bootstrap form-control width
         });

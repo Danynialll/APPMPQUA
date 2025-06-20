@@ -1,3 +1,9 @@
+<!-- Note -->
+Multi select for title, join title with name in column name. save the multiple values in a single column in asr_title_desc varchar
+
+
+
+
 <!-- Modern CSS Libraries -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
@@ -14,6 +20,14 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <!-- Bootstrap CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
 
 <!-- Import table styling -->
 <link rel="stylesheet" href="<?= base_url('assets/css/custom_table.css'); ?>">
@@ -248,7 +262,7 @@
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->asr_name) ?></h6>
+                                                <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->asr_title_desc) ?> <?= esc($asr->asr_name) ?></h6>
                                             </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm">
@@ -444,7 +458,7 @@
                         }
                         const data = result.data;
 
-                        document.getElementById('modalName').innerText = data.asr_name || '';
+                        document.getElementById('modalName').innerText = data.asr_title_desc + ' ' + data.asr_name || '';
                         document.getElementById('modalGender').innerText = data.asr_gender || '';
                         document.getElementById('modalTelephone').innerText = data.asr_phone || '';
                         document.getElementById('modalFax').innerText = data.asr_fax || '';
