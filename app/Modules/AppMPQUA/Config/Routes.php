@@ -22,4 +22,7 @@ $routes->group('appmpqua', function ($routes) {
     $routes->post('get_assessors_by_nec_detail', [AppMPQUAController::class, 'get_assessors_by_nec_detail']);
     $routes->post('get_assessors_by_nec_detail_uni', [MPQUA_UniController::class, 'get_assessors_by_nec_detail_uni']);
 
+    $routes->get('profile',                [AppMPQUAController::class,      'profile']);
+    $routes->post('update_profile',        [AppMPQUAController::class,      'updateProfile']);
+
 });

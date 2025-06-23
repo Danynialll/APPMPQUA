@@ -2,6 +2,7 @@
 
 namespace App\Modules\AppMPQUA\Controllers;
 
+use App\Models\MPQUAModel;
 use App\Models\AssessorModel;
 use App\Models\NECBroadModel;
 use App\Models\NECDetailModel;
@@ -20,6 +21,7 @@ class AppMPQUAController extends BaseController
     protected $NECBroad_model;
     protected $NECNarrow_model;
     protected $assessorExpertiseModel;
+    protected $mpqua_model;
 
     public function __construct()
     {
@@ -27,9 +29,10 @@ class AppMPQUAController extends BaseController
         $this->assessorExpertiseModel           = new AssessorExpertiseFieldModel();
         $this->expertise_model                  = new ExpertiseFieldModel();
         $this->asrNECMapping_model              = new AsrNECMappingModel();
-        $this->NECBroad_model                  = new NECBroadModel();
+        $this->NECBroad_model                   = new NECBroadModel();
         $this->NECNarrow_model                  = new NECNarrowModel();
         $this->NECDetail_model                  = new NECDetailModel();
+        $this->mpqua_model                      = new MPQUAModel();
         $this->session                          = service('session');
     }
 
@@ -145,5 +148,70 @@ class AppMPQUAController extends BaseController
             'assessors' => $assessors,
             'csrf_token' => csrf_hash()
         ]);
+    }
+
+    public function profile()
+    {
+        // Get current user's university ID from session or user profile
+        $user_id = $this->session->get('user_id');
+        $user = $this->mpqua_model->find($user_id);
+        $user_university_id = $user ? $user->mpq_qu_id : null;
+
+        $builder = $this->mpqua_model->table('mpqua');
+        $builder->select('mpqua.*, qvc_university.qu_name, qvc_university.qu_code');
+        $builder->join('qvc_university', 'qvc_university.qu_id = mpqua.mpq_qu_id', 'left');
+        if ($user_university_id) {
+            $builder->where('mpqua.mpq_qu_id', $user_university_id);
+        }
+
+        $user_info = $builder->get()->getRow();
+
+        // Prepare data for view
+        $data = [
+            'user_info' => $user_info,
+        ];
+
+
+        $this->render_mpqua('profile', $data);
+    }
+
+    public function updateProfile()
+    {
+        $user_id = $this->session->get('user_id');
+        $mpq_address = $this->request->getPost('mpq_address');
+        $mpq_email = $this->request->getPost('mpq_email');
+        $mpq_phone = $this->request->getPost('mpq_phone');
+        $mpq_fax = $this->request->getPost('mpq_fax');
+
+        // Validate input
+        if (!$user_id || !$mpq_address || !$mpq_email || !$mpq_phone || !$mpq_fax) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'All fields are required.',
+                'csrf_token' => csrf_hash()
+            ]);
+        }
+
+        // Update user profile
+        $data = [
+            'mpq_address' => $mpq_address,
+            'mpq_email' => $mpq_email,
+            'mpq_phone' => $mpq_phone,
+            'mpq_fax' => $mpq_fax,
+        ];
+
+        if ($this->mpqua_model->update($user_id, $data)) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Profile updated successfully.',
+                'csrf_token' => csrf_hash()
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Failed to update profile.',
+                'csrf_token' => csrf_hash()
+            ]);
+        }
     }
 }
