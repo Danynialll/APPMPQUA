@@ -134,12 +134,6 @@
                 <span class="sidenav-normal"> Register MPQUA Member <b class="caret"></b></span>
               </a>
             </li>
-            <li class="nav-item ">
-              <a class="nav-link " href="<?= base_url() ?>qvcAdmin/mpqua/listNew">
-                <span class="sidenav-mini-icon"> R </span>
-                <span class="sidenav-normal"> TEST NEW LAYOUT <b class="caret"></b></span>
-              </a>
-            </li>
           </ul>
         </div>
       </li>
