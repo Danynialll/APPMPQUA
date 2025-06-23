@@ -1,5 +1,12 @@
 <!-- Note -->
-Multi select for title, join title with name in column name. save the multiple values in a single column in asr_title_desc varchar
+profile page use bar chart(assessor-nec) <br>
+pie chart(active/retired) (male/female) <br>
+semua modal use bg-gradient-primary as header <br>
+profile pic tekan jadi besar <br>
+xl modal, nec expertise side by side, cv and profile pic side by side, title kecikkan <br>
+seeder for nec, mpqua all uni <br>
+hover title toolkit <br>
+
 
 
 

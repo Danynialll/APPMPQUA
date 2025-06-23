@@ -11,5 +11,7 @@ class DatabaseSeeder extends Seeder
         // Call all individual seeders
         $this->call('ExpertiseFieldSeeder');
         $this->call('QvcUniversitySeeder');
+        $this->call('NECSeeder');
+        $this->call('MPQUASeeder');
     }
 }

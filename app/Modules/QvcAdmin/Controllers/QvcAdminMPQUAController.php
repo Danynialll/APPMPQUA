@@ -137,6 +137,7 @@ class QvcAdminMPQUAController extends BaseController
             'mpq_address'    => $mpq_address,
             'mpq_email'      => $mpq_email,
             'mpq_phone'      => $mpq_phone,
+            'mpq_qu_id'      => $au_qu_id,
         ];
 
         $this->authUser_model->insert($data);

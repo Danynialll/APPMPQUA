@@ -1,6 +1,6 @@
 
 <div class="modal fade custom-modal" id="editAssessorModal" tabindex="-1" aria-labelledby="editAssessorModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-header bg-success text-white">
         <h5 class="modal-title" id="editAssessorModalLabel">Edit Assessor</h5>
