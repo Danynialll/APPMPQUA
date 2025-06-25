@@ -6,6 +6,8 @@ profile pic tekan jadi besar <br>
 xl modal, nec expertise side by side, cv and profile pic side by side, title kecikkan <br>
 seeder for nec, mpqua all uni <br>
 hover title toolkit <br>
+lepas login, masuk profile <br>
+expertise edit and add, make same size <br>
 
 
 
@@ -465,7 +467,7 @@ hover title toolkit <br>
                         }
                         const data = result.data;
 
-                        document.getElementById('modalName').innerText = data.asr_title_desc + ' ' + data.asr_name || '';
+                        document.getElementById('modalName').innerText = data.asr_title_desc || '' + ' ' + data.asr_name || '';
                         document.getElementById('modalGender').innerText = data.asr_gender || '';
                         document.getElementById('modalTelephone').innerText = data.asr_phone || '';
                         document.getElementById('modalFax').innerText = data.asr_fax || '';
@@ -520,5 +522,17 @@ hover title toolkit <br>
                         }
                     });
             });
+    });
+</script>
+
+<script>
+    jQuery(document).ready(function($) {
+        $(function () {
+            // Add title attributes for tooltips (buttons)
+            $('.btn-view-details').attr('title', 'View details of this assessor');
+
+            // Initialize Bootstrap tooltip
+            $('[title]').tooltip({container: 'body', trigger: 'hover'});
+        });
     });
 </script>

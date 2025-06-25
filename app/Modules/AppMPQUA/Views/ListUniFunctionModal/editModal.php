@@ -522,3 +522,18 @@ document.getElementById('deleteAssessorBtn').addEventListener('click', function(
     });
 });
 </script>
+
+
+<script>
+    jQuery(document).ready(function($) {
+        $(function () {
+            // Add title attributes for tooltips (buttons)
+            $('.btn-success[type="submit"]').attr('title', 'Save this assessor');
+            $('.btn-secondary[data-bs-dismiss="modal"]').attr('title', 'Cancel and close');
+            $('#deleteAssessorBtn').attr('title', 'Delete this assessor');
+
+            // Initialize Bootstrap tooltip
+            $('[title]').tooltip({container: 'body', trigger: 'hover'});
+        });
+    });
+</script>

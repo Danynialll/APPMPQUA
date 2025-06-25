@@ -1,4 +1,3 @@
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -10,7 +9,7 @@
 <div class="modal fade custom-modal" id="addAssessorModal" tabindex="-1" aria-labelledby="addAssessorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-success text-white">
+      <div class="modal-header bg-gradient-primary text-primary-content">
         <h5 class="modal-title" id="addAssessorModalLabel">Add New Assessor</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -18,46 +17,46 @@
         <?= csrf_field() ?>
         <div class="modal-body">
             <div class="row g-3">
-                <div class="mb-3">
+                <div class="col-md-6">
                     <label for="title" class="form-label">Title</label>
                     <input type="text" name="asr_title_desc" class="form-control" required>
                 </div>
                 <div class="col-md-6">
-                <label class="form-label">Name</label>
-                <input type="text" name="asr_name" class="form-control" required>
+                    <label class="form-label">Name</label>
+                    <input type="text" name="asr_name" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                 <label class="form-label">University</label>
-                <input type="text" name="asr_university" class="form-control" value="<?= get_university_name($mpq->mpq_qu_id) ?>" disabled>
-                <input type="text" name="asr_qu_id" class="form-control" required style="display: none;" value="<?= $mpq->mpq_qu_id ?>">
+                    <input type="text" name="asr_university" class="form-control" value="<?= get_university_name($mpq->mpq_qu_id) ?>" disabled>
+                    <input type="text" name="asr_qu_id" class="form-control" required style="display: none;" value="<?= $mpq->mpq_qu_id ?>">
                 </div>
                 <div class="col-md-6">
-                <label class="form-label">Gender</label>
-                <select name="asr_gender" class="form-select" required>
-                    <option value="">Select</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
+                    <label class="form-label">Gender</label>
+                    <select name="asr_gender" class="form-select" required>
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
                 </div>
                 <div class="col-md-6">
-                <label class="form-label">Telephone No.</label>
-                <input type="text" name="asr_phone" class="form-control">
+                    <label class="form-label">Telephone No.</label>
+                    <input type="text" name="asr_phone" class="form-control">
                 </div>
                 <div class="col-md-6">
-                <label class="form-label">Fax</label>
-                <input type="text" name="asr_fax" class="form-control">
+                    <label class="form-label">Fax</label>
+                    <input type="text" name="asr_fax" class="form-control">
                 </div>
                 <div class="col-md-6">
-                <label class="form-label">Email</label>
-                <input type="email" name="asr_email" class="form-control" required>
+                    <label class="form-label">Email</label>
+                    <input type="email" name="asr_email" class="form-control" required>
                 </div>
                 <div class="col-md-6">
-                <label class="form-label">Service Address</label>
-                <input type="text" name="asr_service_address" class="form-control">
+                    <label class="form-label">Service Address</label>
+                    <input type="text" name="asr_service_address" class="form-control">
                 </div>
                 <div class="col-md-6">
-                <label class="form-label">Retirement Date</label>
-                <input type="date" name="asr_retirement_date" class="form-control">
+                    <label class="form-label">Retirement Date</label>
+                    <input type="date" name="asr_retirement_date" class="form-control">
                 </div>
 
                 <!-- My Expertise -->
@@ -70,7 +69,7 @@
                 <div id="expertiseFields">
                     <div class="mb-3 expertise-field">
                         <label for="expertise" class="form-label">Expertise</label>
-                        <select class="form-select select2" name="expertise[]" id="addExpertise">
+                        <select class="form-select select2 form-control" name="expertise[]" id="addExpertise" style="min-height: 38px;">
                             <option value="">Select Expertise</option>
                             <?php foreach ($expertise_list as $expertise): ?>
                                 <option value="<?= $expertise->ef_id ?>"><?= $expertise->ef_desc ?></option>
@@ -92,7 +91,7 @@
                 <!-- NEC Selection -->
                 <div class="mb-3">
                     <label for="nec_broad" class="form-label">NEC Broad</label>
-                    <select class="form-select select2" id="add_nec_broad" name="nec_broad">
+                    <select class="form-select select2 form-control" id="add_nec_broad" name="nec_broad" style="min-height: 38px;">
                         <option value="">Select NEC Broad</option>
                         <?php foreach ($nec_broad as $broad): ?>
                             <option value="<?= $broad->nb_id ?>"><?= $broad->nb_code ?> <?= $broad->nb_name ?></option>
@@ -102,7 +101,7 @@
 
                 <div class="mb-3">
                     <label for="nec_narrow" class="form-label">NEC Narrow</label>
-                    <select class="form-select select2" id="add_nec_narrow" name="nec_narrow">
+                    <select class="form-select select2 form-control" id="add_nec_narrow" name="nec_narrow" style="min-height: 38px;">
                         <option value="">Select NEC Narrow</option>
                         <!-- Options will be populated via JS -->
                     </select>
@@ -110,7 +109,7 @@
 
                 <div class="mb-3">
                     <label for="nec_detail" class="form-label">NEC Detail</label>
-                    <select class="form-select select2" id="add_nec_detail" name="nec_detail[]">
+                    <select class="form-select select2 form-control" id="add_nec_detail" name="nec_detail[]" style="min-height: 38px;">
                         <option value="">Select NEC Detail</option>
                         <!-- Options will be populated via JS -->
                     </select>
@@ -120,16 +119,17 @@
                     <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add NEC Field
                 </button>
 
-                <div class="mb-3">
-                    <label for="asr_image" class="form-label">Profile Picture</label>
-                    <input type="file" name="asr_image" class="form-control" accept=".jpeg,.png, .jpg">
-                    <small class="form-text text-muted">Accepted formats: PNG, JPEG</small>
-                </div>
-
-                <div class="mb-3">
-                    <label for="asr_cv" class="form-label">CV</label>
-                    <input type="file" name="asr_cv" class="form-control" accept=".pdf, .jpeg,.png, .jpg">
-                    <small class="form-text text-muted">Accepted formats: PDF, PNG, JPEG</small>
+                <div class="row mt-3">
+                    <div class="col-md-6 mb-3">
+                        <label for="asr_image" class="form-label">Profile Picture</label>
+                        <input type="file" name="asr_image" class="form-control" accept=".jpeg,.png, .jpg">
+                        <small class="form-text text-muted">Accepted formats: PNG, JPEG</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="asr_cv" class="form-label">CV</label>
+                        <input type="file" name="asr_cv" class="form-control" accept=".pdf, .jpeg,.png, .jpg">
+                        <small class="form-text text-muted">Accepted formats: PDF, PNG, JPEG</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -201,7 +201,7 @@
     jQuery(document).ready(function($) {
         // Initialize Select2 for expertise and NEC fields
         $('.select2').select2({
-            allowClear: true,
+            allowClear: false,
             dropdownParent: $('#addAssessorModal'),
             width: '100%',
         });
@@ -434,6 +434,45 @@
                     });
                 }
             });
+        });
+    });
+</script>
+
+<script>
+    jQuery(document).ready(function($) {
+        // Add Bootstrap tooltip to all select, input fields, and buttons
+        $(function () {
+            // Add title attributes for tooltips (fields)
+            // $('[name="asr_title_desc"]').attr('title', 'Enter the title, e.g., Dr, Prof, Mr, etc.');
+            // $('[name="asr_name"]').attr('title', 'Enter the full name of the assessor.');
+            // $('[name="asr_phone"]').attr('title', 'Enter the telephone number.');
+            // $('[name="asr_fax"]').attr('title', 'Enter the fax number.');
+            // $('[name="asr_email"]').attr('title', 'Enter the email address.');
+            // $('[name="asr_service_address"]').attr('title', 'Enter the service address.');
+            // $('[name="asr_retirement_date"]').attr('title', 'Select the retirement date.');
+            // $('[name="expertise[]"]').attr('title', 'Select the expertise area.');
+            // $('#add_nec_broad').attr('title', 'Select the NEC Broad field.');
+            // $('#add_nec_narrow').attr('title', 'Select the NEC Narrow field.');
+            // $('#add_nec_detail').attr('title', 'Select the NEC Detail field.');
+            // $('[name="asr_image"]').attr('title', 'Upload a profile picture (PNG, JPEG).');
+            // $('[name="asr_cv"]').attr('title', 'Upload a CV (PDF, PNG, JPEG).');
+
+            // Add title attributes for tooltips (buttons)
+            $('#addExpertiseBtnAdd').attr('title', 'Add selected expertise');
+            $('#addNECBtnAdd').attr('title', 'Add selected NEC field');
+            $('.btn-success[type="submit"]').attr('title', 'Save this assessor');
+            $('.btn-secondary[data-bs-dismiss="modal"]').attr('title', 'Cancel and close');
+
+            // For dynamically created delete buttons (badges)
+            $(document).on('mouseenter', '.delete-exp', function() {
+                $(this).attr('title', 'Remove this expertise');
+            });
+            $(document).on('mouseenter', '.delete-nec', function() {
+                $(this).attr('title', 'Remove this NEC field');
+            });
+
+            // Initialize Bootstrap tooltip
+            $('[title]').tooltip({container: 'body', trigger: 'hover'});
         });
     });
 </script>

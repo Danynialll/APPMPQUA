@@ -69,3 +69,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    jQuery(document).ready(function($) {
+        $(function () {
+            // Add title attributes for tooltips (buttons)
+            $('.btn-edit-details').attr('title', 'Edit this assessor');
+
+            // Initialize Bootstrap tooltip
+            $('[title]').tooltip({container: 'body', trigger: 'hover'});
+        });
+    });
+</script>

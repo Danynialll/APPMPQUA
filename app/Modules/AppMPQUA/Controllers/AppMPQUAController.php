@@ -166,9 +166,64 @@ class AppMPQUAController extends BaseController
 
         $user_info = $builder->get()->getRow();
 
+        $now = date('Y-m-d');
+
+        $male_assessors = $this->assessor_model
+            ->where('asr_gender', 'Male')
+            ->where('asr_qu_id', $user_university_id)
+            ->countAllResults();
+        $female_assessors = $this->assessor_model
+            ->where('asr_gender', 'Female')
+            ->where('asr_qu_id', $user_university_id)
+            ->countAllResults();
+        $active_assessors = $this->assessor_model
+            ->groupStart()
+                ->where('asr_qu_id', $user_university_id)
+                ->where('asr_retirement_date IS NULL')
+                ->orWhere('asr_retirement_date >', $now)
+            ->groupEnd()
+            ->countAllResults();
+        $retired_assessors = $this->assessor_model
+            ->groupStart()
+                ->where('asr_qu_id', $user_university_id)
+                ->where('asr_retirement_date IS NOT NULL')
+                ->where('asr_retirement_date <=', $now)
+            ->groupEnd()
+            ->countAllResults();
+        $nec_counts = [];
+        $nec_details = $this->NECDetail_model->findAll();
+        foreach ($nec_details as $nec) {
+            // Get all assessors in this university mapped to this NEC detail
+            $assessor_ids = $this->asrNECMapping_model
+                ->select('anm_asr_id')
+                ->where('anm_nd_id', $nec->nd_id)
+                ->findAll();
+            $ids = array_column($assessor_ids, 'anm_asr_id');
+            if (!empty($ids)) {
+                // Count only assessors belonging to this university
+                $count = $this->assessor_model
+                    ->whereIn('asr_id', $ids)
+                    ->where('asr_qu_id', $user_university_id)
+                    ->countAllResults();
+                if ($count > 0) {
+                    $nec_counts[] = [
+                        'nec_code' => $nec->nd_code,
+                        'nec_name' => $nec->nd_name,
+                        'count'    => $count,
+                    ];
+                }
+            }
+        }
+        
+
         // Prepare data for view
         $data = [
             'user_info' => $user_info,
+            'male_assessors' => $male_assessors,
+            'female_assessors' => $female_assessors,
+            'active_assessors' => $active_assessors,
+            'retired_assessors' => $retired_assessors,
+            'nec_counts' => $nec_counts,
         ];
 
 

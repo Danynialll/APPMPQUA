@@ -217,7 +217,7 @@
                         </div>
                         <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
                             <div class="d-flex align-items-center justify-content-md-end">
-                                <button class="btn bg-gradient-primary me-2" data-bs-toggle="modal" data-bs-target="#addAssessorModal" style="font-size: 12px;">
+                                <button id="add-btn" class="btn bg-gradient-primary me-2" data-bs-toggle="modal" data-bs-target="#addAssessorModal" style="font-size: 12px;">
                                     <i class="fas fa-plus"></i>&nbsp; Add Assessor
                                 </button>
                             </div>
@@ -456,7 +456,7 @@
                         }
                         const data = result.data;
 
-                        document.getElementById('modalUniName').innerText = data.asr_title_desc + ' ' +  data.asr_name || '';
+                        document.getElementById('modalUniName').innerText = data.asr_title_desc || '' + ' ' +  data.asr_name || '';
                         document.getElementById('modalUniGender').innerText = data.asr_gender || '';
                         document.getElementById('modalUniTelephone').innerText = data.asr_phone || '';
                         document.getElementById('modalUniFax').innerText = data.asr_fax || '';
@@ -521,6 +521,20 @@
                         }
                     });
             });
+    });
+</script>
+
+<script>
+    jQuery(document).ready(function($) {
+        $(function () {
+            // Add title attributes for tooltips (buttons)
+            $('.btn-view-details').attr('title', 'View details of this assessor');
+            $('#add-btn').attr('title', 'Add a new assessor');
+            $('#export-btn').attr('title', 'Export assessor data to Excel');
+
+            // Initialize Bootstrap tooltip
+            $('[title]').tooltip({container: 'body', trigger: 'hover'});
+        });
     });
 </script>
 
