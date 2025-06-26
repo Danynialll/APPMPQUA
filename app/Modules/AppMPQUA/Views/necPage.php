@@ -139,7 +139,7 @@
                 </select>
             </div>
         </div>
-        <button type="submit" id="necFilterSubmit" class="btn btn-success mt-2">Show Assessors</button>
+        <button type="submit" id="necFilterSubmit" class="btn btn-success mt-2"><i class="fas fa-magnifying-glass"> Find Assessors</button>
         <div id="assessor-table-container"></div>
     </div>
 </form>
@@ -385,6 +385,18 @@
                     necContainer.innerText = '-';
                 }
             });
+    });
+</script>
+
+<script>
+    jQuery(document).ready(function($) {
+        $(function () {
+            // Add title attributes for tooltips (buttons)
+            $('#necFilterSubmit').attr('title', 'Find assessors');
+
+            // Initialize Bootstrap tooltip
+            $('[title]').tooltip({container: 'body', trigger: 'hover'});
+        });
     });
 </script>
 

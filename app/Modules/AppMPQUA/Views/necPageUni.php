@@ -387,6 +387,18 @@
     });
 </script>
 
+<script>
+    jQuery(document).ready(function($) {
+        $(function () {
+            // Add title attributes for tooltips (buttons)
+            $('#necFilterSubmit').attr('title', 'Find assessors');
+
+            // Initialize Bootstrap tooltip
+            $('[title]').tooltip({container: 'body', trigger: 'hover'});
+        });
+    });
+</script>
+
 <?php include 'ListAllModal/viewModal.php'; ?>
 
 
