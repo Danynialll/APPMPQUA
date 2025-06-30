@@ -2,7 +2,7 @@
 <div class="modal fade custom-modal" id="editAssessorModal" tabindex="-1" aria-labelledby="editAssessorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content">
-      <div class="modal-header bg-success text-white">
+      <div class="modal-header bg-gradient-primary text-dark">
         <h5 class="modal-title" id="editAssessorModalLabel">Edit Assessor</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -10,7 +10,7 @@
         <?= csrf_field() ?>
         <div class="modal-body">
             <div class="row g-3">
-                <div class="mb-3">
+                <div class="col-md-6">
                     <label for="title" class="form-label">Title</label>
                     <input type="text" name="asr_title_desc" id="modalTitleInput" value="" class="form-control" required>
                 </div>
@@ -106,18 +106,17 @@
                     <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add NEC Field
                 </button>
 
-                <div class="mb-3">
-                    <label for="asr_image" class="form-label">Profile Picture</label>
-                    <input type="file" name="asr_image" class="form-control" accept=".jpeg,.png, .jpg">
-                    <small class="form-text text-muted">(optional)</small>
-                </div>
-                
-                <!-- edit cv -->
-                <div class="mb-3">
-                    <label for="asr_cv" class="form-label">CV File</label><br>
-                    <span id="modalCVinput"></span>
-                    <input type="file" name="asr_cv" class="form-control" accept=".pdf,.jpeg,.png, .jpg">
-                    <small class="form-text text-muted">Upload CV file (optional)</small>
+                <div class="row mt-3">
+                    <div class="col-md-6 mb-3">
+                        <label for="asr_image" class="form-label">Profile Picture</label>
+                        <input type="file" name="asr_image" class="form-control" accept=".jpeg,.png, .jpg">
+                        <small class="form-text text-muted">(optional)</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="asr_cv" class="form-label">CV</label>
+                        <input type="file" name="asr_cv" class="form-control" accept=".pdf, .jpeg,.png, .jpg">
+                        <small class="form-text text-muted">Upload CV file (optional)</small>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,13 +1,14 @@
 <!-- Note -->
-profile page use bar chart(assessor-nec) <br>
-pie chart(active/retired) (male/female) <br>
-semua modal use bg-gradient-primary as header <br>
+<!-- profile page use bar chart(assessor-nec)    /   <br> -->
+<!-- pie chart(active/retired) (male/female)     /   <br> -->
+<!-- semua modal use bg-gradient-primary as header   /   <br> -->
 profile pic tekan jadi besar <br>
 xl modal, nec expertise side by side, cv and profile pic side by side, title kecikkan <br>
-seeder for nec, mpqua all uni <br>
-hover title toolkit <br>
-lepas login, masuk profile <br>
+<!-- seeder for nec, mpqua all uni   /   <br> -->
+<!-- hover title toolkit      /   <br> -->
+<!-- lepas login, masuk profile     /   <br> -->
 expertise edit and add, make same size <br>
+put number next to nec to show how many assessors <br>
 
 
 

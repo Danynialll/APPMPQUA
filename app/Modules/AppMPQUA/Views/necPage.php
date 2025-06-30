@@ -139,7 +139,7 @@
                 </select>
             </div>
         </div>
-        <button type="submit" id="necFilterSubmit" class="btn btn-success mt-2"><i class="fas fa-magnifying-glass"> Find Assessors</button>
+       <button type="submit" id="necFilterSubmit" class="btn btn-success mt-2"> Find Assessors</button>  <!-- magnifying glass not working -->
         <div id="assessor-table-container"></div>
     </div>
 </form>

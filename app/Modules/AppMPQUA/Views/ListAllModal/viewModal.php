@@ -1,7 +1,7 @@
 <div class="modal fade custom-modal" id="viewModal" tabindex="-1" aria-labelledby="viewLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-gradient-primary text-white">
                 <h5 class="modal-title" id="viewLabel"><span id="modalid" hidden></span></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

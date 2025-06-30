@@ -109,7 +109,7 @@ class LoginController extends BaseController
 
                     ]);
                     $this->session->setFlashdata('success', 'Login successful!');
-                    return redirect()->to('appmpqua/viewUni'); // Redirect to the dashboard
+                    return redirect()->to('appmpqua/profile'); // Redirect to the dashboard
                 } elseif ($user->au_type == 'admin') {
                     $admin = $this->qvc_admin->where('qa_id', $user->au_user_id)->first();
                     $this->session->set([
