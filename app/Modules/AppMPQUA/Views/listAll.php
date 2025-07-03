@@ -318,7 +318,7 @@ put number next to nec to show how many assessors <br>
 </div>
 
 <!-- View Modal -->
-<?php include 'ListAllModal/viewModal.php'; ?>
+<?php include 'ListAllModal/viewModalNew.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -468,7 +468,22 @@ put number next to nec to show how many assessors <br>
                         }
                         const data = result.data;
 
-                        document.getElementById('modalName').innerText = data.asr_title_desc || '' + ' ' + data.asr_name || '';
+                        // Profile Image
+                        const modalPhoto = document.getElementById('modalPhoto');
+                        modalPhoto.innerHTML = '';
+                        let img = document.createElement('img');
+                        img.className = 'img-thumbnail rounded shadow';
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        img.alt = 'Profile Image';
+                        img.src = data.asr_image
+                            ? '<?= base_url() ?>' + data.asr_image
+                            : '<?= base_url() ?>assets/img/default-profile.jpg';
+
+                        modalPhoto.appendChild(img);
+
+                        document.getElementById('modalName').innerText = (data.asr_title_desc ? data.asr_title_desc + ' ' : '') + (data.asr_name || '');
                         document.getElementById('modalGender').innerText = data.asr_gender || '';
                         document.getElementById('modalTelephone').innerText = data.asr_phone || '';
                         document.getElementById('modalFax').innerText = data.asr_fax || '';
@@ -486,7 +501,6 @@ put number next to nec to show how many assessors <br>
                             link.href = '<?= base_url() ?>' + data.asr_cv_path;
                             link.target = '_blank';
                             link.rel = 'noopener noreferrer';
-                            // Display the icon inside a badge
                             link.innerHTML = '<span class="badge bg-secondary"><i class="fas fa-file-alt me-1"></i> Document</span>';
                             link.className = 'btn btn-link p-0';
                             cvContainer.appendChild(link);
@@ -500,7 +514,7 @@ put number next to nec to show how many assessors <br>
                         if (data.expertise_list && data.expertise_list.length > 0) {
                             data.expertise_list.forEach(item => {
                                 const badge = document.createElement('span');
-                                badge.className = 'badge bg-info text-dark me-1';
+                                badge.className = 'badge bg-primary text-white me-1';
                                 badge.innerText = item;
                                 expertiseContainer.appendChild(badge);
                             });
@@ -514,7 +528,7 @@ put number next to nec to show how many assessors <br>
                         if (data.nec_detail_list && data.nec_detail_list.length > 0) {
                             data.nec_detail_list.forEach(item => {
                                 const badge = document.createElement('span');
-                                badge.className = 'badge bg-success text-dark me-1';
+                                badge.className = 'badge bg-success text-white me-1';
                                 badge.innerText = item.nd_desc;
                                 necContainer.appendChild(badge);
                             });
