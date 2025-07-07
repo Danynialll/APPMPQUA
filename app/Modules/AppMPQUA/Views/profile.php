@@ -48,7 +48,7 @@
                 <div class="card-body p-4">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong>Name:</strong> <br><?= $user_info->qu_name ?></li>
-                        <li class="list-group-item border-0 ps-0 text-sm"><strong>Telephone:</strong> <br><?= $user_info->mpq_phone ?></li>
+                        <li class="list-group-item border-0 ps-0 text-sm"><strong>Phone:</strong> <br><?= $user_info->mpq_phone ?></li>
                         <li class="list-group-item border-0 ps-0 text-sm"><strong>Fax:</strong> <br><?= $user_info->mpq_fax ?></li>
                         <li class="list-group-item border-0 ps-0 text-sm"><strong>Email:</strong> <br><?= $user_info->mpq_email ?></li>
                         <li class="list-group-item border-0 ps-0 text-sm"><strong>Address:</strong> <br><?= $user_info->mpq_address ?></li>
@@ -117,7 +117,7 @@
                             <small class="form-text text-muted">Accepted formats: JPG, JPEG, PNG</small>
                         </div>
                         <div class="col-6 mb-3">
-                            <label for="phone" class="form-label">Telephone</label>
+                            <label for="phone" class="form-label">Phone</label>
                             <input type="text" class="form-control" id="phone" name="mpq_phone" value="<?= $user_info->mpq_phone ?>" required>
                         </div>
                         <div class="col-6 mb-3">
