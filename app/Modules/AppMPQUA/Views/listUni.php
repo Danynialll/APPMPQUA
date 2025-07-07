@@ -456,6 +456,21 @@
                         }
                         const data = result.data;
 
+                        // Profile Image
+                        const modalPhoto = document.getElementById('modalUniPhoto');
+                        modalPhoto.innerHTML = '';
+                        let img = document.createElement('img');
+                        img.className = 'img-thumbnail rounded shadow';
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        img.alt = 'Profile Image';
+                        img.src = data.asr_image
+                            ? '<?= base_url() ?>' + data.asr_image
+                            : '<?= base_url() ?>assets/img/default-profile.jpg';
+
+                        modalPhoto.appendChild(img);
+
                         document.getElementById('modalUniName').innerText = data.asr_title_desc || '' + ' ' +  data.asr_name || '';
                         document.getElementById('modalUniGender').innerText = data.asr_gender || '';
                         document.getElementById('modalUniTelephone').innerText = data.asr_phone || '';
@@ -478,19 +493,6 @@
                         } else {
                             document.getElementById('modalUniCV').innerText = '-';
                         }
-
-                        // document.getElementById('modalUniImg').innerHTML = '';
-                        // if (data.asr_image) {
-                        //     const img = document.createElement('img');
-                        //     img.src = '<?= base_url() ?>' + data.asr_image; // assuming asr_image is the image path
-                        //     img.alt = 'Assessor Image';
-                        //     img.className = 'img-fluid rounded'; // bootstrap styles, adjust as needed
-                        //     img.style.maxWidth = '150px'; // optional styling
-                        //     document.getElementById('modalUniImg').appendChild(img);
-                        // } else {
-                        //     document.getElementById('modalUniImg').innerText = 'No Image';
-                        // }
-
 
                         // Expertise
                         const expertiseContainer = document.getElementById('modalUniExpertise');

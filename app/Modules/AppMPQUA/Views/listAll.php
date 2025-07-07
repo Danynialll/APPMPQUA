@@ -3,12 +3,12 @@
 <!-- pie chart(active/retired) (male/female)     /   <br> -->
 <!-- semua modal use bg-gradient-primary as header   /   <br> -->
 profile pic tekan jadi besar <br>
-xl modal, nec expertise side by side, cv and profile pic side by side, title kecikkan <br>
+<!-- xl modal, nec expertise side by side, cv and profile pic side by side, title kecikkan <br> -->
 <!-- seeder for nec, mpqua all uni   /   <br> -->
 <!-- hover title toolkit      /   <br> -->
 <!-- lepas login, masuk profile     /   <br> -->
 expertise edit and add, make same size <br>
-put number next to nec to show how many assessors <br>
+<!-- put number next to nec to show how many assessors <br> -->
 
 
 
@@ -266,9 +266,15 @@ put number next to nec to show how many assessors <br>
                                             
                                             <td>
                                                 <?php if (!empty($asr->asr_image)): ?>
-                                                    <img src="<?= base_url($asr->asr_image) ?>" alt="Profile Image" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;">
+                                                    <img src="<?= base_url($asr->asr_image) ?>" 
+                                                         alt="Profile Image" 
+                                                         class="img-thumbnail profile-thumb" 
+                                                         style="width:50px; height:50px; object-fit:cover; cursor:pointer;">
                                                 <?php else: ?>
-                                                    <img src="<?= base_url() ?>assets/img/default-profile.jpg" alt="Default Profile" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;">
+                                                    <img src="<?= base_url() ?>assets/img/default-profile.jpg" 
+                                                         alt="Default Profile" 
+                                                         class="img-thumbnail profile-thumb" 
+                                                         style="width:50px; height:50px; object-fit:cover; cursor:pointer;">
                                                 <?php endif; ?>
                                             </td>
                                             <td>

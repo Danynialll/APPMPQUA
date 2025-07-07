@@ -131,9 +131,28 @@ class MPQUA_UniController extends BaseController
         if ($this->request->isAJAX()) {
             $broad_id = $this->request->getPost('broad_id');
             $narrow = $this->NECNarrow_model->where('nn_nb_id', $broad_id)->findAll();
+            $nec_detail = $this->NECDetail_model->where('nd_nn_id', $narrow[0]->nn_id)->findAll();
+            $detail_counts = [];
+            foreach ($nec_detail as $detail) {
+                $detail_counts[$detail->nd_id] = $this->asrNECMapping_model
+                    ->where('anm_nd_id', $detail->nd_id)
+                    ->countAllResults();
+            }
+
+            // 2. Sum up counts for each NEC Narrow (by its details)
+            $narrow_counts = [];
+            foreach ($narrow as $nrrw) {
+                $narrow_counts[$nrrw->nn_id] = 0;
+                foreach ($nec_detail as $detail) {
+                    if ($detail->nd_nn_id == $nrrw->nn_id) {
+                        $narrow_counts[$nrrw->nn_id] += $detail_counts[$detail->nd_id] ?? 0;
+                    }
+                }
+            }
             return $this->response->setJSON([
                 'success' => true,
                 'data' => $narrow,
+                'narrow_counts' => $narrow_counts,
                 'csrf_token' => csrf_hash()
             ]);
         }
@@ -144,15 +163,34 @@ class MPQUA_UniController extends BaseController
     {
         if ($this->request->isAJAX()) {
             $narrow_id = $this->request->getPost('narrow_id');
+
+            if (empty($narrow_id)) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Missing narrow_id'
+                ]);
+            }
+
             $detail = $this->NECDetail_model->where('nd_nn_id', $narrow_id)->findAll();
+            $detail_counts = [];
+
+            foreach ($detail as $row) {
+                $detail_counts[$row->nd_id] = $this->asrNECMapping_model
+                    ->where('anm_nd_id', $row->nd_id)
+                    ->countAllResults();
+            }
+
             return $this->response->setJSON([
                 'success' => true,
                 'data' => $detail,
+                'counts' => $detail_counts,
                 'csrf_token' => csrf_hash()
             ]);
         }
+
         return $this->response->setJSON(['success' => false]);
     }
+
 
 
     public function createAssessor()

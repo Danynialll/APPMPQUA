@@ -7,7 +7,7 @@
 
 
 <div class="modal fade custom-modal" id="addAssessorModal" tabindex="-1" aria-labelledby="addAssessorModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-header bg-gradient-primary text-primary-content">
         <h5 class="modal-title" id="addAssessorModalLabel">Add New Assessor</h5>
@@ -66,8 +66,8 @@
                 </div>
 
                 <!-- Expertise Select2 Fields -->
-                <div id="expertiseFields">
-                    <div class="mb-3 expertise-field">
+                <div id="expertiseFields" class="row align-items-end">
+                    <div class="col-10 mb-3 expertise-field">
                         <label for="expertise" class="form-label">Expertise</label>
                         <select class="form-select select2 form-control" name="expertise[]" id="addExpertise" style="min-height: 38px;">
                             <option value="">Select Expertise</option>
@@ -76,12 +76,12 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
+                    <div class="col-2 mb-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-primary btn-sm w-100" id="addExpertiseBtnAdd" title="Add selected expertise">
+                            <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add
+                        </button>
+                    </div>
                 </div>
-
-                <!-- Button to add another expertise -->
-                <button type="button" class="btn btn-primary btn-sm" id="addExpertiseBtnAdd">
-                    <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add Expertise
-                </button>
 
                 <!-- My NEC Field -->
                 <div class="mb-3">

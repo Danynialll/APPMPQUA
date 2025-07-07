@@ -399,6 +399,6 @@
     });
 </script>
 
-<?php include 'ListAllModal/viewModal.php'; ?>
+<?php include 'ListAllModal/viewModalNew.php'; ?>
 
 

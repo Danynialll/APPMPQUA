@@ -88,11 +88,45 @@ class AppMPQUAController extends BaseController
         $nec_narrow = $this->NECNarrow_model->findAll();
         $nec_detail = $this->NECDetail_model->findAll();
 
+        // 1. Count assessors for each NEC Detail
+        $detail_counts = [];
+        foreach ($nec_detail as $detail) {
+            $detail_counts[$detail->nd_id] = $this->asrNECMapping_model
+                ->where('anm_nd_id', $detail->nd_id)
+                ->countAllResults();
+        }
+
+        // 2. Sum up counts for each NEC Narrow (by its details)
+        $narrow_counts = [];
+        foreach ($nec_narrow as $narrow) {
+            $narrow_counts[$narrow->nn_id] = 0;
+            foreach ($nec_detail as $detail) {
+                if ($detail->nd_nn_id == $narrow->nn_id) {
+                    $narrow_counts[$narrow->nn_id] += $detail_counts[$detail->nd_id] ?? 0;
+                }
+            }
+        }
+
+        // 3. Sum up counts for each NEC Broad (by its narrows)
+        $broad_counts = [];
+        foreach ($nec_broad as $broad) {
+            $broad_counts[$broad->nb_id] = 0;
+            foreach ($nec_narrow as $narrow) {
+                if ($narrow->nn_nb_id == $broad->nb_id) {
+                    $broad_counts[$broad->nb_id] += $narrow_counts[$narrow->nn_id] ?? 0;
+                }
+            }
+        }
+
         $data = [
             'nec_broad' => $nec_broad,
             'nec_narrow' => $nec_narrow,
             'nec_detail' => $nec_detail,
+            'detail_counts' => $detail_counts,
+            'narrow_counts' => $narrow_counts,
+            'broad_counts' => $broad_counts,
         ];
+
 
         return $this->render_mpqua('necPage', $data);
     }

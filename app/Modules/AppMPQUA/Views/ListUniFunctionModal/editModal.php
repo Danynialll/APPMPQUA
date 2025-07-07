@@ -1,4 +1,3 @@
-
 <div class="modal fade custom-modal" id="editAssessorModal" tabindex="-1" aria-labelledby="editAssessorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content">
@@ -52,22 +51,22 @@
                 </div>
 
                 <!-- Expertise Select2 Fields -->
-                <div id="expertiseFields">
-                    <div class="mb-3 expertise-field">
+                <div id="expertiseFields" class="row align-items-end">
+                    <div class="col-10 mb-3 expertise-field">
                         <label for="expertise" class="form-label">Expertise</label>
-                        <select class="form-select select2" id="editExpertise">
+                        <select class="form-select select2 form-control" name="expertise[]" id="editExpertise" style="min-height: 38px;">
                             <option value="">Select Expertise</option>
                             <?php foreach ($expertise_list as $expertise): ?>
                                 <option value="<?= $expertise->ef_id ?>"><?= $expertise->ef_desc ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
+                    <div class="col-2 mb-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-primary btn-sm w-100" id="addExpertiseBtnedit" title="Add selected expertise">
+                            <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add
+                        </button>
+                    </div>
                 </div>
-
-                <!-- Button to add another expertise -->
-                <button type="button" class="btn btn-primary btn-sm" id="addExpertiseBtnEdit">
-                    <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add Expertise
-                </button>
 
                 <!-- My NEC Field -->
                 <div class="mb-3">
@@ -113,6 +112,7 @@
                         <small class="form-text text-muted">(optional)</small>
                     </div>
                     <div class="col-md-6 mb-3">
+                       
                         <label for="asr_cv" class="form-label">CV</label>
                         <input type="file" name="asr_cv" class="form-control" accept=".pdf, .jpeg,.png, .jpg">
                         <small class="form-text text-muted">Upload CV file (optional)</small>

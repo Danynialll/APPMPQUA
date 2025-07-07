@@ -122,7 +122,7 @@
                 <select id="add_nec_broad" class="form-select select2" name="nec_broad">
                     <option value="">Select NEC Broad</option>
                     <?php foreach ($nec_broad as $broad): ?>
-                        <option value="<?= esc($broad->nb_id) ?>"><?= esc($broad->nb_code) ?> - <?= esc($broad->nb_name) ?></option>
+                        <option value="<?= esc($broad->nb_id) ?>"><?= esc($broad->nb_code) ?> - <?= esc($broad->nb_name) ?> (<?= $broad_counts[$broad->nb_id] ?? 0 ?>)</option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -147,7 +147,7 @@
 <script>
     jQuery(document).ready(function($) {
         $('.select2').select2({
-            allowClear: true,
+            allowClear: false,
             width: '100%' // ensures it fits Bootstrap form-control width
         });
         
@@ -174,8 +174,10 @@
                     success: function(response) {
                         if (response.success) {
                             var options = '<option value="">Select NEC Narrow</option>';
+                            // Use response.data and response.narrow_counts
                             $.each(response.data, function(i, item) {
-                                options += `<option value="${item.nn_id}">${item.nn_code} ${item.nn_name}</option>`;
+                                var count = response.narrow_counts[item.nn_id] ?? 0;
+                                options += `<option value="${item.nn_id}">${item.nn_code} ${item.nn_name} (${count})</option>`;
                             });
                             $('#add_nec_narrow').html(options).trigger('change');
                             $("input[name='csrf_test_name']").val(response.csrf_token);
@@ -208,8 +210,10 @@
                     success: function(response) {
                         if (response.success) {
                             var options = '<option value="">Select NEC Detail</option>';
+                            // Use response.data and response.counts
                             $.each(response.data, function(i, item) {
-                                options += `<option value="${item.nd_id}">${item.nd_code} ${item.nd_name}</option>`;
+                                var count = response.counts[item.nd_id] ?? 0;
+                                options += `<option value="${item.nd_id}">${item.nd_code} ${item.nd_name} (${count})</option>`;
                             });
                             $('#add_nec_detail').html(options).trigger('change');
                             $("input[name='csrf_test_name']").val(response.csrf_token);
@@ -332,6 +336,21 @@
                 }
                 const data = result.data;
 
+                // Profile Image
+                const modalPhoto = document.getElementById('modalPhoto');
+                modalPhoto.innerHTML = '';
+                let img = document.createElement('img');
+                img.className = 'img-thumbnail rounded shadow';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.alt = 'Profile Image';
+                img.src = data.asr_image
+                    ? '<?= base_url() ?>' + data.asr_image
+                    : '<?= base_url() ?>assets/img/default-profile.jpg';
+
+                modalPhoto.appendChild(img);
+
                 document.getElementById('modalName').innerText = data.asr_name || '';
                 document.getElementById('modalGender').innerText = data.asr_gender || '';
                 document.getElementById('modalTelephone').innerText = data.asr_phone || '';
@@ -363,7 +382,7 @@
                 if (data.expertise_list && data.expertise_list.length > 0) {
                     data.expertise_list.forEach(item => {
                         const badge = document.createElement('span');
-                        badge.className = 'badge bg-info text-dark me-1';
+                        badge.className = 'badge bg-primary text-white me-1';
                         badge.innerText = item;
                         expertiseContainer.appendChild(badge);
                     });
@@ -377,7 +396,7 @@
                 if (data.nec_detail_list && data.nec_detail_list.length > 0) {
                     data.nec_detail_list.forEach(item => {
                         const badge = document.createElement('span');
-                        badge.className = 'badge bg-success text-dark me-1';
+                        badge.className = 'badge bg-success text-white me-1';
                         badge.innerText = item.nd_desc;
                         necContainer.appendChild(badge);
                     });
@@ -400,6 +419,6 @@
     });
 </script>
 
-<?php include 'ListAllModal/viewModal.php'; ?>
+<?php include 'ListAllModal/viewModalNew.php'; ?>
 
 
