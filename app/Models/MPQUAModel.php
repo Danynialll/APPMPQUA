@@ -15,6 +15,7 @@ class MPQUAModel extends Model
         'mpq_phone',
         'mpq_fax',
         'mpq_qu_id',
+        'mpq_image',
     ];
 
     protected $useSoftDeletes = true;

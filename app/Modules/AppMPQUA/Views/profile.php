@@ -12,7 +12,10 @@
         <div class="row gx-4 align-items-center">
             <div class="col-auto">
                 <div class="avatar avatar-xl position-relative">
-                    <img src="../../../assets/img/bruce-mars.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                    <img 
+                        src="<?= !empty($user_info->mpq_image) ? base_url($user_info->mpq_image) : base_url('assets/img/default-profile.jpg') ?>" 
+                        alt="profile_image" 
+                        class="w-100 border-radius-lg shadow-sm">
                 </div>
             </div>
             <div class="col-auto my-auto">
@@ -107,6 +110,12 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
+                        <div class="col-12 mb-3 text-center">
+                            <label for="profile_image" class="form-label fw-bold">Profile Picture</label><br>
+                            <img id="profilePreview" src="<?= !empty($user_info->profile_image) ? base_url($user_info->profile_image) : base_url('assets/img/default-profile.jpg') ?>" alt="Profile Image" class="img-thumbnail mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                            <input type="file" class="form-control mt-2" id="profile_image" name="profile_image" accept="image/*">
+                            <small class="form-text text-muted">Accepted formats: JPG, JPEG, PNG</small>
+                        </div>
                         <div class="col-6 mb-3">
                             <label for="phone" class="form-label">Telephone</label>
                             <input type="text" class="form-control" id="phone" name="mpq_phone" value="<?= $user_info->mpq_phone ?>" required>
@@ -273,5 +282,12 @@ $nec_names = array_column($nec_counts, 'nec_name');
                 }
             }
         });
+    });
+
+    document.getElementById('profile_image').addEventListener('change', function(e) {
+        const [file] = this.files;
+        if (file) {
+            document.getElementById('profilePreview').src = URL.createObjectURL(file);
+        }
     });
 </script>

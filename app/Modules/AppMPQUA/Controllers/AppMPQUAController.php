@@ -281,13 +281,21 @@ class AppMPQUAController extends BaseController
             ]);
         }
 
-        // Update user profile
         $data = [
             'mpq_address' => $mpq_address,
             'mpq_email' => $mpq_email,
             'mpq_phone' => $mpq_phone,
             'mpq_fax' => $mpq_fax,
         ];
+
+        // Handle profile image upload
+        $file = $this->request->getFile('profile_image');
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = 'profile_' . $user_id . '_' . time() . '.' . $file->getExtension();
+            // Store in public/uploads/profile
+            $file->move(ROOTPATH . 'public/uploads/profile/', $newName);
+            $data['mpq_image'] = 'uploads/profile/' . $newName; // Store relative path in DB
+        }
 
         if ($this->mpqua_model->update($user_id, $data)) {
             return $this->response->setJSON([
