@@ -492,7 +492,7 @@
                             link.href = '<?= base_url() ?>' + data.asr_cv_path;
                             link.target = '_blank';
                             link.rel = 'noopener noreferrer';
-                            link.innerText = 'View CV';
+                            link.innerHTML = '<span class="badge bg-secondary"><i class="fas fa-file-alt me-1"></i> Document</span>';
                             link.className = 'btn btn-link p-0';
                             document.getElementById('modalUniCV').appendChild(link);
                         } else {

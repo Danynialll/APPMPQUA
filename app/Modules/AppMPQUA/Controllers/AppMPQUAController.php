@@ -41,11 +41,12 @@ class AppMPQUAController extends BaseController
         $builder = $this->assessor_model->table('assessor');
         $builder->select('assessor.*, qvc_university.qu_name, qvc_university.qu_code');
         $builder->join('qvc_university', 'qvc_university.qu_id = assessor.asr_qu_id', 'left');
+        $builder->where('assessor.asr_deleted_at', null); // Filter out soft deleted
         $assessor_list = $builder->get()->getResult();
 
-        $total_assessors = $this->assessor_model->countAllResults();
-        $male_assessors = $this->assessor_model->where('asr_gender', 'Male')->countAllResults();
-        $female_assessors = $this->assessor_model->where('asr_gender', 'Female')->countAllResults();
+        $total_assessors = $this->assessor_model->where('asr_deleted_at', null)->countAllResults();
+        $male_assessors = $this->assessor_model->where('asr_gender', 'Male')->where('asr_deleted_at', null)->countAllResults();
+        $female_assessors = $this->assessor_model->where('asr_gender', 'Female')->where('asr_deleted_at', null)->countAllResults();
 
         foreach ($assessor_list as &$assessor) {
             // Get all expertise for this assessor

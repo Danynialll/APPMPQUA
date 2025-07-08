@@ -49,22 +49,31 @@ class MPQUA_UniController extends BaseController
         $nec_narrow = $this->NECNarrow_model->findAll();
         $nec_detail = $this->NECDetail_model->findAll();
 
-        $totalAssessors = $this->assessor_model->where('asr_qu_id', $user_university_id)->countAllResults();
-        $maleAssessors = $this->assessor_model->where('asr_gender', 'Male')->where('asr_qu_id', $user_university_id)->countAllResults();
-        $femaleAssessors = $this->assessor_model->where('asr_gender', 'Female')->where('asr_qu_id', $user_university_id)->countAllResults();
+        $totalAssessors = $this->assessor_model
+            ->where('asr_qu_id', $user_university_id)
+            ->where('asr_deleted_at', null)
+            ->countAllResults();
+        $maleAssessors = $this->assessor_model
+            ->where('asr_gender', 'Male')
+            ->where('asr_qu_id', $user_university_id)
+            ->where('asr_deleted_at', null)
+            ->countAllResults();
+        $femaleAssessors = $this->assessor_model
+            ->where('asr_gender', 'Female')
+            ->where('asr_qu_id', $user_university_id)
+            ->where('asr_deleted_at', null)
+            ->countAllResults();
 
-        // Filter assessors by the same university
+        // Filter assessors by the same university and exclude soft-deleted
         $builder = $this->assessor_model->table('assessor');
         $builder->select('assessor.*, qvc_university.qu_name');
         $builder->join('qvc_university', 'qvc_university.qu_id = assessor.asr_qu_id', 'left');
         if ($user_university_id) {
             $builder->where('assessor.asr_qu_id', $user_university_id);
         }
-        // Exclude soft-deleted assessors
-        $builder->where('assessor.asr_deleted_at', null);
+        $builder->where('assessor.asr_deleted_at', null); // Exclude soft-deleted
 
         $assessor_list = $builder->get()->getResult();
-
 
         foreach ($assessor_list as &$assessor) {
             // Get all expertise for this assessor
