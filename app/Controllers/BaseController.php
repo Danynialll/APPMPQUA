@@ -42,8 +42,6 @@ abstract class BaseController extends Controller
      * The creation of dynamic property is deprecated in PHP 8.2.
      */
     protected $session;
-    protected $assessor_model;
-    protected $MPQUA_model;
 
     /**
      * @return void
@@ -56,8 +54,6 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         $this->session = service('session');
-        $this->assessor_model = model('App\Models\AssessorModel');
-        $this->MPQUA_model = model('App\Models\MPQUAModel');
     }
 
     // auth render
@@ -90,17 +86,12 @@ abstract class BaseController extends Controller
 
     public function render_assessor($view, $data)
     {
-        $asr_id = session()->get('user_id');
-
-        // Fecth user data
-        $assessor_info = $this->assessor_model->where('asr_id', $asr_id)->first();
         $uri = service('uri');
         $modules = $uri->getSegment(1);
         $view_path = 'Modules\\' . $modules . '\\Views\\';
         $array = [
             'data'  => $data,
             'view'  => $view_path . $view,
-            'assessor_info' => $assessor_info,
         ];
 
         echo view('assessor_layout/main', $array);
@@ -108,17 +99,12 @@ abstract class BaseController extends Controller
 
     public function render_mpqua($view, $data)
     {
-        $mpq_id = session()->get('user_id');
-
-        // Fecth user data
-        $mpq = $this->MPQUA_model->where('mpq_id', $mpq_id)->first();
         $uri = service('uri');
         $modules = $uri->getSegment(1);
         $view_path = 'Modules\\' . $modules . '\\Views\\';
         $array = [
             'data'  => $data,
             'view'  => $view_path . $view,
-            'mpq' => $mpq
         ];
 
         echo view('mpqua_layout/main', $array);

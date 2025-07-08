@@ -5,7 +5,7 @@
             <!-- Preserved Header -->
             <div class="modal-header bg-gradient-primary text-dark">
                 <h5 class="modal-title" id="viewLabel"><span id="modalid" hidden></span>Assessor Information</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
             <!-- Body with Left Photo and Right Info -->
@@ -48,9 +48,6 @@
                     <div class="my-2" style="border-top: 2px solid #bbb; opacity: 0.5;"></div>
 
                     <div class="row mb-2">
-                        <div class="col-md-3 fw-bold">Institute:</div>
-                        <div class="col-md-9" id="modalUniInst"></div>
-
                         <div class="col-md-3 fw-bold">Service Address:</div>
                         <div class="col-md-9" id="modalUniAddress"></div>
 
@@ -69,19 +66,21 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning btn-edit-details text-white"
-                    id="openEditModalBtn"
-                    data-asr-id=""
-                    data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editAssessorModal">
-                    <i class="fas fa-pencil"></i>&nbsp; Edit
-                </button>
+                <span data-bs-toggle="tooltip" title="Edit Assessor Details">
+                    <button type="button" class="btn btn-warning btn-edit-details text-white"
+                        id="openEditModalBtn"
+                        data-asr-id=""
+                        data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editAssessorModal">
+                        <i class="fas fa-pencil"></i>&nbsp; Edit
+                    </button>
+                </span>
             </div>
         </div>
     </div>
 </div>
 
 
-<script>
+<!-- <script>
     jQuery(document).ready(function($) {
         $(function () {
             // Add title attributes for tooltips (buttons)
@@ -91,4 +90,4 @@
             $('[title]').tooltip({container: 'body', trigger: 'hover'});
         });
     });
-</script>
+</script> -->

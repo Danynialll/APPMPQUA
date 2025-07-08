@@ -10,17 +10,16 @@
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+<!-- FontAwesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<!-- Bootstrap CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-
-<!-- FontAwesome -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-<!-- Bootstrap CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Import table styling -->
 <link rel="stylesheet" href="<?= base_url('assets/css/custom_table.css'); ?>">
@@ -112,37 +111,45 @@
     }
 </style>
 
-<form id="filterAssessorForm">
-    <?= csrf_field() ?>
-    <div class="container py-4">
-        <h4>Filter Assessors by NEC</h4>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="nec_broad">NEC Broad</label>
-                <select id="add_nec_broad" class="form-select select2" name="nec_broad">
-                    <option value="">Select NEC Broad</option>
-                    <?php foreach ($nec_broad as $broad): ?>
-                        <option value="<?= esc($broad->nb_id) ?>"><?= esc($broad->nb_code) ?> - <?= esc($broad->nb_name) ?> (<?= $broad_counts[$broad->nb_id] ?? 0 ?>)</option>
-                    <?php endforeach; ?>
-                </select>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center p-0 pt-3">
+                <h2 class="mb-0 fs-4 fw-bold">Filter Assessors by NEC</h2>
             </div>
-            <div class="col-md-4">
-                <label for="nec_narrow">NEC Narrow</label>
-                <select id="add_nec_narrow" class="form-select select2" name="nec_narrow">
-                    <option value="">Select NEC Narrow</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label>NEC Detail</label>
-                <select id="add_nec_detail" class="form-select select2" name="nec_detail_id">
-                    <option value="">Select NEC Detail</option>
-                </select>
+            <div class="card-body p-0 mt-4">
+                <form id="filterAssessorForm">
+                    <?= csrf_field() ?>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="nec_broad">NEC Broad</label>
+                            <select id="add_nec_broad" class="form-select select2" name="nec_broad">
+                                <option value="">Select NEC Broad</option>
+                                <?php foreach ($nec_broad as $broad): ?>
+                                    <option value="<?= esc($broad->nb_id) ?>"><?= esc($broad->nb_code) ?> - <?= esc($broad->nb_name) ?> (<?= $broad_counts[$broad->nb_id] ?? 0 ?>)</option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="nec_narrow">NEC Narrow</label>
+                            <select id="add_nec_narrow" class="form-select select2" name="nec_narrow">
+                                <option value="">Select NEC Narrow</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>NEC Detail</label>
+                            <select id="add_nec_detail" class="form-select select2" name="nec_detail_id">
+                                <option value="">Select NEC Detail</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" id="necFilterSubmit" class="btn btn-success mt-2" data-bs-toggle="tooltip" data-bs-placement="auto" title="FInd Assessors by NEC"><i class="fa-solid fa-magnifying-glass"></i> Find Assessors</button>
+                </form>
+                <div id="assessor-table-container" class="mt-4"></div>
             </div>
         </div>
-       <button type="submit" id="necFilterSubmit" class="btn btn-success mt-2"><i class="fa-solid fa-magnifying-glass"></i> Find Assessors</button>  <!-- magnifying glass not working -->
-        <div id="assessor-table-container"></div>
     </div>
-</form>
+</div>
 
 <script>
     jQuery(document).ready(function($) {
@@ -256,38 +263,36 @@
         .then(data => {
             const container = document.getElementById('assessor-table-container');
 
-            console.log('Fetch response:', data);
-
-            // ✅ Update CSRF token in form
+            // Update CSRF token in form
             if (data.csrf_token) {
                 document.querySelector("input[name='csrf_test_name']").value = data.csrf_token;
             }
-            
+
             if (data.success && Array.isArray(data.assessors) && data.assessors.length > 0) {
-                let html = `<table class="table table-bordered table-striped table-hover mt-3 align-middle" style="background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-                <thead class="table-success">
+                let html = `<div class="table-responsive"><table class="table" id="datatable-search">
+                <thead>
                     <tr>
-                        <th>No.</th>
+                        <th class="text-center" style="width:60px;">No.</th>
                         <th>Image</th>
                         <th>Name</th>
-                        <th>Expertise</th>
-                        <th>NEC Field</th>
-                        <th class="text-center" style="width:120px;">Details</th>
+                        <th style="width:150px;">Expertise</th>
+                        <th style="width:150px;">NEC Field</th>
+                        <th style="width:120px;" class="text-center">Details</th>
                     </tr>
                 </thead>
                 <tbody>`;
                 data.assessors.forEach((a, idx) => {
                     let expertiseHTML = '-';
                     if (Array.isArray(a.expertise_list) && a.expertise_list.length > 0) {
-                        expertiseHTML = a.expertise_list.map(exp => 
-                            `<span class="badge bg-primary text-white mb-1" style="word-break:break-word;">${exp}</span><br>`
+                        expertiseHTML = a.expertise_list.map(exp =>
+                            `<span class="badge bg-primary text-white mb-1" style="word-break:break-word;">${typeof exp === 'object' ? exp.ef_desc : exp}</span><br>`
                         ).join('');
                     }
 
                     let necHTML = '-';
-                    if (Array.isArray(a.nec_list) && a.nec_list.length > 0) {
-                        necHTML = a.nec_list.map(nec => 
-                            `<span class="badge bg-success text-white mb-1" style="word-break:break-word;">${nec.nec_name}</span><br>`
+                    if (Array.isArray(a.nec_detail_list) && a.nec_detail_list.length > 0) {
+                        necHTML = a.nec_detail_list.map(nec =>
+                            `<span class="badge bg-success text-white mb-1" style="word-break:break-word;">${nec.nd_desc}</span><br>`
                         ).join('');
                     }
                     let imgHTML = '<img src="<?= base_url('assets/img/default-profile.jpg') ?>" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">';
@@ -296,24 +301,70 @@
                     }
 
                     html += `<tr>
-                    <td>${idx + 1}</td>
+                    <td class="text-center">${idx + 1}</td>
                     <td>${imgHTML}</td>
                     <td style="word-break:break-word;">${a.asr_name}</td>
                     <td><h6 class="mb-0 text-sm">${expertiseHTML}</h6></td>
                     <td><h6 class="mb-0 text-sm">${necHTML}</h6></td>
                     <td class="text-center">
                         <div class="action-container">
-                            <button class="btn btn-primary btn-view-details"
-                                data-asr-id="${a.asr_id}"
-                                data-bs-toggle="modal" data-bs-target="#viewModal">
-                                <i class="fas fa-eye" style="font-size: 1rem !important;"></i>
-                            </button>
+                            <span data-bs-toggle="tooltip" data-bs-placement="auto" title="View Assessor Details">
+                                <button class="btn btn-primary btn-view-details"
+                                    data-asr-id="${a.asr_id}"
+                                    data-bs-toggle="modal" data-bs-target="#viewModal">
+                                    <i class="fas fa-eye" style="font-size: 1rem !important;"></i>
+                                </button>
+                            </span>
                         </div>
                     </td>
                 </tr>`;
                 });
-                html += '</tbody></table>';
+                html += '</tbody></table></div>';
                 container.innerHTML = html;
+
+                // Re-initialize DataTable for the new table
+                if ($.fn.DataTable.isDataTable('#datatable-search')) {
+                    $('#datatable-search').DataTable().destroy();
+                }
+                $('#datatable-search').DataTable({
+                    responsive: true,
+                    dom: '<"top"fl>rt<"bottom"ip><"clear">',
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search assessors...",
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        infoEmpty: "Showing 0 to 0 of 0 entries",
+                        infoFiltered: "(filtered from _MAX_ total entries)",
+                        emptyTable: `<div class="d-flex flex-column align-items-center">
+                            <i class="fas fa-folder-open text-muted mb-2" style="font-size: 2rem;"></i>
+                            <h6 class="text-muted">No users found</h6>
+                         </div>`,
+                        paginate: {
+                            first: '<i class="fas fa-angle-double-left"></i>',
+                            previous: '<i class="fas fa-angle-left"></i>',
+                            next: '<i class="fas fa-angle-right"></i>',
+                            last: '<i class="fas fa-angle-double-right"></i>'
+                        }
+                    },
+                    pageLength: 10,
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        [10, 25, 50, "All"]
+                    ],
+                    columnDefs: [{
+                            orderable: false,
+                            targets: [1, 5]
+                        },
+                        {
+                            className: "text-center",
+                            targets: [0, 5]
+                        }
+                    ],
+                    order: [
+                        [0, 'asc']
+                    ]
+                });
             } else {
                 container.innerHTML = '<div class="alert alert-warning mt-3">No assessors found for this NEC detail.</div>';
             }
@@ -351,7 +402,7 @@
 
                 modalPhoto.appendChild(img);
 
-                document.getElementById('modalName').innerText = data.asr_name || '';
+                document.getElementById('modalName').innerText = (data.asr_title_desc ? data.asr_title_desc + ' ' : '') + (data.asr_name || '');
                 document.getElementById('modalGender').innerText = data.asr_gender || '';
                 document.getElementById('modalTelephone').innerText = data.asr_phone || '';
                 document.getElementById('modalFax').innerText = data.asr_fax || '';
@@ -383,7 +434,7 @@
                     data.expertise_list.forEach(item => {
                         const badge = document.createElement('span');
                         badge.className = 'badge bg-primary text-white me-1';
-                        badge.innerText = item;
+                        badge.innerText = typeof item === 'object' ? item.ef_desc : item;
                         expertiseContainer.appendChild(badge);
                     });
                 } else {
@@ -407,18 +458,6 @@
     });
 </script>
 
-<script>
-    jQuery(document).ready(function($) {
-        $(function () {
-            // Add title attributes for tooltips (buttons)
-            $('#necFilterSubmit').attr('title', 'Find assessors');
-
-            // Initialize Bootstrap tooltip
-            $('[title]').tooltip({container: 'body', trigger: 'hover'});
-        });
-    });
-</script>
-
-<?php include 'ListAllModal/viewModalNew.php'; ?>
+<?php include 'ListAllModal/viewModal.php'; ?>
 
 

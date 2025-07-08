@@ -1,9 +1,16 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <div class="modal fade custom-modal" id="editAssessorModal" tabindex="-1" aria-labelledby="editAssessorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-header bg-gradient-primary text-dark">
         <h5 class="modal-title" id="editAssessorModalLabel">Edit Assessor</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form id="editAssessorForm">
         <?= csrf_field() ?>
@@ -20,8 +27,8 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">University</label>
-                    <input type="text" name="asr_university" class="form-control" value="<?= get_university_name($mpq->mpq_qu_id) ?>" disabled>
-                    <input type="text" name="asr_qu_id" class="form-control" required style="display: none;" value="<?= $mpq->mpq_qu_id ?>">
+                    <input type="text" name="asr_university" class="form-control" value="<?= esc($qu_name) ?>" disabled>
+                    <input type="text" name="asr_qu_id" class="form-control" required style="display: none;" value="<?= esc($qu_id) ?>">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Telephone No.</label>
@@ -62,7 +69,7 @@
                         </select>
                     </div>
                     <div class="col-2 mb-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-primary btn-sm w-100" id="addExpertiseBtnedit" title="Add selected expertise">
+                        <button type="button" class="btn btn-primary btn-sm w-100" id="addExpertiseBtnEdit" data-bs-toggle="tooltip" title="Add Expertise">
                             <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add
                         </button>
                     </div>
@@ -77,7 +84,7 @@
                 <!-- NEC Selection -->
                 <div class="mb-3">
                     <label for="nec_broad" class="form-label">NEC Broad</label>
-                    <select class="form-select select2" id="edit_nec_broad" name="nec_broad">
+                    <select class="form-select" id="edit_nec_broad" name="nec_broad">
                         <option value="">Select NEC Broad</option>
                         <?php foreach ($nec_broad as $broad): ?>
                             <option value="<?= $broad->nb_id ?>"><?= $broad->nb_code ?> <?= $broad->nb_name ?></option>
@@ -87,7 +94,7 @@
 
                 <div class="mb-3">
                     <label for="nec_narrow" class="form-label">NEC Narrow</label>
-                    <select class="form-select select2" id="edit_nec_narrow" name="nec_narrow">
+                    <select class="form-select" id="edit_nec_narrow" name="nec_narrow">
                         <option value="">Select NEC Narrow</option>
                         <!-- Options will be populated via JS -->
                     </select>
@@ -95,13 +102,13 @@
 
                 <div class="mb-3">
                     <label for="nec_detail" class="form-label">NEC Detail</label>
-                    <select class="form-select select2" id="edit_nec_detail" name="nec_detail[]">
+                    <select class="form-select" id="edit_nec_detail" name="nec_detail[]">
                         <option value="">Select NEC Detail</option>
                         <!-- Options will be populated via JS -->
                     </select>
                 </div>
 
-                <button type="button" class="btn btn-primary btn-sm" id="addNECBtnEdit">
+                <button type="button" class="btn btn-primary btn-sm" id="addNECBtnEdit" data-bs-toggle="tooltip" title="Add NEC Field">
                     <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add NEC Field
                 </button>
 
@@ -121,16 +128,27 @@
             </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger me-auto" id="deleteAssessorBtn">
+          <button type="button" class="btn btn-danger me-auto" id="deleteAssessorBtn" data-bs-toggle="tooltip" title="Delete This Assessor">
             <i class="fas fa-trash"></i> Delete
           </button>
-          <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success" data-bs-toggle="tooltip" title="Update Details"><i class="fas fa-save" ></i> Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="tooltip" title="Cancel Edit">Cancel</button>
         </div>
       </form>
     </div>
   </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#editAssessorModal').on('shown.bs.modal', function() {
+            $(this).find('.select2').select2({
+                dropdownParent: $('#editAssessorModal') // Prevent dropdown from being cut off
+            });
+        });
+
+    });
+</script>
 
 
 <script>
@@ -239,6 +257,8 @@
         renderExpertiseBadges();
         select.value = '';
         console.log(editExpertiseArray);
+
+        $('#editExpertise').val('').trigger('change');
     });
 
     // Add nec detail from select
@@ -253,6 +273,10 @@
         renderNECBadges();
         select.value = '';
         console.log(editNECArray);
+        // Optionally, clear selection
+        $('#edit_nec_broad').val('').trigger('change');
+        $('#edit_nec_narrow').val('').trigger('change').closest('.mb-3').hide();
+        $('#edit_nec_detail').val('').trigger('change').closest('.mb-3').hide();
     });
 
     //Remove expertise on badge X click (event delegation) with SweetAlert confirmation
@@ -329,19 +353,33 @@
                 document.getElementById('modalAddressInput').value = data.asr_service_address || '';
                 document.getElementById('modalRetirementInput').value = data.asr_retirement_date || '';
 
-                document.getElementById('modalCVinput').innerHTML = '';
-                if (data.asr_cv_path) {
-                    // Create a link to open the CV in a new tab
-                    const link = document.createElement('a');
-                    link.href = '<?= base_url() ?>' + data.asr_cv_path;
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    link.innerText = 'View Existing CV';
-                    link.className = 'btn btn-link p-0';
-                    document.getElementById('modalCVinput').appendChild(link);
-                } else {
-                    document.getElementById('modalCVinput').innerText = '';
-                }
+                // document.getElementById('modalCVinput').innerHTML = '';
+                // if (data.asr_cv_path) {
+                //     // Create a link to open the CV in a new tab
+                //     const link = document.createElement('a');
+                //     link.href = '<?= base_url() ?>' + data.asr_cv_path;
+                //     link.target = '_blank';
+                //     link.rel = 'noopener noreferrer';
+                //     link.innerText = 'View Existing CV';
+                //     link.className = 'btn btn-link p-0';
+                //     document.getElementById('modalCVinput').appendChild(link);
+                // } else {
+                //     document.getElementById('modalCVinput').innerText = '';
+                // }
+
+                document.getElementById('modalUniCV').innerHTML = '';
+                    if (data.asr_cv_path) {
+                        // Create a link to open the CV in a new tab
+                        const link = document.createElement('a');
+                        link.href = '<?= base_url() ?>' + data.asr_cv_path;
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        link.innerText = 'View CV';
+                        link.className = 'btn btn-link p-0';
+                        document.getElementById('modalUniCV').appendChild(link);
+                    } else {
+                        document.getElementById('modalUniCV').innerText = '-';
+                    }
 
                 // Populate expertise array
                 if (data.expertise_list && data.expertise_list.length > 0) {
@@ -398,6 +436,7 @@
 
 <script>
     jQuery(document).ready(function($) {
+        
         // Hide narrow and detail fields initially
         $('#edit_nec_narrow').closest('.mb-3').hide();
         $('#edit_nec_detail').closest('.mb-3').hide();
@@ -523,7 +562,7 @@ document.getElementById('deleteAssessorBtn').addEventListener('click', function(
 </script>
 
 
-<script>
+<!-- <script>
     jQuery(document).ready(function($) {
         $(function () {
             // Add title attributes for tooltips (buttons)
@@ -535,4 +574,4 @@ document.getElementById('deleteAssessorBtn').addEventListener('click', function(
             $('[title]').tooltip({container: 'body', trigger: 'hover'});
         });
     });
-</script>
+</script> -->

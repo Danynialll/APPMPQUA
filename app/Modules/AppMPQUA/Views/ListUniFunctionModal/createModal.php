@@ -11,7 +11,7 @@
     <div class="modal-content">
       <div class="modal-header bg-gradient-primary text-primary-content">
         <h5 class="modal-title" id="addAssessorModalLabel">Add New Assessor</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form id="addAssessorForm">
         <?= csrf_field() ?>
@@ -27,8 +27,8 @@
                 </div>
                 <div class="col-md-6">
                 <label class="form-label">University</label>
-                    <input type="text" name="asr_university" class="form-control" value="<?= get_university_name($mpq->mpq_qu_id) ?>" disabled>
-                    <input type="text" name="asr_qu_id" class="form-control" required style="display: none;" value="<?= $mpq->mpq_qu_id ?>">
+                    <input type="text" name="asr_university" class="form-control" value="<?= esc($qu_name) ?>" disabled>
+                    <input type="text" name="asr_qu_id" class="form-control" required style="display: none;" value="<?= esc($qu_id) ?>">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Gender</label>
@@ -77,7 +77,7 @@
                         </select>
                     </div>
                     <div class="col-2 mb-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-primary btn-sm w-100" id="addExpertiseBtnAdd" title="Add selected expertise">
+                        <button type="button" class="btn btn-primary btn-sm w-100" id="addExpertiseBtnAdd" data-bs-toggle="tooltip" title="Add Expertise">
                             <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add
                         </button>
                     </div>
@@ -115,7 +115,7 @@
                     </select>
                 </div>
 
-                <button type="button" class="btn btn-primary btn-sm" id="addNECBtnAdd">
+                <button type="button" class="btn btn-primary btn-sm" id="addNECBtnAdd" data-bs-toggle="tooltip" title="Add NEC Field">
                     <i class="fas fa-add" style="font-size: 1rem !important;"></i>&nbsp; Add NEC Field
                 </button>
 
@@ -134,8 +134,8 @@
             </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success" data-bs-toggle="tooltip" title="Submit Details"><i class="fas fa-save" ></i> Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="tooltip" title="Cancel">Cancel</button>
         </div>
       </form>
     </div>
@@ -177,7 +177,7 @@
 
             // Optionally, send AJAX to save to DB here, or just append visually
             let badge = `
-                <span class="badge my-2 badge-secondary" data-exp-id="${expertiseId}">
+                <span class="badge my-2 badge-secondary text-dark" data-exp-id="${expertiseId}">
                     ${expertiseText}
                     <i class="fas fa-times text-danger ms-2 delete-exp" style="cursor: pointer;"></i>
                 </span>
@@ -315,7 +315,7 @@
 
             // Optionally, send AJAX to save to DB here, or just append visually
             let necBadge = `
-                <span class="badge my-2 badge-secondary" data-nd-id="${necDetailId}">
+                <span class="badge my-2 badge-secondary text-dark" data-nd-id="${necDetailId}">
                     ${necDetailText}
                     <i class="fas fa-times text-danger ms-2 delete-nec" style="cursor: pointer;"></i>
                 </span>
@@ -438,24 +438,10 @@
     });
 </script>
 
-<script>
+<!-- <script>
     jQuery(document).ready(function($) {
         // Add Bootstrap tooltip to all select, input fields, and buttons
         $(function () {
-            // Add title attributes for tooltips (fields)
-            // $('[name="asr_title_desc"]').attr('title', 'Enter the title, e.g., Dr, Prof, Mr, etc.');
-            // $('[name="asr_name"]').attr('title', 'Enter the full name of the assessor.');
-            // $('[name="asr_phone"]').attr('title', 'Enter the telephone number.');
-            // $('[name="asr_fax"]').attr('title', 'Enter the fax number.');
-            // $('[name="asr_email"]').attr('title', 'Enter the email address.');
-            // $('[name="asr_service_address"]').attr('title', 'Enter the service address.');
-            // $('[name="asr_retirement_date"]').attr('title', 'Select the retirement date.');
-            // $('[name="expertise[]"]').attr('title', 'Select the expertise area.');
-            // $('#add_nec_broad').attr('title', 'Select the NEC Broad field.');
-            // $('#add_nec_narrow').attr('title', 'Select the NEC Narrow field.');
-            // $('#add_nec_detail').attr('title', 'Select the NEC Detail field.');
-            // $('[name="asr_image"]').attr('title', 'Upload a profile picture (PNG, JPEG).');
-            // $('[name="asr_cv"]').attr('title', 'Upload a CV (PDF, PNG, JPEG).');
 
             // Add title attributes for tooltips (buttons)
             $('#addExpertiseBtnAdd').attr('title', 'Add selected expertise');
@@ -475,4 +461,4 @@
             $('[title]').tooltip({container: 'body', trigger: 'hover'});
         });
     });
-</script>
+</script> -->

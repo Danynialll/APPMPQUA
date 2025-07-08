@@ -119,7 +119,7 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Registered MPQUA Users</p>
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Registered Users</p>
                                             <h5 class="font-weight-bolder mb-0">
                                                 <?= esc($total_users) ?>
                                             </h5>
@@ -271,8 +271,8 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="action-container">
-                                                    <button class="btn btn-warning btn-sm btn-edit-mpq" data-bs-toggle="modal" data-bs-target="#editMPQModal" data-au-id="<?= esc($mpqua['au_id']) ?>">
-                                                        <i class="fas fa-pencil"></i>&nbsp; Edit
+                                                    <button class="btn btn-warning btn-sm btn-edit-mpq text-white" data-bs-toggle="modal" data-bs-target="#editMPQModal" data-au-id="<?= esc($mpqua['au_id']) ?>">
+                                                        <i class="fas fa-pencil "></i>&nbsp; Edit
                                                     </button>
                                                 </div>
                                             </td>
@@ -334,11 +334,11 @@
                 }, // Disable sorting on the Actions column
                 {
                     className: "text-center",
-                    targets: [0, 3, 4]
+                    targets: [0, 3, 4, 5, 6] // Center align these columns
                 } // Center align these columns
             ],
             order: [
-                [1, 'asc']
+                [0, 'asc']
             ] // Default sort by the first column (No.)
         });
 

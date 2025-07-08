@@ -100,6 +100,8 @@ class MPQUA_UniController extends BaseController
             'nec_broad'            => $nec_broad,
             'nec_narrow'           => $nec_narrow,
             'nec_detail'           => $nec_detail,
+            'qu_name'              => get_university_name($user_university_id),
+            'qu_id'                => $user_university_id,
         ];
 
         $this->render_mpqua('listUni', $data);
@@ -130,6 +132,9 @@ class MPQUA_UniController extends BaseController
     {
         if ($this->request->isAJAX()) {
             $broad_id = $this->request->getPost('broad_id');
+            $user_id = $this->session->get('user_id');
+            $user = $this->MPQUA_model->find($user_id);
+            $user_university_id = $user ? $user->mpq_qu_id : null;
             $narrow = $this->NECNarrow_model->where('nn_nb_id', $broad_id)->findAll();
             $nec_detail = $this->NECDetail_model->where('nd_nn_id', $narrow[0]->nn_id)->findAll();
             $detail_counts = [];
@@ -149,9 +154,35 @@ class MPQUA_UniController extends BaseController
                     }
                 }
             }
+
+
+            // Count assessors for each NEC Detail in this university
+            $detail_counts_uni = [];
+            foreach ($nec_detail as $detail) {
+                $detail_counts_uni[$detail->nd_id] = $this->asrNECMapping_model
+                    ->select('assessor.asr_id')
+                    ->join('assessor', 'assessor.asr_id = asr_nec_mapping.anm_asr_id')
+                    ->where('anm_nd_id', $detail->nd_id)
+                    ->where('assessor.asr_qu_id', $user_university_id)
+                    ->where('assessor.asr_deleted_at', null)
+                    ->countAllResults();
+            }
+
+            // Sum up counts for each NEC Narrow (by its details)
+            $narrow_counts_uni = [];
+            foreach ($narrow as $nrrw) {
+                $narrow_counts_uni[$nrrw->nn_id] = 0;
+                foreach ($nec_detail as $detail) {
+                    if ($detail->nd_nn_id == $nrrw->nn_id) {
+                        $narrow_counts_uni[$nrrw->nn_id] += $detail_counts_uni[$detail->nd_id] ?? 0;
+                    }
+                }
+            }
+            
             return $this->response->setJSON([
                 'success' => true,
                 'data' => $narrow,
+                'narrow_counts_uni' => $narrow_counts_uni,
                 'narrow_counts' => $narrow_counts,
                 'csrf_token' => csrf_hash()
             ]);
@@ -162,6 +193,9 @@ class MPQUA_UniController extends BaseController
     public function get_nec_detail()
     {
         if ($this->request->isAJAX()) {
+            $user_id = $this->session->get('user_id');
+            $user = $this->MPQUA_model->find($user_id);
+            $user_university_id = $user ? $user->mpq_qu_id : null;
             $narrow_id = $this->request->getPost('narrow_id');
 
             if (empty($narrow_id)) {
@@ -180,10 +214,22 @@ class MPQUA_UniController extends BaseController
                     ->countAllResults();
             }
 
+            $detail_counts_uni = [];
+            foreach ($detail as $row) {
+                $detail_counts_uni[$row->nd_id] = $this->asrNECMapping_model
+                    ->select('assessor.asr_id')
+                    ->join('assessor', 'assessor.asr_id = asr_nec_mapping.anm_asr_id')
+                    ->where('anm_nd_id', $row->nd_id)
+                    ->where('assessor.asr_qu_id', $user_university_id)
+                    ->where('assessor.asr_deleted_at', null)
+                    ->countAllResults();
+            }
+
             return $this->response->setJSON([
                 'success' => true,
                 'data' => $detail,
                 'counts' => $detail_counts,
+                'counts_uni' => $detail_counts_uni,
                 'csrf_token' => csrf_hash()
             ]);
         }
@@ -477,10 +523,51 @@ class MPQUA_UniController extends BaseController
         $nec_narrow = $this->NECNarrow_model->findAll();
         $nec_detail = $this->NECDetail_model->findAll();
 
+        $user_id = $this->session->get('user_id');
+        $user = $this->MPQUA_model->find($user_id);
+        $user_university_id = $user ? $user->mpq_qu_id : null;
+
+        // 1. Count assessors for each NEC Detail (filtered by university)
+        $detail_counts = [];
+        foreach ($nec_detail as $detail) {
+            $detail_counts[$detail->nd_id] = $this->asrNECMapping_model
+                ->select('assessor.asr_id')
+                ->join('assessor', 'assessor.asr_id = asr_nec_mapping.anm_asr_id')
+                ->where('anm_nd_id', $detail->nd_id)
+                ->where('assessor.asr_qu_id', $user_university_id)
+                ->where('assessor.asr_deleted_at', null)
+                ->countAllResults();
+        }
+
+        // 2. Sum up counts for each NEC Narrow (by its details)
+        $narrow_counts = [];
+        foreach ($nec_narrow as $narrow) {
+            $narrow_counts[$narrow->nn_id] = 0;
+            foreach ($nec_detail as $detail) {
+                if ($detail->nd_nn_id == $narrow->nn_id) {
+                    $narrow_counts[$narrow->nn_id] += $detail_counts[$detail->nd_id] ?? 0;
+                }
+            }
+        }
+
+        // 3. Sum up counts for each NEC Broad (by its narrows)
+        $broad_counts = [];
+        foreach ($nec_broad as $broad) {
+            $broad_counts[$broad->nb_id] = 0;
+            foreach ($nec_narrow as $narrow) {
+                if ($narrow->nn_nb_id == $broad->nb_id) {
+                    $broad_counts[$broad->nb_id] += $narrow_counts[$narrow->nn_id] ?? 0;
+                }
+            }
+        }
+
         $data = [
             'nec_broad' => $nec_broad,
             'nec_narrow' => $nec_narrow,
             'nec_detail' => $nec_detail,
+            'detail_counts' => $detail_counts,
+            'narrow_counts' => $narrow_counts,
+            'broad_counts' => $broad_counts,
         ];
 
         return $this->render_mpqua('necPageUni', $data);

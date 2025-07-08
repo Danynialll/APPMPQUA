@@ -1,17 +1,3 @@
-<!-- Note -->
-<!-- profile page use bar chart(assessor-nec)    /   <br> -->
-<!-- pie chart(active/retired) (male/female)     /   <br> -->
-<!-- semua modal use bg-gradient-primary as header   /   <br> -->
-profile pic tekan jadi besar <br>
-<!-- xl modal, nec expertise side by side, cv and profile pic side by side, title kecikkan <br> -->
-<!-- seeder for nec, mpqua all uni   /   <br> -->
-<!-- hover title toolkit      /   <br> -->
-<!-- lepas login, masuk profile     /   <br> -->
-expertise edit and add, make same size <br>
-<!-- put number next to nec to show how many assessors <br> -->
-
-
-
 
 
 <!-- Modern CSS Libraries -->
@@ -229,10 +215,10 @@ expertise edit and add, make same size <br>
                     <div class="row align-items-center">
                         <div class="col-lg-8 col-md-7">
                             <div class="d-flex flex-wrap gap-2">
-                                <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
+                                <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;" data-bs-toggle="tooltip" title="Export to Excel">
                                     Export to Excel
                                 </button>
-                                <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilter') ?>">
+                                <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilter') ?>" data-bs-toggle="tooltip" title="Search Assessors by NEC">
                                     <i class="fas fa-magnifying-glass"></i>&nbsp; Search by NEC
                                 </a>
                             </div>
@@ -304,11 +290,13 @@ expertise edit and add, make same size <br>
                                             </td>
                                             <td class="text-center">
                                                 <div class="action-container">
-                                                    <button class="btn btn-primary btn-view-details"
-                                                        data-asr-id="<?= esc($asr->asr_id) ?>"
-                                                        data-bs-toggle="modal" data-bs-target="#viewModal">
-                                                        <i class="fas fa-eye" style="font-size: 1rem !important;"></i>
-                                                    </button>
+                                                    <span data-bs-toggle="tooltip" title="View Assessor Details">
+                                                        <button class="btn btn-primary btn-view-details"
+                                                            data-asr-id="<?= esc($asr->asr_id) ?>"
+                                                            data-bs-toggle="modal" data-bs-target="#viewModal">
+                                                            <i class="fas fa-eye" style="font-size: 1rem !important;"></i>
+                                                        </button> 
+                                                    </span>
                                                 </div>
                                             </td>
                                         </tr>
@@ -324,7 +312,7 @@ expertise edit and add, make same size <br>
 </div>
 
 <!-- View Modal -->
-<?php include 'ListAllModal/viewModalNew.php'; ?>
+<?php include 'ListAllModal/viewModal.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -546,7 +534,7 @@ expertise edit and add, make same size <br>
     });
 </script>
 
-<script>
+<!-- <script>
     jQuery(document).ready(function($) {
         $(function () {
             // Add title attributes for tooltips (buttons)
@@ -556,4 +544,4 @@ expertise edit and add, make same size <br>
             $('[title]').tooltip({container: 'body', trigger: 'hover'});
         });
     });
-</script>
+</script> -->

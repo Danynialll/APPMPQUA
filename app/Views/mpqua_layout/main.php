@@ -56,22 +56,28 @@
     <script src="<?= base_url() ?>assets/js/plugins/jkanban/jkanban.js"></script>
     <script src="<?= base_url() ?>assets/js/plugins/countup.min.js"></script>
     <script src="<?= base_url() ?>assets/js/plugins/chartjs.min.js"></script>
-    <script src="<?= base_url() ?>assets/js/plugins/round-slider.min.js"></script>
+    <!-- <script src="<?= base_url() ?>assets/js/plugins/round-slider.min.js"></script> -->
 
     <script>
         // Rounded slider
-        const setValue = function(value, active) {
-            document.querySelectorAll("round-slider").forEach(function(el) {
-                if (el.value === undefined) return;
-                el.value = value;
-            });
-            const span = document.querySelector("#value");
-            span.innerHTML = value;
-            if (active)
-                span.style.color = 'red';
-            else
-                span.style.color = 'black';
-        }
+        // const setValue = function(value, active) {
+        //     document.querySelectorAll("round-slider").forEach(function(el) {
+        //         if (el.value === undefined) return;
+        //         el.value = value;
+        //     });
+        //     const span = document.querySelector("#value");
+        //     span.innerHTML = value;
+        //     if (active)
+        //         span.style.color = 'red';
+        //     else
+        //         span.style.color = 'black';
+        // }
+
+        $(document).ready(function() {
+  console.log($);              // Kalau bukan function jQuery, pasti bermasalah
+console.log(typeof $);       // Kalau keluar "object" atau "class" → override detected
+console.log(typeof jQuery);  // Mesti keluar "function" 
+});
 
         document.querySelectorAll("round-slider").forEach(function(el) {
             el.addEventListener('value-changed', function(ev) {

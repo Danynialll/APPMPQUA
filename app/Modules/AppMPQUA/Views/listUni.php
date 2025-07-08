@@ -110,7 +110,7 @@
     <div class="row">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center p-0 pt-3">
-                <h2 class="mb-0 fs-4 fw-bold"><?= get_university_name($mpq->mpq_qu_id) ?> Assessors</h2>
+                <h2 class="mb-0 fs-4 fw-bold"><?= esc($qu_name) ?> Assessors</h2>
             </div>
             <div class="card-body p-0 mt-4">
                 <div class="row mb-0">
@@ -207,19 +207,23 @@
                     <div class="row align-items-center">
                         <div class="col-lg-8 col-md-7">
                             <div class="d-flex flex-wrap gap-2">
-                                <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    Export to Excel
-                                </button>
-                                <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilterUni') ?>">
+                                <span data-bs-toggle="tooltip" title="Export to Excel">
+                                    <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;" >
+                                        Export to Excel
+                                    </button>
+                                </span>
+                                <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilterUni') ?>" data-bs-toggle="tooltip" title="Search Assessors by NEC">
                                     <i class="fas fa-magnifying-glass"></i>&nbsp; Search by NEC
                                 </a>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
-                            <div class="d-flex align-items-center justify-content-md-end">
-                                <button id="add-btn" class="btn bg-gradient-primary me-2" data-bs-toggle="modal" data-bs-target="#addAssessorModal" style="font-size: 12px;">
-                                    <i class="fas fa-plus"></i>&nbsp; Add Assessor
-                                </button>
+                            <div class="d-flex align-items-center justify-content-md-end" >
+                                <span data-bs-toggle="tooltip" title="Add a new assessor">
+                                    <button id="add-btn" class="btn bg-gradient-primary me-2" data-bs-toggle="modal" data-bs-target="#addAssessorModal" style="font-size: 12px;" >
+                                        <i class="fas fa-plus"></i>&nbsp; Add Assessor
+                                    </button>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -258,7 +262,7 @@
                                                 <h6 class="mb-0 text-sm">
                                                     <?php if (!empty($asr->expertise_list)): ?>
                                                         <?php foreach($asr->expertise_list as $exp): ?>
-                                                            <span class="badge bg-primary text-white mb-1" style="word-break:break-word;"><?= esc($exp) ?></span><br>
+                                                            <span class="badge bg-primary text-white mb-1" style="word-break:break-word;"><?= esc(is_array($exp) ? $exp['ef_desc'] : $exp)  ?></span><br>
                                                         <?php endforeach; ?>  
                                                     <?php else: ?>
                                                         <span>-</span>  
@@ -279,11 +283,13 @@
                                             <td class="text-center">
                                                 <center>
                                                     <div class="action-container">
-                                                        <button class="btn btn-primary btn-view-details"
-                                                            data-asr-id="<?= esc($asr->asr_id) ?>"
-                                                            data-bs-toggle="modal" data-bs-target="#viewModal">
-                                                            <i class="fas fa-eye" style="font-size: 1rem !important;"></i>&nbsp;
-                                                        </button>
+                                                        <span data-bs-toggle="tooltip" data-bs-placement="auto" title="View Assessor Details">
+                                                            <button class="btn btn-primary btn-view-details"
+                                                                data-asr-id="<?= esc($asr->asr_id) ?>"
+                                                                data-bs-toggle="modal" data-bs-target="#viewModal">
+                                                                <i class="fas fa-eye" style="font-size: 1rem !important;"></i>&nbsp;
+                                                            </button>
+                                                        </span>
                                                     </div>
                                                 </center>
                                             </td>
@@ -305,8 +311,6 @@
     include 'ListUniFunctionModal/editModal.php'; 
     include 'ListUniFunctionModal/createModal.php'; 
 ?>
-
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -447,6 +451,7 @@
                 if (!target) return;
 
                 const asrId = target.getAttribute("data-asr-id");
+                console.log("Assessor ID:", asrId);
                 fetch('<?= base_url('appmpqua/get_assessor/') ?>' + asrId)
                     .then(response => response.json())
                     .then(result => {
@@ -526,7 +531,7 @@
     });
 </script>
 
-<script>
+<!-- <script>
     jQuery(document).ready(function($) {
         $(function () {
             // Add title attributes for tooltips (buttons)
@@ -538,5 +543,5 @@
             $('[title]').tooltip({container: 'body', trigger: 'hover'});
         });
     });
-</script>
+</script> -->
 

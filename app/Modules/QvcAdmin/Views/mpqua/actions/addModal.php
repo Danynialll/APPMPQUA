@@ -1,7 +1,7 @@
 <div class="modal fade custom-modal" id="addMPQModal" tabindex="-1" aria-labelledby="addMPQModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-success text-white">
+      <div class="modal-header bg-gradient-primary text-dark">
         <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -45,8 +45,8 @@
             </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success"><i class="fas fa-save"></i>&nbsp; Save</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success text-white"><i class="fas fa-save"></i>&nbsp; Save</button>
+          <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Cancel</button>
         </div>
       </form>
     </div>

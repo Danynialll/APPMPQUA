@@ -75,7 +75,7 @@
             <li class="nav-item ">
               <a class="nav-link " href="<?= base_url() ?>appmpqua/viewUni">
                 <span class="sidenav-mini-icon"> Uni </span>
-                <span class="sidenav-normal">List: <?= get_university_name($mpq->mpq_qu_id) ?></span>
+                <span class="sidenav-normal">My APP List</span>
               </a>
             </li>
           </ul>

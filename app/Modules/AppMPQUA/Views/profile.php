@@ -112,7 +112,7 @@
                     <div class="row">
                         <div class="col-12 mb-3 text-center">
                             <label for="profile_image" class="form-label fw-bold">Profile Picture</label><br>
-                            <img id="profilePreview" src="<?= !empty($user_info->profile_image) ? base_url($user_info->profile_image) : base_url('assets/img/default-profile.jpg') ?>" alt="Profile Image" class="img-thumbnail mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                            <img id="profilePreview" src="<?= !empty($user_info->mpq_image) ? base_url($user_info->mpq_image) : base_url('assets/img/default-profile.jpg') ?>" alt="Profile Image" class="img-thumbnail mb-2" style="width: 120px; height: 120px; object-fit: cover;">
                             <input type="file" class="form-control mt-2" id="profile_image" name="profile_image" accept="image/*">
                             <small class="form-text text-muted">Accepted formats: JPG, JPEG, PNG</small>
                         </div>

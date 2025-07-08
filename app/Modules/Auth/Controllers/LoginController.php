@@ -105,8 +105,8 @@ class LoginController extends BaseController
                     $this->session->set([
                         'user_id'   => $mpqua->mpq_id,
                         'user_name'   => $mpqua->mpq_address,
+                        'mpq_qu_id' => $mpqua->mpq_qu_id,
                         'logged_in' => true,
-
                     ]);
                     $this->session->setFlashdata('success', 'Login successful!');
                     return redirect()->to('appmpqua/profile'); // Redirect to the dashboard
