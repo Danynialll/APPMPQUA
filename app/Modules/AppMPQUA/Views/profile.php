@@ -129,10 +129,6 @@
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="mpq_email" value="<?= $user_info->mpq_email ?>" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="address" name="mpq_address" value="<?= $user_info->mpq_address ?>" required>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary mb-0" data-bs-dismiss="modal"><i class="fas fa-times" style="font-size: 1rem !important;"></i>&nbsp; Close</button>
