@@ -5,6 +5,8 @@ namespace App\Modules\QvcAdmin\Controllers;
 use App\Models\MPQUAModel;
 use App\Models\AssessorModel;
 use App\Models\AuthUserModel;
+use App\Models\NECDetailModel;
+use App\Models\AsrNECMappingModel;
 use App\Models\QvcUniversityModel;
 use App\Controllers\BaseController;
 

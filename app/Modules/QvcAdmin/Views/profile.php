@@ -21,11 +21,8 @@
             <div class="col-auto my-auto">
                 <div class="h-100">
                     <h4 class="mb-1 fw-bold">
-                        <?= $user_info->qu_name ?>
+                        Admin Profile
                     </h4>
-                    <p class="mb-0 font-weight-bold text-sm text-secondary">
-                        <?= $user_info->qu_code ?>
-                    </p>
                 </div>
             </div>
             <div class="col text-end">
@@ -39,19 +36,16 @@
 
 <div class="container-fluid py-4">
     <div class="row mt-3">
-        <!-- University Info (Left) -->
+        <!-- Admin Info (Left) -->
         <div class="col-12 col-lg-4 mb-4">
             <div class="card h-100 shadow">
                 <div class="card-header pb-0 p-3 bg-gradient-primary text-white rounded-top">
-                    <h5 class="mb-3">University Information</h5>
+                    <h5 class="mb-3">Admin Information</h5>
                 </div>
                 <div class="card-body p-4">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong>Name:</strong> <br><?= $user_info->qu_name ?></li>
-                        <li class="list-group-item border-0 ps-0 text-sm"><strong>Phone:</strong> <br><?= $user_info->mpq_phone ?></li>
-                        <li class="list-group-item border-0 ps-0 text-sm"><strong>Fax:</strong> <br><?= $user_info->mpq_fax ?></li>
-                        <li class="list-group-item border-0 ps-0 text-sm"><strong>Email:</strong> <br><?= $user_info->mpq_email ?></li>
-                        <li class="list-group-item border-0 ps-0 text-sm"><strong>Address:</strong> <br><?= $user_info->mpq_address ?></li>
+                        <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong>Name:</strong> <br>$user_info->qu_name</li>
+                     
                     </ul>
                 </div>
             </div>
@@ -118,16 +112,16 @@
                         </div>
                         <div class="col-6 mb-3">
                             <label for="phone" class="form-label">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="mpq_phone" value="<?= $user_info->mpq_phone ?>" required>
+                            <input type="text" class="form-control" id="phone" name="mpq_phone" value="$user_info->mpq_phone" required>
                         </div>
                         <div class="col-6 mb-3">
                             <label for="fax" class="form-label">Fax</label>
-                            <input type="text" class="form-control" id="fax" name="mpq_fax" value="<?= $user_info->mpq_fax ?>" required>
+                            <input type="text" class="form-control" id="fax" name="mpq_fax" value="$user_info->mpq_fax" required>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="mpq_email" value="<?= $user_info->mpq_email ?>" required>
+                        <input type="email" class="form-control" id="email" name="mpq_email" value="$user_info->mpq_email" required>
                     </div>
                 </div>
                 <div class="modal-footer">

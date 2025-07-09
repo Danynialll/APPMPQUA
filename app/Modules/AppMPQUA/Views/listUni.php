@@ -476,7 +476,7 @@
 
                         modalPhoto.appendChild(img);
 
-                        document.getElementById('modalUniName').innerText = data.asr_title_desc || '' + ' ' +  data.asr_name || '';
+                        document.getElementById('modalUniName').innerText = (data.asr_title_desc ? data.asr_title_desc + ' ' : '') + (data.asr_name || '');
                         document.getElementById('modalUniGender').innerText = data.asr_gender || '';
                         document.getElementById('modalUniTelephone').innerText = data.asr_phone || '';
                         document.getElementById('modalUniFax').innerText = data.asr_fax || '';

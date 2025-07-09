@@ -34,7 +34,7 @@
             <!-- <li class="nav-item active"> -->
             <li class="nav-item ">
               <!-- <a class="nav-link active" href="<?= base_url() ?>pages/dashboards/default.html"> -->
-              <a class="nav-link " href="<?= base_url() ?>user/profile">
+              <a class="nav-link " href="<?= base_url() ?>qvcAdmin/profile">
                 <span class="sidenav-mini-icon"> P </span>
                 <span class="sidenav-normal">Profile</span>
               </a>

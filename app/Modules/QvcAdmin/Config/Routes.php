@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\QvcAdmin\Controllers\QvcAdminController;
+use App\Modules\QvcAdmin\Controllers\QvcProfileController;
 use App\Modules\QvcAdmin\Controllers\QvcAdminSAMCController;
 use App\Modules\QvcAdmin\Controllers\QvcAdminMPQUAController;
 use App\Modules\QvcAdmin\Controllers\QvcAdminCourseController;
@@ -36,6 +37,8 @@ $routes->group('qvcAdmin', function ($routes) {
 
         $routes->get('listNew',                             [QvcAdminMPQUAController::class,      'listNew']);
     });
+
+    $routes->get('profile',                                  [QvcProfileController::class,     'profile']);
 
 
 
