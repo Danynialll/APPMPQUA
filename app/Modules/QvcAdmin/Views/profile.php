@@ -26,9 +26,9 @@
                 </div>
             </div>
             <div class="col text-end">
-                <a href="javascript:;" onclick="showEditModal()" class="btn btn-outline-primary btn-sm">
+                <!-- <a href="javascript:;" onclick="showEditModal()" class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-user-edit"></i> Edit Profile
-                </a>
+                </a> -->
             </div>
         </div>
     </div>
@@ -36,60 +36,49 @@
 
 <div class="container-fluid py-4">
     <div class="row mt-3">
-        <!-- Admin Info (Left) -->
+        <!-- First Row: Bar Chart + Donut Chart -->
+        <div class="col-12 col-lg-8 mb-4">
+            <div class="card h-100 shadow">
+                <div class="card-header pb-0 p-3 bg-gradient-secondary text-white rounded-top">
+                    <h6 class="mb-3">Assessors by University</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="barChartUni"></canvas>
+                </div>
+            </div>
+        </div>
         <div class="col-12 col-lg-4 mb-4">
             <div class="card h-100 shadow">
-                <div class="card-header pb-0 p-3 bg-gradient-primary text-white rounded-top">
-                    <h5 class="mb-3">Admin Information</h5>
+                <div class="card-header pb-0 p-3 bg-gradient-info text-white rounded-top">
+                    <h6 class="mb-3">Assessor Gender Distribution</h6>
                 </div>
-                <div class="card-body p-4">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong>Name:</strong> <br>$user_info->qu_name</li>
-                     
-                    </ul>
+                <div class="card-body">
+                    <canvas id="pieChartGender"></canvas>
                 </div>
             </div>
         </div>
-        <!-- Charts (Right) -->
-        <div class="col-12 col-lg-8">
-            <div class="row">
-                <!-- Pie Charts -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow">
-                        <div class="card-header pb-0 p-3 bg-gradient-info text-white rounded-top">
-                            <h6 class="mb-3">Assessor Gender Distribution</h6>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="pieChartGender"></canvas>
-                        </div>
-                    </div>
+        <!-- Second Row: Bar Chart + Donut Chart -->
+        <div class="col-12 col-lg-8 mb-4">
+            <div class="card h-100 shadow">
+                <div class="card-header pb-0 p-3 bg-gradient-secondary text-white rounded-top">
+                    <h6 class="mb-3">Assessors by NEC Field</h6>
                 </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow">
-                        <div class="card-header pb-0 p-3 bg-gradient-success text-white rounded-top">
-                            <h6 class="mb-3">Active Assessors Distribution</h6>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="pieChartActive"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Bar Chart -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card h-100 shadow">
-                        <div class="card-header pb-0 p-3 bg-gradient-secondary text-white rounded-top">
-                            <h6 class="mb-3">Assessors by NEC Field</h6>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="barChartNEC"></canvas>
-                        </div>
-                    </div>
+                <div class="card-body">
+                    <canvas id="barChartNEC2"></canvas>
                 </div>
             </div>
         </div>
-    </div>  
+        <div class="col-12 col-lg-4 mb-4">
+            <div class="card h-100 shadow">
+                <div class="card-header pb-0 p-3 bg-gradient-success text-white rounded-top">
+                    <h6 class="mb-3">Active Assessors Distribution</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="pieChartActive"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal -->
@@ -215,27 +204,16 @@ $nec_names = array_column($nec_counts, 'nec_name');
         };
         const necNames = <?= json_encode($nec_names) ?>;
 
-        // Pie Chart: Gender
-        new Chart(document.getElementById('pieChartGender'), {
-            type: 'doughnut',
-            data: genderData,
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
+        const uniBarData = {
+            labels: <?= json_encode($uni_labels) ?>,
+            datasets: [{
+                label: 'Number of Assessors',
+                data: <?= json_encode($uni_data) ?>,
+                backgroundColor: '#36A2EB'
+            }]
+        };
 
-        // Pie Chart: Active
-        new Chart(document.getElementById('pieChartActive'), {
-            type: 'doughnut',
-            data: activeData,
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Bar Chart: NEC
+        // Bar Chart: NEC (first row)
         new Chart(document.getElementById('barChartNEC'), {
             type: 'bar',
             data: NECData,
@@ -246,12 +224,10 @@ $nec_names = array_column($nec_counts, 'nec_name');
                     tooltip: {
                         callbacks: {
                             title: function(context) {
-                                // Show nec_name as tooltip title
                                 const idx = context[0].dataIndex;
                                 return necNames[idx] || context[0].label;
                             },
                             label: function(context) {
-                                // Show count as label
                                 return 'Assessors: ' + context.parsed.y;
                             }
                         }
@@ -270,6 +246,94 @@ $nec_names = array_column($nec_counts, 'nec_name');
                         }
                     }
                 }
+            }
+        });
+
+        // Bar Chart: NEC (second row, duplicate)
+        new Chart(document.getElementById('barChartNEC2'), {
+            type: 'bar',
+            data: NECData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                const idx = context[0].dataIndex;
+                                return necNames[idx] || context[0].label;
+                            },
+                            label: function(context) {
+                                return 'Assessors: ' + context.parsed.y;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            stepSize: 1,
+                            callback: function(value) {
+                                return Number.isInteger(value) ? value : null;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Bar Chart: University
+        new Chart(document.getElementById('barChartUni'), {
+            type: 'bar',
+            data: uniBarData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Assessors: ' + context.parsed.y;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            stepSize: 1,
+                            callback: function(value) {
+                                return Number.isInteger(value) ? value : null;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Donut Chart: Gender (first row)
+        new Chart(document.getElementById('pieChartGender'), {
+            type: 'doughnut',
+            data: genderData,
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        // Donut Chart: Active (second row)
+        new Chart(document.getElementById('pieChartActive'), {
+            type: 'doughnut',
+            data: activeData,
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } }
             }
         });
     });

@@ -307,9 +307,9 @@
 
 <!-- View Modal -->
 <?php 
-    include 'ListUniFunctionModal/viewModal.php'; 
+    include 'ListUniFunctionModal/viewModalNew.php'; 
     include 'ListUniFunctionModal/editModal.php'; 
-    include 'ListUniFunctionModal/createModal.php'; 
+    include 'ListUniFunctionModal/createModalNew.php'; 
 ?>
 
 <script>

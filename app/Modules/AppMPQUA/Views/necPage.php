@@ -295,9 +295,9 @@
                             `<span class="badge bg-success text-white mb-1" style="word-break:break-word;">${nec.nd_desc}</span><br>`
                         ).join('');
                     }
-                    let imgHTML = '<img src="<?= base_url('assets/img/default-profile.jpg') ?>" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">';
+                    let imgHTML = '<img src="<?= base_url('assets/img/default-profile.jpg') ?>" class="img-thumbnail profile-thumb" style="width:50px; height:50px; object-fit:cover; cursor:pointer;">';
                     if (a.asr_image) {
-                        imgHTML = `<img src="<?= base_url() ?>${a.asr_image}" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">`;
+                        imgHTML = `<img src="<?= base_url() ?>${a.asr_image}" class="img-thumbnail profile-thumb" style="width:50px; height:50px; object-fit:cover; cursor:pointer;">`;
                     }
 
                     html += `<tr>

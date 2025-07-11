@@ -5,16 +5,15 @@ namespace App\Modules\QvcAdmin\Controllers;
 use App\Models\AssessorModel;
 use App\Models\NECDetailModel;
 use App\Models\AsrNECMappingModel;
+use App\Models\QvcUniversityModel;
 use App\Controllers\BaseController;
 
 class QvcProfileController extends BaseController
 {
 
     protected $session;
-    protected $authUser_model;
     protected $assessor_model;
     protected $QVC_University_model;
-    protected $MPQUA_model;
     protected $NECDetail_model;
     protected $asrNECMapping_model;
 
@@ -24,6 +23,7 @@ class QvcProfileController extends BaseController
         $this->assessor_model = new AssessorModel();
         $this->NECDetail_model = new NECDetailModel();
         $this->asrNECMapping_model = new AsrNECMappingModel();
+        $this->QVC_University_model = new QvcUniversityModel();
     }
 
     public function profile()
@@ -72,6 +72,17 @@ class QvcProfileController extends BaseController
                 }
             }
         }
+
+        $universities = $this->QVC_University_model->findAll();
+        $uni_labels = [];
+        $uni_data = [];
+        foreach ($universities as $uni) {
+            $count = $this->assessor_model->where('asr_qu_id', $uni->qu_id)->countAllResults();
+            if ($count > 0) {
+                $uni_labels[] = $uni->qu_code; // Use qu_code instead of qu_name
+                $uni_data[] = $count;
+            }
+        }
         
 
         // Prepare data for view
@@ -81,6 +92,8 @@ class QvcProfileController extends BaseController
             'active_assessors' => $active_assessors,
             'retired_assessors' => $retired_assessors,
             'nec_counts' => $nec_counts,
+            'uni_labels' => $uni_labels,
+            'uni_data' => $uni_data,
         ];
 
 

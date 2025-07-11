@@ -171,7 +171,7 @@
                             <div class="col-md-4 d-flex flex-column align-items-center">
                                 <div class="photo-container">
                                     <div class="photo-placeholder">
-                                        <span id="modalPhoto">
+                                        <span id="modalUniPhoto">
                                             <i class="fas fa-user"></i>
                                         </span>
                                     </div>
@@ -187,27 +187,27 @@
 
                                     <div class="info-row row bg-light mb-2">
                                         <div class="col-sm-4 fw-semibold text-muted">Name</div>
-                                        <div class="col-sm-8" id="modalName"></div>
+                                        <div class="col-sm-8" id="modalUniName"></div>
                                     </div>
 
                                     <div class="info-row row mb-2">
                                         <div class="col-sm-4 fw-semibold text-muted">Gender</div>
-                                        <div class="col-sm-8" id="modalGender"></div>
+                                        <div class="col-sm-8" id="modalUniGender"></div>
                                     </div>
 
                                     <div class="info-row row bg-light mb-2">
                                         <div class="col-sm-4 fw-semibold text-muted">Telephone</div>
-                                        <div class="col-sm-8" id="modalTelephone"></div>
+                                        <div class="col-sm-8" id="modalUniTelephone"></div>
                                     </div>
 
                                     <div class="info-row row mb-2">
                                         <div class="col-sm-4 fw-semibold text-muted">Fax</div>
-                                        <div class="col-sm-8" id="modalFax"></div>
+                                        <div class="col-sm-8" id="modalUniFax"></div>
                                     </div>
 
                                     <div class="info-row row bg-light">
                                         <div class="col-sm-4 fw-semibold text-muted">Email</div>
-                                        <div class="col-sm-8" id="modalEmail"></div>
+                                        <div class="col-sm-8" id="modalUniEmail"></div>
                                     </div>
                                 </div>
                             </div>
@@ -224,40 +224,34 @@
                                 <div class="info-label fw-semibold text-muted">
                                     Service Address:&nbsp;
                                 </div>
-                                <div class="info-value" id="modalAddress"></div>
-                            </div>
-                            <div class="info-row bg-light mb-2">
-                                <div class="info-label fw-semibold text-muted">
-                                    Institute:&nbsp;
-                                </div>
-                                <div class="info-value" id="modalInst"></div>
+                                <div class="info-value" id="modalUniAddress"></div>
                             </div>
                             <div class="info-row row mb-2">
                                 <div class="info-label fw-semibold text-muted">
                                     Expertise:
                                 </div>
-                                <div class="info-value" id="modalExpertise"></div>
+                                <div class="info-value" id="modalUniExpertise"></div>
                             </div>
                             
                             <div class="info-row bg-light mb-2">
                                 <div class="info-label fw-semibold text-muted">
                                     Retirement Date:&nbsp;
                                 </div>
-                                <div class="info-value" id="modalRetirement"></div>
+                                <div class="info-value" id="modalUniRetirement"></div>
                             </div>
                             
                             <div class="info-row row mb-2">
                                 <div class="info-label fw-semibold text-muted">
                                     NEC Field:
                                 </div>
-                                <div class="info-value" id="modalNEC"></div>
+                                <div class="info-value" id="modalUniNEC"></div>
                             </div>
                             
                             <div class="info-row bg-light mb-2">
                                 <div class="info-label fw-semibold text-muted">
                                     CV:
                                 </div>
-                                <div class="info-value" id="modalCV">
+                                <div class="info-value" id="modalUniCV">
                                     <a href="#" class="text-decoration-none">
                                         <i class="fas fa-download me-1"></i>
                                         Download CV
@@ -267,9 +261,41 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Enhanced Footer -->
+                <div class="modal-footer">
+                    <span data-bs-toggle="tooltip" title="Edit Assessor Details">
+                        <button type="button" class="btn btn-edit-details btn-primary"
+                            id="openEditModalBtn"
+                            data-asr-id=""
+                            data-bs-dismiss="modal">
+                            <i class="fas fa-pencil me-2"></i>
+                            Edit Details
+                        </button>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+document.getElementById('openEditModalBtn').addEventListener('click', function() {
+    // Hide the view modal first
+    var viewModal = bootstrap.Modal.getInstance(document.getElementById('viewModal'));
+    viewModal.hide();
 
+    // Wait for the modal to be fully hidden before showing the next
+    document.getElementById('viewModal').addEventListener('hidden.bs.modal', function handler() {
+        // Remove the event listener after it runs once
+        document.getElementById('viewModal').removeEventListener('hidden.bs.modal', handler);
+
+        // Show the edit modal
+        var editModal = new bootstrap.Modal(document.getElementById('editAssessorModal'));
+        editModal.show();
+
+        // Optionally, set the assessor id or other data here
+        // document.getElementById('editAssessorModal').setAttribute('data-asr-id', ...);
+    });
+});
+</script>
