@@ -5,6 +5,12 @@
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<style>
+    .select2-container {
+  width: 100% !important;
+}
+</style>
+
 <div class="modal fade custom-modal" id="editAssessorModal" tabindex="-1" aria-labelledby="editAssessorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content">
@@ -149,7 +155,6 @@
 
     });
 </script>
-
 
 <script>
     document.getElementById('editAssessorForm').addEventListener('submit', function(e) {

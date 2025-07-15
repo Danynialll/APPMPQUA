@@ -281,21 +281,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
 document.getElementById('openEditModalBtn').addEventListener('click', function() {
-    // Hide the view modal first
+    var asrId = this.getAttribute('data-asr-id');
     var viewModal = bootstrap.Modal.getInstance(document.getElementById('viewModal'));
     viewModal.hide();
 
-    // Wait for the modal to be fully hidden before showing the next
     document.getElementById('viewModal').addEventListener('hidden.bs.modal', function handler() {
-        // Remove the event listener after it runs once
         document.getElementById('viewModal').removeEventListener('hidden.bs.modal', handler);
 
-        // Show the edit modal
-        var editModal = new bootstrap.Modal(document.getElementById('editAssessorModal'));
-        editModal.show();
-
-        // Optionally, set the assessor id or other data here
-        // document.getElementById('editAssessorModal').setAttribute('data-asr-id', ...);
+        // Call the function from editModalNew.php to open and populate the edit modal
+        if (typeof window.openEditModalWithData === 'function') {
+            window.openEditModalWithData(asrId);
+        }
     });
 });
 </script>

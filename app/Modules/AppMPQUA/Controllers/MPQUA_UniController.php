@@ -395,11 +395,11 @@ class MPQUA_UniController extends BaseController
 
         // Get expertise
         $expertise = $this->assessorExpertiseModel
-            ->select('expertise_field.ef_desc')
+            ->select('expertise_field.ef_id, expertise_field.ef_desc')
             ->join('qvc_upsi.expertise_field', 'expertise_field.ef_id = assessor_expertise_field.aef_ef_id', 'left')
             ->where('aef_asr_id', $asr_id)
             ->findAll();
-        $assessor->expertise_list = array_column($expertise, 'ef_desc');
+        $assessor->expertise_list = $expertise;
 
         // Get NEC
         $nec_mappings = $this->asrNECMapping_model->where('anm_asr_id', $asr_id)->findAll();
@@ -425,6 +425,7 @@ class MPQUA_UniController extends BaseController
     {
 
         $assessor_id           = $this->request->getPost('asr_id');
+        $asr_title_desc        = $this->request->getPost('asr_title_desc');
         $asr_name              = $this->request->getPost('asr_name');
         $asr_phone             = $this->request->getPost('asr_phone');
         $asr_fax               = $this->request->getPost('asr_fax');
@@ -467,6 +468,7 @@ class MPQUA_UniController extends BaseController
 
         // Update main assessor data
         $data = [
+            'asr_title_desc'      => $asr_title_desc,
             'asr_name'            => $asr_name,
             'asr_phone'           => $asr_phone,
             'asr_fax'             => $asr_fax,
@@ -484,16 +486,18 @@ class MPQUA_UniController extends BaseController
         $this->assessorExpertiseModel->where('aef_asr_id', $assessor_id)->delete();
 
         // Insert new expertise
+        $expertise = array_filter($expertise, function ($value) {
+            return trim($value) !== "";
+        });
+
         if ($expertise && is_array($expertise)) {
-            $expertise_data = [];
             foreach ($expertise as $exp_id) {
-                if (trim($exp_id) !== "") {
-                    $expertise_data[] = [
-                        'aef_asr_id' => $assessor_id,
-                        'aef_ef_id'  => $exp_id
-                    ];
-                }
+                $expertise_data[] = [
+                    'aef_asr_id' => $assessor_id,
+                    'aef_ef_id'  => $exp_id
+                ];
             }
+
             if (!empty($expertise_data)) {
                 $this->assessorExpertiseModel->insertBatch($expertise_data);
             }
