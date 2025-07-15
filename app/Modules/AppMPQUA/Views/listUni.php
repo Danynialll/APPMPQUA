@@ -267,7 +267,7 @@
                                                     <img src="<?= base_url() ?>assets/img/default-profile.jpg" alt="Default Profile" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;">
                                                 <?php endif; ?>
                                             </td>
-                                            <td><h6 class="mb-0 text-sm"><?= esc($asr->asr_title_desc) ?> <?= esc($asr->asr_name) ?></h6></td>
+                                            <td><h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->asr_title_desc) ?> <?= esc($asr->asr_name) ?></h6></td>
                                             <td>
                                                 <h6 class="mb-0 text-sm">
                                                     <?php if (!empty($asr->expertise_list)): ?>

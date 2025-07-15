@@ -246,8 +246,8 @@
                                     <th class="text-center" style="width:60px;">No.</th>
                                     <th>Image</th>
                                     <th>Name</th>
-                                    <th style="width:150px;">Expertise</th>
-                                    <th style="width:150px;">NEC Field</th>
+                                    <th>Expertise</th>
+                                    <th>NEC Field</th>
                                     <th style="width:120px;" class="text-center">Details</th>
                                 </tr>
                             </thead>
