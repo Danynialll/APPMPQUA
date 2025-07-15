@@ -517,8 +517,8 @@
                         if (data.expertise_list && data.expertise_list.length > 0) {
                             data.expertise_list.forEach(item => {
                                 const badge = document.createElement('span');
-                                badge.className = 'badge bg-primary text-white me-1';
-                                badge.innerText = item;
+                                badge.className = 'badge bg-primary text-white m-1';
+                                badge.innerText = item.ef_desc;
                                 expertiseContainer.appendChild(badge);
                             });
                         } else {
@@ -531,7 +531,7 @@
                         if (data.nec_detail_list && data.nec_detail_list.length > 0) {
                             data.nec_detail_list.forEach(item => {
                                 const badge = document.createElement('span');
-                                badge.className = 'badge bg-success text-white me-1';
+                                badge.className = 'badge bg-success text-white m-1';
                                 badge.innerText = item.nd_desc;
                                 necContainer.appendChild(badge);
                             });
