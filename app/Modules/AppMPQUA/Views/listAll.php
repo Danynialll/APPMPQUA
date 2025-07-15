@@ -67,6 +67,15 @@
         font-size: 0.75rem;
     }
 
+    .badge,
+    .badge.bg-success {
+        word-break: break-word;
+        white-space: normal;
+        max-width: 100%;
+        display: inline-block;
+        text-align: start;
+    }
+
     .status-badge {
         border-radius: 6px;
         padding: 8px 10px;

@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="<?= base_url('assets/css/custom_table.css'); ?>">
 <link rel="stylesheet" href="<?= base_url('assets/css/custom_card.css'); ?>">
 
+
 <style>
     .nav-link {
         font-weight: 500;
@@ -55,6 +56,15 @@
         padding: 6px 10px;
         font-weight: 500;
         font-size: 0.75rem;
+    }
+
+    .badge,
+    .badge.bg-success {
+        word-break: break-word;
+        white-space: normal;
+        max-width: 100%;
+        display: inline-block;
+        text-align: start;
     }
 
     .status-badge {
@@ -307,7 +317,7 @@
 
 <!-- View Modal -->
 <?php 
-    include 'ListUniFunctionModal/editModalNew.php'; 
+    include 'ListUniFunctionModal/editModalNew2.php'; 
     include 'ListUniFunctionModal/viewModalNew.php'; 
     include 'ListUniFunctionModal/createModalNew.php'; 
 ?>
@@ -446,12 +456,16 @@
             XLSX.writeFile(workbook, filename);
         });
 
+        function insertWbrEveryNChars(text, n) {
+            return text.replace(new RegExp(`(.{${n}})`, 'g'), '$1<wbr>');
+        }
+
+
             document.querySelector("#datatable-search").addEventListener("click", function(e) {
                 const target = e.target.closest(".btn-view-details");
                 if (!target) return;
 
                 const asrId = target.getAttribute("data-asr-id");
-                console.log("Assessor ID:", asrId);
                 fetch('<?= base_url('appmpqua/get_assessor/') ?>' + asrId)
                     .then(response => response.json())
                     .then(result => {

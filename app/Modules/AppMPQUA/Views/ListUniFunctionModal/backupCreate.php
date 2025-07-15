@@ -498,80 +498,77 @@
 </div>
 
 <script>
-    jQuery(document).ready(function($) {
-        let currentStep = 1;
-        const totalSteps = 4;
-        const createModal = document.querySelector('#addAssessorModal');
+    let currentStep = 1;
+    const totalSteps = 4;
 
-        // Step navigation
-        function updateStepIndicator() {
+    // Step navigation
+    function updateStepIndicator() {
+        const progressLine = document.querySelector('.progress-line');
+        const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+        progressLine.style.width = progressPercent + '%';
 
-            const progressLine = document.querySelector('#addAssessorModal .progress-line');
-            const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
-            progressLine.style.width = progressPercent + '%';
-
-            // Update step indicators
-            document.querySelectorAll('#addAssessorModal .step').forEach((step, index) => {
-                const stepNumber = index + 1;
-                step.classList.remove('active', 'completed');
-                if (currentStep < 1 || currentStep > totalSteps) {
-                    console.warn('Invalid step:', currentStep);
-                    return false;
-                }
-
-                if (stepNumber < currentStep) {
-                    step.classList.add('completed');
-                } else if (stepNumber === currentStep) {
-                    step.classList.add('active');
-                }
-            });
-
-            // Update step content
-            document.querySelectorAll('#addAssessorModal .step-content').forEach((content, index) => {
-                content.classList.remove('active');
-                if (index + 1 === currentStep) {
-                    content.classList.add('active');
-                }
-            });
-
-            createModal.querySelector('#prevBtn').style.display = currentStep === 1 ? 'none' : 'inline-block';
-            createModal.querySelector('#nextBtn').style.display = currentStep === totalSteps ? 'none' : 'inline-block';
-            createModal.querySelector('#submitBtn').style.display = currentStep === totalSteps ? 'inline-block' : 'none';
-
-        }
-
-        createModal.querySelector('#nextBtn').addEventListener('click', function () {
-            if (validateCurrentStep()) {
-                currentStep++;
-                updateStepIndicator(); // This is already scoped for create
-            }
-        });
-
-        createModal.querySelector('#prevBtn').addEventListener('click', function () {
-            currentStep--;
-            updateStepIndicator();
-        });
-
-        // Step validation
-        function validateCurrentStep() {
-            const currentContent = createModal.querySelector(`.step-content[data-content="${currentStep}"]`);
-            const requiredFields = currentContent.querySelectorAll('[required]');
+        // Update step indicators
+        document.querySelectorAll('.step').forEach((step, index) => {
+            const stepNumber = index + 1;
+            step.classList.remove('active', 'completed');
             
-            for (let field of requiredFields) {
-                if (!field.value.trim()) {
-                    field.focus();
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Required Field',
-                        text: 'Please fill in all required fields before proceeding.',
-                    });
-                    return false;
-                }
+            if (stepNumber < currentStep) {
+                step.classList.add('completed');
+            } else if (stepNumber === currentStep) {
+                step.classList.add('active');
             }
-            return true;
-        }
+        });
 
-        $('#addAssessorModal .select2').select2({
+        // Update step content
+        document.querySelectorAll('.step-content').forEach((content, index) => {
+            content.classList.remove('active');
+            if (index + 1 === currentStep) {
+                content.classList.add('active');
+            }
+        });
+
+        // Update navigation buttons
+        document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'inline-block';
+        document.getElementById('nextBtn').style.display = currentStep === totalSteps ? 'none' : 'inline-block';
+        document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'inline-block' : 'none';
+    }
+
+    // Next button
+    document.getElementById('nextBtn').addEventListener('click', function() {
+        if (validateCurrentStep()) {
+            currentStep++;
+            updateStepIndicator();
+        }
+    });
+
+    // Previous button
+    document.getElementById('prevBtn').addEventListener('click', function() {
+        currentStep--;
+        updateStepIndicator();
+    });
+
+    // Step validation
+    function validateCurrentStep() {
+        const currentContent = document.querySelector(`.step-content[data-content="${currentStep}"]`);
+        const requiredFields = currentContent.querySelectorAll('required');
+        
+        for (let field of requiredFields) {
+            if (!field.value.trim()) {
+                field.focus();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Required Field',
+                    text: 'Please fill in all required fields before proceeding.',
+                });
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Initialize Select2
+    jQuery(document).ready(function($) {
+        $('.select2').select2({
             allowClear: false,
             dropdownParent: $('#addAssessorModal'),
             width: '100%',

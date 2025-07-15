@@ -5,11 +5,11 @@
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<!-- <style>
+<style>
     .select2-container {
   width: 100% !important;
 }
-</style> -->
+</style>
 
 <!-- Use the same CSS as createModalNew.php for consistent style -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -342,7 +342,7 @@
                                 <div class="row align-items-end">
                                     <div class="col-10">
                                         <label for="expertise" class="form-label">Select Expertise</label>
-                                        <select class="form-select" name="expertise[]" id="editExpertise">
+                                        <select class="form-select select2" name="expertise[]" id="editExpertise">
                                             <option value="">Choose an area of expertise</option>
                                             <?php foreach ($expertise_list as $expertise): ?>
                                                 <option value="<?= $expertise->ef_id ?>"><?= $expertise->ef_desc ?></option>
@@ -375,7 +375,7 @@
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label for="nec_broad" class="form-label">NEC Broad</label>
-                                        <select class="form-select " id="edit_nec_broad" name="nec_broad">
+                                        <select class="form-select select2" id="edit_nec_broad" name="nec_broad">
                                             <option value="">Select NEC Broad</option>
                                             <?php foreach ($nec_broad as $broad): ?>
                                                 <option value="<?= $broad->nb_id ?>"><?= $broad->nb_code ?> <?= $broad->nb_name ?></option>
@@ -384,13 +384,13 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label for="nec_narrow" class="form-label">NEC Narrow</label>
-                                        <select class="form-select" id="edit_nec_narrow" name="nec_narrow" disabled>
+                                        <select class="form-select select2" id="edit_nec_narrow" name="nec_narrow" disabled>
                                             <option value="">Select NEC Narrow</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="nec_detail" class="form-label">NEC Detail</label>
-                                        <select class="form-select" id="edit_nec_detail" name="nec_detail[]" disabled>
+                                        <select class="form-select select2" id="edit_nec_detail" name="nec_detail[]" disabled>
                                             <option value="">Select NEC Detail</option>
                                         </select>
                                     </div>
@@ -458,399 +458,393 @@
 
 <!-- JS: replicate the stepper, select2, badge, and file preview logic from createModalNew.php, but use the Edit IDs -->
 <script>
-let currentStepEdit = 1;
-const totalStepsEdit = 4;
 
-function updateStepIndicatorEdit() {
-    const progressLine = document.querySelector('#editAssessorModal .progress-line');
-    const progressPercent = ((currentStepEdit - 1) / (totalStepsEdit - 1)) * 100;
-    progressLine.style.width = progressPercent + '%';
+    jQuery(document).ready(function($) {
+        let currentStepEdit = 1;
+        const totalStepsEdit = 4;
+        const editModal = document.querySelector('#editAssessorModal');
 
-    document.querySelectorAll('#editAssessorModal .step').forEach((step, index) => {
-        const stepNumber = index + 1;
-        step.classList.remove('active', 'completed');
-        if (stepNumber < currentStepEdit) {
-            step.classList.add('completed');
-        } else if (stepNumber === currentStepEdit) {
-            step.classList.add('active');
-        }
-    });
+        function updateStepIndicatorEdit() {
 
-    document.querySelectorAll('#editAssessorModal .step-content').forEach((content, index) => {
-        content.classList.remove('active');
-        if (index + 1 === currentStepEdit) {
-            content.classList.add('active');
-        }
-    });
+            const progressLineEdit = document.querySelector('#editAssessorModal .progress-line');
+            const progressPercentEdit = ((currentStepEdit - 1) / (totalStepsEdit - 1)) * 100;
+            progressLineEdit.style.width = progressPercentEdit + '%';
 
-    document.getElementById('prevBtnEdit').style.display = currentStepEdit === 1 ? 'none' : 'inline-block';
-    document.getElementById('nextBtnEdit').style.display = currentStepEdit === totalStepsEdit ? 'none' : 'inline-block';
-    document.getElementById('submitBtnEdit').style.display = currentStepEdit === totalStepsEdit ? 'inline-block' : 'none';
-}
-
-document.getElementById('nextBtnEdit').addEventListener('click', function() {
-    if (validateCurrentStepEdit()) {
-        currentStepEdit++;
-        updateStepIndicatorEdit();
-    }
-});
-document.getElementById('prevBtnEdit').addEventListener('click', function() {
-    currentStepEdit--;
-    updateStepIndicatorEdit();
-});
-function validateCurrentStepEdit() {
-    const currentContent = document.querySelector(`#editAssessorModal .step-content[data-content="${currentStepEdit}"]`);
-    const requiredFields = currentContent.querySelectorAll('[required]');
-    for (let field of requiredFields) {
-        if (!field.value.trim()) {
-            field.focus();
-            Swal.fire({
-                icon: 'warning',
-                title: 'Required Field',
-                text: 'Please fill in all required fields before proceeding.',
-            });
-            return false;
-        }
-    }
-    return true;
-}
-jQuery(document).ready(function($) {
-    $('#editAssessorModal .select2').select2({
-        allowClear: false,
-        dropdownParent: $('#editAssessorModal'),
-        width: '100%',
-    });
-
-    // Expertise badge logic
-    $('#addExpertiseBtnEdit').on('click', function() {
-        var expertiseId = $('#editExpertise').val();
-        var expertiseText = $('#editExpertise option:selected').text();
-        if (!expertiseId) {
-            Swal.fire({ icon: 'warning', title: 'Please select expertise', text: 'You must select an expertise before adding.' });
-            return;
-        }
-        var exists = false;
-        $('#expertiseDisplayEdit [data-exp-id="' + expertiseId + '"]').each(function() { exists = true; });
-        if (exists) {
-            Swal.fire({ icon: 'info', title: 'Already Added', text: 'This expertise is already added.' });
-            return;
-        }
-        var badge = `
-            <div class="badge-item" data-exp-id="${expertiseId}">
-                <i class="fas fa-lightbulb"></i>
-                ${expertiseText}
-                <button type="button" class="remove-btn delete-exp-edit">
-                    <i class="fas fa-times"></i>
-                </button>
-                <input type="hidden" name="expertise[]" value="${expertiseId}">
-            </div>
-        `;
-        $('#expertiseDisplayEdit').find('.no-selection').remove();
-        $('#expertiseDisplayEdit').append(badge);
-        $('#editExpertise').val('').trigger('change');
-    });
-    $(document).on('click', '.delete-exp-edit', function() {
-        var badge = $(this).closest('.badge-item');
-        badge.fadeOut(300, function() {
-            $(this).remove();
-            if ($('#expertiseDisplayEdit .badge-item').length === 0) {
-                $('#expertiseDisplayEdit').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No expertise selected yet</div>');
-            }
-        });
-    });
-
-    // NEC badge logic
-    $('#addNECBtnEdit').on('click', function() {
-        var necDetailId = $('#edit_nec_detail').val();
-        var necDetailText = $('#edit_nec_detail option:selected').text();
-        if (!necDetailId) {
-            Swal.fire({ icon: 'warning', title: 'Please select NEC Detail', text: 'You must select a NEC Detail before adding.' });
-            return;
-        }
-        var exists = false;
-        $('#necDisplayEdit [data-nd-id="' + necDetailId + '"]').each(function() { exists = true; });
-        if (exists) {
-            Swal.fire({ icon: 'info', title: 'Already Added', text: 'This NEC Detail is already added.' });
-            return;
-        }
-        var badge = `
-            <div class="badge-item" data-nd-id="${necDetailId}">
-                <i class="fas fa-sitemap"></i>
-                ${necDetailText}
-                <button type="button" class="remove-btn delete-nec-edit">
-                    <i class="fas fa-times"></i>
-                </button>
-                <input type="hidden" name="nec_detail[]" value="${necDetailId}">
-            </div>
-        `;
-        $('#necDisplayEdit').find('.no-selection').remove();
-        $('#necDisplayEdit').append(badge);
-        // Reset selections
-        $('#edit_nec_broad').val('').trigger('change');
-        $('#edit_nec_narrow').val('').trigger('change').prop('disabled', true);
-        $('#edit_nec_detail').val('').trigger('change').prop('disabled', true);
-    });
-    $(document).on('click', '.delete-nec-edit', function() {
-        var badge = $(this).closest('.badge-item');
-        badge.fadeOut(300, function() {
-            $(this).remove();
-            if ($('#necDisplayEdit .badge-item').length === 0) {
-                $('#necDisplayEdit').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No NEC fields selected yet</div>');
-            }
-        });
-    });
-
-    // NEC cascading dropdowns
-    $('#edit_nec_broad').on('change', function() {
-        var broad_id = $(this).val();
-        $('#edit_nec_narrow').prop('disabled', !broad_id);
-        $('#edit_nec_detail').prop('disabled', true);
-        if (broad_id) {
-            $.ajax({
-                url: "<?= base_url('appmpqua/get_nec_narrow') ?>",
-                type: "POST",
-                data: {
-                    broad_id: broad_id,
-                    csrf_test_name: $("input[name='csrf_test_name']").val()
-                },
-                dataType: "json",
-                success: function(response) {
-                    if (response.success) {
-                        var options = '<option value="">Select NEC Narrow</option>';
-                        $.each(response.data, function(i, item) {
-                            options += `<option value="${item.nn_id}">${item.nn_code} ${item.nn_name}</option>`;
-                        });
-                        $('#edit_nec_narrow').html(options).trigger('change');
-                        $("input[name='csrf_test_name']").val(response.csrf_token);
-                    } else {
-                        $('#edit_nec_narrow').html('<option value="">Select NEC Narrow</option>');
-                    }
+            document.querySelectorAll('#editAssessorModal .step').forEach((step, index) => {
+                const stepNumber = index + 1;
+                step.classList.remove('active', 'completed');
+                if (stepNumber < currentStepEdit) {
+                    step.classList.add('completed');
+                } else if (stepNumber === currentStepEdit) {
+                    step.classList.add('active');
                 }
             });
-        } else {
-            $('#edit_nec_narrow').html('<option value="">Select NEC Narrow</option>');
-        }
-    });
-    $('#edit_nec_narrow').on('change', function() {
-        var narrow_id = $(this).val();
-        $('#edit_nec_detail').prop('disabled', !narrow_id);
-        if (narrow_id) {
-            $.ajax({
-                url: "<?= base_url('appmpqua/get_nec_detail') ?>",
-                type: "POST",
-                data: {
-                    narrow_id: narrow_id,
-                    csrf_test_name: $("input[name='csrf_test_name']").val()
-                },
-                dataType: "json",
-                success: function(response) {
-                    if (response.success) {
-                        var options = '<option value="">Select NEC Detail</option>';
-                        $.each(response.data, function(i, item) {
-                            options += `<option value="${item.nd_id}">${item.nd_code} ${item.nd_name}</option>`;
-                        });
-                        $('#edit_nec_detail').html(options).trigger('change');
-                        $("input[name='csrf_test_name']").val(response.csrf_token);
-                    } else {
-                        $('#edit_nec_detail').html('<option value="">Select NEC Detail</option>');
-                    }
+
+            document.querySelectorAll('#editAssessorModal .step-content').forEach((content, index) => {
+                content.classList.remove('active');
+                if (index + 1 === currentStepEdit) {
+                    content.classList.add('active');
                 }
             });
-        } else {
-            $('#edit_nec_detail').html('<option value="">Select NEC Detail</option>');
-        }
-    });
 
-    // Preview selected profile picture
-    $('#profilePictureEdit').on('change', function(e) {
-        const file = this.files[0];
-        const previewArea = $(this).closest('.file-upload-area');
-        previewArea.find('.image-preview').remove();
-        if (file && file.type.match('image.*')) {
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                const img = $('<img class="image-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
-                img.attr('src', evt.target.result);
-                previewArea.append(img);
-            };
-            reader.readAsDataURL(file);
+            editModal.querySelector('#prevBtnEdit').style.display = currentStepEdit === 1 ? 'none' : 'inline-block';
+            editModal.querySelector('#nextBtnEdit').style.display = currentStepEdit === totalStepsEdit ? 'none' : 'inline-block';
+            editModal.querySelector('#submitBtnEdit').style.display = currentStepEdit === totalStepsEdit ? 'inline-block' : 'none';
         }
-    });
-    // Preview selected CV file
-    $('#cvFileEdit').on('change', function(e) {
-        const file = this.files[0];
-        const previewArea = $(this).closest('.file-upload-area');
-        previewArea.find('.cv-preview').remove();
-        if (file) {
-            let preview;
-            if (file.type === 'application/pdf') {
-                preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-pdf fa-2x text-danger"></i><div>' + file.name + '</div></div>');
-            } else if (file.type.match('image.*')) {
+
+        editModal.querySelector('#nextBtnEdit').addEventListener('click', function() {
+            if (validateCurrentStepEdit()) {
+                currentStepEdit++;
+                updateStepIndicatorEdit();
+            }
+        });
+        
+        editModal.querySelector('#prevBtnEdit').addEventListener('click', function() {
+            currentStepEdit--;
+            updateStepIndicatorEdit();
+        });
+
+        function validateCurrentStepEdit() {
+            const currentContent = document.querySelector(`#editAssessorModal .step-content[data-content="${currentStepEdit}"]`);
+            const requiredFields = currentContent.querySelectorAll('[required]');
+            for (let field of requiredFields) {
+                if (!field.value.trim()) {
+                    field.focus();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Required Field',
+                        text: 'Please fill in all required fields before proceeding.',
+                    });
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        $('#editAssessorModal .select2').select2({
+            allowClear: false,
+            dropdownParent: $('#editAssessorModal'),
+            width: '100%',
+        });
+
+        // Expertise badge logic
+        $('#addExpertiseBtnEdit').on('click', function() {
+            var expertiseId = $('#editExpertise').val();
+            var expertiseText = $('#editExpertise option:selected').text();
+            if (!expertiseId) {
+                Swal.fire({ icon: 'warning', title: 'Please select expertise', text: 'You must select an expertise before adding.' });
+                return;
+            }
+            var exists = false;
+            $('#expertiseDisplayEdit [data-exp-id="' + expertiseId + '"]').each(function() { exists = true; });
+            if (exists) {
+                Swal.fire({ icon: 'info', title: 'Already Added', text: 'This expertise is already added.' });
+                return;
+            }
+            var badge = `
+                <div class="badge-item" data-exp-id="${expertiseId}">
+                    <i class="fas fa-lightbulb"></i>
+                    ${expertiseText}
+                    <button type="button" class="remove-btn delete-exp-edit">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <input type="hidden" name="expertise[]" value="${expertiseId}">
+                </div>
+            `;
+            $('#expertiseDisplayEdit').find('.no-selection').remove();
+            $('#expertiseDisplayEdit').append(badge);
+            $('#editExpertise').val('').trigger('change');
+        });
+        $(document).on('click', '.delete-exp-edit', function() {
+            var badge = $(this).closest('.badge-item');
+            badge.fadeOut(300, function() {
+                $(this).remove();
+                if ($('#expertiseDisplayEdit .badge-item').length === 0) {
+                    $('#expertiseDisplayEdit').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No expertise selected yet</div>');
+                }
+            });
+        });
+
+        // NEC badge logic
+        $('#addNECBtnEdit').on('click', function() {
+            var necDetailId = $('#edit_nec_detail').val();
+            var necDetailText = $('#edit_nec_detail option:selected').text();
+            if (!necDetailId) {
+                Swal.fire({ icon: 'warning', title: 'Please select NEC Detail', text: 'You must select a NEC Detail before adding.' });
+                return;
+            }
+            var exists = false;
+            $('#necDisplayEdit [data-nd-id="' + necDetailId + '"]').each(function() { exists = true; });
+            if (exists) {
+                Swal.fire({ icon: 'info', title: 'Already Added', text: 'This NEC Detail is already added.' });
+                return;
+            }
+            var badge = `
+                <div class="badge-item" data-nd-id="${necDetailId}">
+                    <i class="fas fa-sitemap"></i>
+                    ${necDetailText}
+                    <button type="button" class="remove-btn delete-nec-edit">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <input type="hidden" name="nec_detail[]" value="${necDetailId}">
+                </div>
+            `;
+            $('#necDisplayEdit').find('.no-selection').remove();
+            $('#necDisplayEdit').append(badge);
+            // Reset selections
+            $('#edit_nec_broad').val('').trigger('change');
+            $('#edit_nec_narrow').val('').trigger('change').prop('disabled', true);
+            $('#edit_nec_detail').val('').trigger('change').prop('disabled', true);
+        });
+        $(document).on('click', '.delete-nec-edit', function() {
+            var badge = $(this).closest('.badge-item');
+            badge.fadeOut(300, function() {
+                $(this).remove();
+                if ($('#necDisplayEdit .badge-item').length === 0) {
+                    $('#necDisplayEdit').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No NEC fields selected yet</div>');
+                }
+            });
+        });
+
+        // NEC cascading dropdowns
+        $('#edit_nec_broad').on('change', function() {
+            var broad_id = $(this).val();
+            $('#edit_nec_narrow').prop('disabled', !broad_id);
+            $('#edit_nec_detail').prop('disabled', true);
+            if (broad_id) {
+                $.ajax({
+                    url: "<?= base_url('appmpqua/get_nec_narrow') ?>",
+                    type: "POST",
+                    data: {
+                        broad_id: broad_id,
+                        csrf_test_name: $("input[name='csrf_test_name']").val()
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success) {
+                            var options = '<option value="">Select NEC Narrow</option>';
+                            $.each(response.data, function(i, item) {
+                                options += `<option value="${item.nn_id}">${item.nn_code} ${item.nn_name}</option>`;
+                            });
+                            $('#edit_nec_narrow').html(options).trigger('change');
+                            $("input[name='csrf_test_name']").val(response.csrf_token);
+                        } else {
+                            $('#edit_nec_narrow').html('<option value="">Select NEC Narrow</option>');
+                        }
+                    }
+                });
+            } else {
+                $('#edit_nec_narrow').html('<option value="">Select NEC Narrow</option>');
+            }
+        });
+        $('#edit_nec_narrow').on('change', function() {
+            var narrow_id = $(this).val();
+            $('#edit_nec_detail').prop('disabled', !narrow_id);
+            if (narrow_id) {
+                $.ajax({
+                    url: "<?= base_url('appmpqua/get_nec_detail') ?>",
+                    type: "POST",
+                    data: {
+                        narrow_id: narrow_id,
+                        csrf_test_name: $("input[name='csrf_test_name']").val()
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success) {
+                            var options = '<option value="">Select NEC Detail</option>';
+                            $.each(response.data, function(i, item) {
+                                options += `<option value="${item.nd_id}">${item.nd_code} ${item.nd_name}</option>`;
+                            });
+                            $('#edit_nec_detail').html(options).trigger('change');
+                            $("input[name='csrf_test_name']").val(response.csrf_token);
+                        } else {
+                            $('#edit_nec_detail').html('<option value="">Select NEC Detail</option>');
+                        }
+                    }
+                });
+            } else {
+                $('#edit_nec_detail').html('<option value="">Select NEC Detail</option>');
+            }
+        });
+
+        // Preview selected profile picture
+        $('#profilePictureEdit').on('change', function(e) {
+            const file = this.files[0];
+            const previewArea = $(this).closest('.file-upload-area');
+            previewArea.find('.image-preview').remove();
+            if (file && file.type.match('image.*')) {
                 const reader = new FileReader();
                 reader.onload = function(evt) {
-                    const img = $('<img class="cv-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
+                    const img = $('<img class="image-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
                     img.attr('src', evt.target.result);
                     previewArea.append(img);
                 };
                 reader.readAsDataURL(file);
-                return;
-            } else {
-                preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-alt fa-2x"></i><div>' + file.name + '</div></div>');
             }
-            previewArea.append(preview);
-        }
+        });
+        // Preview selected CV file
+        $('#cvFileEdit').on('change', function(e) {
+            const file = this.files[0];
+            const previewArea = $(this).closest('.file-upload-area');
+            previewArea.find('.cv-preview').remove();
+            if (file) {
+                let preview;
+                if (file.type === 'application/pdf') {
+                    preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-pdf fa-2x text-danger"></i><div>' + file.name + '</div></div>');
+                } else if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        const img = $('<img class="cv-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
+                        img.attr('src', evt.target.result);
+                        previewArea.append(img);
+                    };
+                    reader.readAsDataURL(file);
+                    return;
+                } else {
+                    preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-alt fa-2x"></i><div>' + file.name + '</div></div>');
+                }
+                previewArea.append(preview);
+            }
+        });
+
+        // Populate form data for edit
+        window.openEditModalWithData = function(asrId) {
+            // Reset stepper and form
+            currentStepEdit = 1;
+            updateStepIndicatorEdit();
+            $('#editAssessorForm')[0].reset();
+            $('#expertiseDisplayEdit').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No expertise selected yet</div>');
+            $('#necDisplayEdit').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No NEC fields selected yet</div>');
+            $('#profilePictureAreaEdit .image-preview').remove();
+            $('#cvFileAreaEdit .cv-preview').remove();
+
+            // Fetch data
+            fetch('<?= base_url('appmpqua/get_assessor/') ?>' + asrId)
+                .then(response => response.json())
+                .then(result => {
+                    if (!result.success) return;
+                    const data = result.data;
+                    $('#modalIdInput').val(data.asr_id || '');
+                    $('#modalTitleInput').val(data.asr_title_desc || '');
+                    $('#modalNameInput').val(data.asr_name || '');
+                    $('#modalGenderInput').val(data.asr_gender || '');
+                    $('#modalRetirementInput').val(data.asr_retirement_date || '');
+                    $('#modalEmailInput').val(data.asr_email || '');
+                    $('#modalTelephoneInput').val(data.asr_phone || '');
+                    $('#modalFaxInput').val(data.asr_fax || '');
+                    $('#modalAddressInput').val(data.asr_service_address || '');
+
+                    // Expertise badges
+                    if (data.expertise_list && data.expertise_list.length > 0) {
+                        data.expertise_list.forEach(exp => {
+                            let expId = exp.ef_id || exp.id || exp;
+                            let expDesc = exp.ef_desc || exp.name || exp;
+                            var badge = `
+                                <div class="badge-item" data-exp-id="${expId}">
+                                    <i class="fas fa-lightbulb"></i>
+                                    ${expDesc}
+                                    <button type="button" class="remove-btn delete-exp-edit">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <input type="hidden" name="expertise[]" value="${expId}">
+                                </div>
+                            `;
+                            $('#expertiseDisplayEdit').find('.no-selection').remove();
+                            $('#expertiseDisplayEdit').append(badge);
+                        });
+                    }
+                    // NEC badges
+                    if (data.nec_detail_list && data.nec_detail_list.length > 0) {
+                        data.nec_detail_list.forEach(nec => {
+                            let necId = nec.nd_id || nec.id || nec;
+                            let necDesc = nec.nd_desc || nec.name || nec;
+                            var badge = `
+                                <div class="badge-item" data-nd-id="${necId}">
+                                    <i class="fas fa-sitemap"></i>
+                                    ${necDesc}
+                                    <button type="button" class="remove-btn delete-nec-edit">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <input type="hidden" name="nec_detail[]" value="${necId}">
+                                </div>
+                            `;
+                            $('#necDisplayEdit').find('.no-selection').remove();
+                            $('#necDisplayEdit').append(badge);
+                        });
+                    }
+                    // Profile picture preview (if exists)
+                    if (data.asr_image) {
+                        const img = $('<img class="image-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
+                        img.attr('src', '<?= base_url() ?>' + data.asr_image);
+                        $('#profilePictureAreaEdit').append(img);
+                    }
+                    // CV preview (if exists)
+                    if (data.asr_cv_path) {
+                        let preview;
+                        if (data.asr_cv_path.endsWith('.pdf')) {
+                            preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-pdf fa-2x text-danger"></i><div>Existing CV</div></div>');
+                        } else if (data.asr_cv_path.match(/\.(jpg|jpeg|png)$/i)) {
+                            preview = $('<img class="cv-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
+                            preview.attr('src', '<?= base_url() ?>' + data.asr_cv_path);
+                        } else {
+                            preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-alt fa-2x"></i><div>Existing CV</div></div>');
+                        }
+                        $('#cvFileAreaEdit').append(preview);
+                    }
+                });
+            // Show modal
+            var modal = new bootstrap.Modal(document.getElementById('editAssessorModal'));
+            modal.show();
+        };
+
+        // Form submission
+        $('#editAssessorForm').on('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            Swal.fire({
+                title: 'Saving Assessor...',
+                text: 'Please wait while we save the assessor information.',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            fetch("<?= base_url('appmpqua/editAssessor') ?>", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message,
+                    }).then(() => { location.reload(); });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Failed to update profile.',
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An unexpected error occurred.',
+                });
+            });
+        });
     });
 
-    // Populate form data for edit
-    window.openEditModalWithData = function(asrId) {
-        // Reset stepper and form
-        currentStepEdit = 1;
-        updateStepIndicatorEdit();
+    $('#editAssessorModal').on('hidden.bs.modal', function () {
         $('#editAssessorForm')[0].reset();
         $('#expertiseDisplayEdit').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No expertise selected yet</div>');
         $('#necDisplayEdit').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No NEC fields selected yet</div>');
         $('#profilePictureAreaEdit .image-preview').remove();
         $('#cvFileAreaEdit .cv-preview').remove();
-
-        // Fetch data
-        fetch('<?= base_url('appmpqua/get_assessor/') ?>' + asrId)
-            .then(response => response.json())
-            .then(result => {
-                if (!result.success) return;
-                const data = result.data;
-                $('#modalIdInput').val(data.asr_id || '');
-                $('#modalTitleInput').val(data.asr_title_desc || '');
-                $('#modalNameInput').val(data.asr_name || '');
-                $('#modalGenderInput').val(data.asr_gender || '');
-                $('#modalRetirementInput').val(data.asr_retirement_date || '');
-                $('#modalEmailInput').val(data.asr_email || '');
-                $('#modalTelephoneInput').val(data.asr_phone || '');
-                $('#modalFaxInput').val(data.asr_fax || '');
-                $('#modalAddressInput').val(data.asr_service_address || '');
-
-                // Expertise badges
-                if (data.expertise_list && data.expertise_list.length > 0) {
-                    data.expertise_list.forEach(exp => {
-                        // Always use only the ID for value and data-exp-id
-                        let expId = exp.ef_id || exp.id;
-                        let expDesc = exp.ef_desc || exp.name || exp;
-                        var badge = `
-                            <div class="badge-item" data-exp-id="${expId}">
-                                <i class="fas fa-lightbulb"></i>
-                                ${expDesc}
-                                <button type="button" class="remove-btn delete-exp-edit">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                                <input type="hidden" name="expertise[]" value="${expId}">
-                            </div>
-                        `;
-                        $('#expertiseDisplayEdit').find('.no-selection').remove();
-                        $('#expertiseDisplayEdit').append(badge);
-                    });
-                }
-                // NEC badges
-                if (data.nec_detail_list && data.nec_detail_list.length > 0) {
-                    data.nec_detail_list.forEach(nec => {
-                        let necId = nec.nd_id || nec.id || nec;
-                        let necDesc = nec.nd_desc || nec.name || nec;
-                        var badge = `
-                            <div class="badge-item" data-nd-id="${necId}">
-                                <i class="fas fa-sitemap"></i>
-                                ${necDesc}
-                                <button type="button" class="remove-btn delete-nec-edit">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                                <input type="hidden" name="nec_detail[]" value="${necId}">
-                            </div>
-                        `;
-                        $('#necDisplayEdit').find('.no-selection').remove();
-                        $('#necDisplayEdit').append(badge);
-                    });
-                }
-                // Profile picture preview (if exists)
-                if (data.asr_image) {
-                    const img = $('<img class="image-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
-                    img.attr('src', '<?= base_url() ?>' + data.asr_image);
-                    $('#profilePictureAreaEdit').append(img);
-                }
-                // CV preview (if exists)
-                if (data.asr_cv_path) {
-                    let preview;
-                    if (data.asr_cv_path.endsWith('.pdf')) {
-                        preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-pdf fa-2x text-danger"></i><div>Existing CV</div></div>');
-                    } else if (data.asr_cv_path.match(/\.(jpg|jpeg|png)$/i)) {
-                        preview = $('<img class="cv-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
-                        preview.attr('src', '<?= base_url() ?>' + data.asr_cv_path);
-                    } else {
-                        preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-alt fa-2x"></i><div>Existing CV</div></div>');
-                    }
-                    $('#cvFileAreaEdit').append(preview);
-                }
-            });
-        // Show modal
-        var modal = new bootstrap.Modal(document.getElementById('editAssessorModal'));
-        modal.show();
-    };
-
-    // Form submission
-    $('#editAssessorForm').on('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-
-        // Log all expertise (existing and newly added)
-        let allExpertise = [];
-        $('#expertiseDisplayEdit .badge-item').each(function() {
-            allExpertise.push($(this).data('exp-id'));
-        });
-        console.log('All expertise IDs (badges):', allExpertise);
-
-        // Log all form data (including hidden inputs for expertise and nec)
-        let submitted = {};
-        for (let [key, value] of formData.entries()) {
-            if (submitted[key]) {
-                // If already exists, convert to array
-                if (!Array.isArray(submitted[key])) submitted[key] = [submitted[key]];
-                submitted[key].push(value);
-            } else {
-                submitted[key] = value;
-            }
-        }
-        console.log('Submitted form data:', submitted);
-
-        Swal.fire({
-            title: 'Saving Assessor...',
-            text: 'Please wait while we save the assessor information.',
-            allowOutsideClick: false,
-            didOpen: () => { Swal.showLoading(); }
-        });
-        fetch("<?= base_url('appmpqua/editAssessor') ?>", {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: data.message,
-                }).then(() => { location.reload(); });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.message || 'Failed to update profile.',
-                });
-            }
-        })
-        .catch(() => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An unexpected error occurred.',
-            });
-        });
     });
-});
+
 </script>
 
