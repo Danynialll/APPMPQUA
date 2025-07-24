@@ -233,6 +233,12 @@
         padding-top: 1rem;
         border-top: 1px solid #e9ecef;
     }
+    input[readonly], select[readonly], textarea[readonly] {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+    cursor: not-allowed;
+    opacity: 1;
+}
 </style>
 
 <!-- Modal structure: replicate the stepper and sections from createModalNew.php, but for editing -->
@@ -283,11 +289,11 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label required-field">Full Name</label>
-                                    <input type="text" name="asr_name" id="modalNameInput" class="form-control" required>
+                                    <input type="text" name="asr_name" id="modalNameInput" class="form-control" readonly>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label required-field">Gender</label>
-                                    <select name="asr_gender" id="modalGenderInput" class="form-select" required>
+                                    <select name="asr_gender" id="modalGenderInput" class="form-select" readonly>
                                         <option value="">Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
