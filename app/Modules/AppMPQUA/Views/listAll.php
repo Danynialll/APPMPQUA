@@ -246,6 +246,7 @@
                                     <th class="text-center" style="width:60px;">No.</th>
                                     <th>Image</th>
                                     <th>Name</th>
+                                    <th>University</th>
                                     <th>Expertise</th>
                                     <th>NEC Field</th>
                                     <th style="width:120px;" class="text-center">Details</th>
@@ -274,6 +275,9 @@
                                             </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->asr_title_desc) ?> <?= esc($asr->asr_name) ?></h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->qu_code) ?></h6>
                                             </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm">
