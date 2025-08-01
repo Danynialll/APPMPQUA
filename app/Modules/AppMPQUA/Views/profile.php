@@ -4,6 +4,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link href="<?= base_url(); ?>assets/css/select2override.css" rel="stylesheet" />
 
+
 <div class="container-fluid">
     <div class="page-header min-height-150 border-radius-xl mt-4" style="background-image: url('../../../assets/img/curved-images/curved0.jpg'); background-position-y: 50%;">
         <span class="mask bg-gradient-primary opacity-6"></span>
@@ -131,6 +132,40 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" onclick="showChangePasswordModal()" class="btn btn-warning mb-0" data-bs-dismiss="modal"><i class="fas fa-key" style="font-size: 1rem !important;"></i>&nbsp; Change password</button>
+                    <button type="button" class="btn btn-secondary mb-0" data-bs-dismiss="modal"><i class="fas fa-times" style="font-size: 1rem !important;"></i>&nbsp; Close</button>
+                    <button type="submit" class="btn btn-primary mb-0"><i class="fas fa-save" style="font-size: 1rem !important;"></i>&nbsp; Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- change password modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordLabel" aria-hidden="true">
+    <div class="modal-lg modal-dialog">
+        <div class="modal-content">
+            <form id="changePasswordForm">
+                <?= csrf_field() ?>
+                <div class="bg-gradient-primary modal-header">
+                    <h5 class="modal-title" id="changePasswordLabel">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password"required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary mb-0" data-bs-dismiss="modal"><i class="fas fa-times" style="font-size: 1rem !important;"></i>&nbsp; Close</button>
                     <button type="submit" class="btn btn-primary mb-0"><i class="fas fa-save" style="font-size: 1rem !important;"></i>&nbsp; Save Changes</button>
                 </div>
@@ -152,6 +187,7 @@ $nec_names = array_column($nec_counts, 'nec_name');
 
 <!-- Edit Profile Script -->
 <script>
+    
     function showEditModal() {
         const editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
         editProfileModal.show();
@@ -285,5 +321,46 @@ $nec_names = array_column($nec_counts, 'nec_name');
         if (file) {
             document.getElementById('profilePreview').src = URL.createObjectURL(file);
         }
+    });
+
+    function showChangePasswordModal() {
+        const changePasswordModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+        changePasswordModal.show();
+    }
+
+    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch("<?= base_url('appmpqua/change_password') ?>", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message,
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Failed to change password',
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An unexpected error occurred.',
+                });
+            });
     });
 </script>

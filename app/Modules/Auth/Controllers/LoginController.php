@@ -119,6 +119,7 @@ class LoginController extends BaseController
                 } elseif ($user->au_type == 'mpqua') {
                     $mpqua = $this->MPQUA_model->where('mpq_id', $user->au_user_id)->first();
                     $this->session->set([
+                        'user'   => $user,
                         'user_id'   => $mpqua->mpq_id,
                         'user_name'   => $mpqua->mpq_address,
                         'mpq_qu_id' => $mpqua->mpq_qu_id,

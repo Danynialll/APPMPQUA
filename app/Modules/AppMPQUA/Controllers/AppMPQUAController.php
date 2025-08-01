@@ -4,6 +4,7 @@ namespace App\Modules\AppMPQUA\Controllers;
 
 use App\Models\MPQUAModel;
 use App\Models\AssessorModel;
+use App\Models\AuthUserModel;
 use App\Models\NECBroadModel;
 use App\Models\NECDetailModel;
 use App\Models\NECNarrowModel;
@@ -15,6 +16,7 @@ use App\Models\AssessorExpertiseFieldModel;
 class AppMPQUAController extends BaseController
 {
     protected $assessor_model;
+    protected $auth_user_model;
     protected $expertise_model;
     protected $asrNECMapping_model;
     protected $NECDetail_model;
@@ -26,6 +28,7 @@ class AppMPQUAController extends BaseController
     public function __construct()
     {
         $this->assessor_model                   = new AssessorModel();
+        $this->auth_user_model                  = new AuthUserModel();
         $this->assessorExpertiseModel           = new AssessorExpertiseFieldModel();
         $this->expertise_model                  = new ExpertiseFieldModel();
         $this->asrNECMapping_model              = new AsrNECMappingModel();
@@ -249,7 +252,6 @@ class AppMPQUAController extends BaseController
                 }
             }
         }
-        
 
         // Prepare data for view
         $data = [
@@ -260,7 +262,6 @@ class AppMPQUAController extends BaseController
             'retired_assessors' => $retired_assessors,
             'nec_counts' => $nec_counts,
         ];
-
 
         $this->render_mpqua('profile', $data);
     }
@@ -308,6 +309,39 @@ class AppMPQUAController extends BaseController
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Failed to update profile.',
+                'csrf_token' => csrf_hash()
+            ]);
+        }
+    }
+
+    public function changePassword()
+    {
+        $user_id = $this->session->get('user');
+        $user = $this->auth_user_model->where('au_id', $user_id->au_id)->first();
+        $current_password = $this->request->getPost('current_password');
+        $new_password = $this->request->getPost('new_password');
+        $confirm_password = $this->request->getPost('confirm_password');
+
+        if (password_verify($current_password, $user->au_password)) {
+            if ($new_password === $confirm_password) {
+                $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+                $this->auth_user_model->update($user_id->au_id, ['au_password' => $hashed_password, 'au_plain_password' => $confirm_password]);
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Password changed successfully.',
+                    'csrf_token' => csrf_hash()
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'New password and confirm password do not match.',
+                    'csrf_token' => csrf_hash()
+                ]);
+            }
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Current password is incorrect.',
                 'csrf_token' => csrf_hash()
             ]);
         }
