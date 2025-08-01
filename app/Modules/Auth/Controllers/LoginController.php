@@ -59,6 +59,22 @@ class LoginController extends BaseController
         $this->render_auth('sign_in', $data);
     }
 
+    public function sign_in_MPQUA()
+    {
+        $samc_field = $this->assessor_expertise_model
+            ->select('DISTINCT ON (aef_ef_id) aef_ef_id, ef_desc')
+            ->join('qvc_upsi.expertise_field', 'expertise_field.ef_id = assessor_expertise_field.aef_ef_id', 'left')
+            ->orderBy('aef_ef_id, ef_desc') // Ensures consistent selection
+            ->findAll();
+
+        $data = [
+            'samc_field'    => $samc_field
+        ];
+        $this->render_auth('appmpqua/sign_in', $data);
+    }
+
+
+
     public function attempt_login()
     {
         $username = $this->request->getPost('username');

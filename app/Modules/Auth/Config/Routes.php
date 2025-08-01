@@ -7,6 +7,13 @@ use App\Modules\Auth\Controllers\RegisterController;
 $routes->group('auth', function ($routes) {
     $routes->get('/',                           [LoginController::class,     'sign_in']);
 
+    $routes->group('appmpqua', function ($routes) {
+        $routes->get('/',                           [LoginController::class,     'sign_in_MPQUA']);
+
+        $routes->post('attempt_login',              [LoginController::class, 'attempt_login']);
+
+    });
+
     $routes->post('attempt_login',              [LoginController::class, 'attempt_login']);
 
     $routes->get('register_provider',            [RegisterController::class,     'register_provider']);
@@ -15,3 +22,7 @@ $routes->group('auth', function ($routes) {
     $routes->post('attempt_register_assessor', [RegisterController::class, 'attempt_register_assessor']);
     $routes->post('attempt_register_provider', [RegisterController::class, 'attempt_register_provider']);
 });
+
+
+
+

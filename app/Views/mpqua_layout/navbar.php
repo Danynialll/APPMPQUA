@@ -13,7 +13,7 @@
     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
       <div class="ms-md-auto pe-md-3 d-flex align-items-center">
         <div class="d-flex align-items-center mt-2">
-          <h6 class="mb-0 me-3">Light / Dark Mode</h6>
+          <!-- <h6 class="mb-0 me-3">Light / Dark Mode</h6>
           <div class="form-check form-switch">
             <input
               class="form-check-input"
@@ -21,14 +21,14 @@
               id="dark-version"
               onclick="darkMode(this)"
               aria-label="Toggle Light/Dark Mode">
-          </div>
+          </div> -->
         </div>
 
       </div>
 
       <ul class="navbar-nav  justify-content-end">
         <li class="nav-item d-flex align-items-center">
-          <a href="<?= base_url() ?>auth/" class="nav-link text-body font-weight-bold px-0">
+          <a href="<?= base_url() ?>auth/appmpqua" class="nav-link text-body font-weight-bold px-0">
             <i class="fa fa-user me-sm-1"></i>
             <span class="d-sm-inline d-none">Sign Out</span>
           </a>
