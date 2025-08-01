@@ -9,6 +9,7 @@ use App\Models\NECBroadModel;
 use App\Models\NECDetailModel;
 use App\Models\NECNarrowModel;
 use App\Models\AsrNECMappingModel;
+use App\Models\QvcUniversityModel;
 use App\Controllers\BaseController;
 use App\Models\ExpertiseFieldModel;
 use App\Models\AssessorExpertiseFieldModel;
@@ -24,6 +25,7 @@ class AppMPQUAController extends BaseController
     protected $NECNarrow_model;
     protected $assessorExpertiseModel;
     protected $mpqua_model;
+    protected $QVC_University_model;
 
     public function __construct()
     {
@@ -36,6 +38,7 @@ class AppMPQUAController extends BaseController
         $this->NECNarrow_model                  = new NECNarrowModel();
         $this->NECDetail_model                  = new NECDetailModel();
         $this->mpqua_model                      = new MPQUAModel();
+        $this->QVC_University_model             = new QvcUniversityModel();
         $this->session                          = service('session');
     }
 
@@ -50,6 +53,8 @@ class AppMPQUAController extends BaseController
         $total_assessors = $this->assessor_model->where('asr_deleted_at', null)->countAllResults();
         $male_assessors = $this->assessor_model->where('asr_gender', 'Male')->where('asr_deleted_at', null)->countAllResults();
         $female_assessors = $this->assessor_model->where('asr_gender', 'Female')->where('asr_deleted_at', null)->countAllResults();
+
+        $university_list = $this->QVC_University_model->where('qu_type', 'Public University')->findAll();
 
         foreach ($assessor_list as &$assessor) {
             // Get all expertise for this assessor
@@ -81,6 +86,7 @@ class AppMPQUAController extends BaseController
             'total_assessors' => $total_assessors,
             'male_assessors' => $male_assessors,
             'female_assessors' => $female_assessors,
+            'university_list' => $university_list,
         ];
 
         $this->render_mpqua('listAll', $data);

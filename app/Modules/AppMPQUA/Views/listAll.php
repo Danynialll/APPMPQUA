@@ -230,6 +230,12 @@
                                 <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilter') ?>" data-bs-toggle="tooltip" title="Search Assessors by NEC">
                                     <i class="fas fa-magnifying-glass"></i>&nbsp; Search by NEC
                                 </a>
+                                <select id="selectFilter" class="form-control select2">
+                                    <option value="">All</option>
+                                    <?php foreach ($university_list as $uni): ?>
+                                        <option value="<?= $uni->qu_name ?>"><?= $uni->qu_name ?> (<?= $uni->qu_code ?>)</option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -277,7 +283,7 @@
                                                 <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->asr_title_desc) ?> <?= esc($asr->asr_name) ?></h6>
                                             </td>
                                             <td>
-                                                <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->qu_code) ?></h6>
+                                                <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->qu_name) ?> (<?= esc($asr->qu_code) ?>)</h6>
                                             </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm">
@@ -376,26 +382,31 @@
             ] // Default sort by the first column (No.)
         });
 
-        // Filter button functionality
-        document.querySelectorAll(".filter-btn").forEach(button => {
-            button.addEventListener("click", () => {
-                // Remove active class from all buttons
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
+        // $('#selectFilter').select2({
+        //     placeholder: "Filter by University",
+        //     allowClear: false
+        // });
 
-                // Add active class to clicked button
-                button.classList.add('active');
+        // Listen for change on Select2 dropdown
+        document.getElementById('selectFilter').addEventListener('change', function () {
+            const filterValue = this.value.toLowerCase();
+            console.log('Filter value:', filterValue);
 
-                const filterValue = button.getAttribute("data-filter");
+            // Access the internal search input used by Vanilla-DataTables
+            const searchInput = document.querySelector('#datatable-search_filter input');
 
-                if (filterValue) {
-                    dataTable.search(filterValue).draw();
-                } else {
-                    dataTable.search('').draw(); // Clear search when "All" is clicked
-                }
+            // Set the input's value and dispatch an input event
+            if (searchInput) {
+                searchInput.value = filterValue;
+                searchInput.dispatchEvent(new Event('input'));
+            }
+
+            // Optional: remove active class from buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
         });
+
 
         // Export to Excel functionality
         document.getElementById('export-btn').addEventListener('click', function() {
