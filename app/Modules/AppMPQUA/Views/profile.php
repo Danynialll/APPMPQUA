@@ -232,17 +232,17 @@ $nec_names = array_column($nec_counts, 'nec_name');
     document.addEventListener('DOMContentLoaded', function() {
         // Example data, replace with PHP variables or AJAX as needed
         const genderData = {
-            labels: ['Male', 'Female'],
+            labels: ['<?= $male_assessors ?? 0 ?> Male', '<?= $female_assessors ?? 0 ?> Female'],
             datasets: [{
-                data: [<?= $male_assessors ?? 10 ?>, <?= $female_assessors ?? 5 ?>],
+                data: [<?= $male_assessors ?? 0 ?>, <?= $female_assessors ?? 0 ?>],
                 backgroundColor: ['#36A2EB', '#FF6384'],
             }]
         };
 
         const activeData = {
-            labels: ['Active', 'Retired'],
+            labels: ['<?= $active_assessors ?? 0 ?> Active', '<?= $retired_assessors ?? 0 ?> Retired'],
             datasets: [{
-                data: [<?= $active_assessors ?? 10 ?>, <?= $retired_assessors ?? 5 ?>],
+                data: [<?= $active_assessors ?? 0 ?>, <?= $retired_assessors ?? 0 ?>],
                 backgroundColor: ['#4BC0C0', '#9966FF'],
             }]
         };
@@ -263,7 +263,14 @@ $nec_names = array_column($nec_counts, 'nec_name');
             data: genderData,
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom' } }
+                plugins: { 
+                    legend: { 
+                        position: 'bottom' 
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
             }
         });
 
@@ -273,7 +280,14 @@ $nec_names = array_column($nec_counts, 'nec_name');
             data: activeData,
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom' } }
+                plugins: { 
+                    legend: { 
+                        position: 'bottom' 
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
             }
         });
 

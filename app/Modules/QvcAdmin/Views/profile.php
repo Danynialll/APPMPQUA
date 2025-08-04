@@ -39,7 +39,7 @@
         <!-- First Row: Bar Chart + Donut Chart -->
         <div class="col-12 col-lg-8 mb-4">
             <div class="card h-100 shadow">
-                <div class="card-header pb-0 p-3 bg-gradient-secondary text-white rounded-top">
+                <div class="card-header pb-0 p-3 bg-gradient-warning text-white rounded-top">
                     <h6 class="mb-3">Assessors by University</h6>
                 </div>
                 <div class="card-body">
@@ -179,17 +179,17 @@ $nec_names = array_column($nec_counts, 'nec_name');
     document.addEventListener('DOMContentLoaded', function() {
         // Example data, replace with PHP variables or AJAX as needed
         const genderData = {
-            labels: ['Male', 'Female'],
+            labels: ['<?= $male_assessors ?? 0 ?> Male', '<?= $female_assessors ?? 0 ?> Female'],
             datasets: [{
-                data: [<?= $male_assessors ?? 10 ?>, <?= $female_assessors ?? 5 ?>],
+                data: [<?= $male_assessors ?? 0 ?>, <?= $female_assessors ?? 0 ?>],
                 backgroundColor: ['#36A2EB', '#FF6384'],
             }]
         };
 
         const activeData = {
-            labels: ['Active', 'Retired'],
+            labels: ['<?= $active_assessors ?? 0 ?> Active', '<?= $retired_assessors ?? 0 ?> Retired'],
             datasets: [{
-                data: [<?= $active_assessors ?? 10 ?>, <?= $retired_assessors ?? 5 ?>],
+                data: [<?= $active_assessors ?? 0 ?>, <?= $retired_assessors ?? 0 ?>],
                 backgroundColor: ['#4BC0C0', '#9966FF'],
             }]
         };
@@ -323,7 +323,14 @@ $nec_names = array_column($nec_counts, 'nec_name');
             data: genderData,
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom' } }
+                plugins: { 
+                    legend: { 
+                        position: 'bottom' 
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
             }
         });
 
@@ -333,7 +340,14 @@ $nec_names = array_column($nec_counts, 'nec_name');
             data: activeData,
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom' } }
+                plugins: { 
+                    legend: { 
+                        position: 'bottom' 
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
             }
         });
     });
