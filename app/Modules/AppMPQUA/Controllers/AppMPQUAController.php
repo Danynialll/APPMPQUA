@@ -199,7 +199,7 @@ class AppMPQUAController extends BaseController
         // Get current user's university ID from session or user profile
         $user_id = $this->session->get('user_id');
         $user = $this->mpqua_model->find($user_id);
-        $user_university_id = $user ? $user->mpq_qu_id : null;
+        $user_university_id = $user->mpq_qu_id;
 
         $builder = $this->mpqua_model->table('mpqua');
         $builder->select('mpqua.*, qvc_university.qu_name, qvc_university.qu_code');
@@ -222,16 +222,16 @@ class AppMPQUAController extends BaseController
             ->countAllResults();
         $active_assessors = $this->assessor_model
             ->groupStart()
-                ->where('asr_qu_id', $user_university_id)
-                ->where('asr_retirement_date IS NULL')
-                ->orWhere('asr_retirement_date >', $now)
+            ->where('asr_retirement_date IS NULL')
+            ->orWhere('asr_retirement_date >', $now)
+            ->where('asr_qu_id', $user_university_id)
             ->groupEnd()
             ->countAllResults();
         $retired_assessors = $this->assessor_model
             ->groupStart()
-                ->where('asr_qu_id', $user_university_id)
-                ->where('asr_retirement_date IS NOT NULL')
-                ->where('asr_retirement_date <=', $now)
+            ->where('asr_retirement_date IS NOT NULL')
+            ->where('asr_retirement_date <=', $now)
+            ->where('asr_qu_id', $user_university_id)
             ->groupEnd()
             ->countAllResults();
         $nec_counts = [];

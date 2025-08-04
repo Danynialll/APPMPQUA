@@ -136,6 +136,7 @@ class QvcAdminMPQUAController extends BaseController
         ];
 
         $mpqData = [
+            'mpq_id'         => $au_qu_id,
             'mpq_address'    => $mpq_address,
             'mpq_email'      => $mpq_email,
             'mpq_phone'      => $mpq_phone,
