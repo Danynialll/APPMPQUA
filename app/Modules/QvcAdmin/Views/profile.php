@@ -60,8 +60,16 @@
         <!-- Second Row: Bar Chart + Donut Chart -->
         <div class="col-12 col-lg-8 mb-4">
             <div class="card h-100 shadow">
-                <div class="card-header pb-0 p-3 bg-gradient-secondary text-white rounded-top">
-                    <h6 class="mb-3">Assessors by NEC Field</h6>
+                <div class="card-header p-3 bg-gradient-secondary text-white rounded-top">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Assessors by NEC Field</h6>
+                        <select id="selectFilter" class="form-control select2 w-auto" style="min-width: max-content;">
+                            <option value="">All</option>
+                            <?php foreach ($university_list as $uni): ?>
+                                <option value="<?= $uni->qu_name ?>"><?= $uni->qu_name ?> (<?= $uni->qu_code ?>)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
                 <div class="card-body">
                     <canvas id="barChartNEC2"></canvas>

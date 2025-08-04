@@ -74,6 +74,7 @@ class QvcProfileController extends BaseController
         }
 
         $universities = $this->QVC_University_model->findAll();
+        $university_list = $this->QVC_University_model->where('qu_type', 'Public University')->findAll();
         $uni_labels = [];
         $uni_data = [];
         foreach ($universities as $uni) {
@@ -92,6 +93,7 @@ class QvcProfileController extends BaseController
             'active_assessors' => $active_assessors,
             'retired_assessors' => $retired_assessors,
             'nec_counts' => $nec_counts,
+            'university_list' => $university_list,
             'uni_labels' => $uni_labels,
             'uni_data' => $uni_data,
         ];
