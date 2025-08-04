@@ -25,10 +25,16 @@
                     </h4>
                 </div>
             </div>
-            <div class="col text-end">
-                <!-- <a href="javascript:;" onclick="showEditModal()" class="btn btn-outline-primary btn-sm">
-                    <i class="fas fa-user-edit"></i> Edit Profile
-                </a> -->
+            <div class="col">
+                <div class="d-flex p-0 justify-content-end">
+                    <h6 class="m-2">Filter by University</h6>
+                    <select id="selectFilter" class="form-control select2 w-auto" style="min-width: max-content;">
+                        <option value="">All</option>
+                        <?php foreach ($university_list as $uni): ?>
+                            <option value="<?= $uni->qu_name ?>"><?= $uni->qu_name ?> (<?= $uni->qu_code ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -63,12 +69,7 @@
                 <div class="card-header p-3 bg-gradient-secondary text-white rounded-top">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="mb-0">Assessors by NEC Field</h6>
-                        <select id="selectFilter" class="form-control select2 w-auto" style="min-width: max-content;">
-                            <option value="">All</option>
-                            <?php foreach ($university_list as $uni): ?>
-                                <option value="<?= $uni->qu_name ?>"><?= $uni->qu_name ?> (<?= $uni->qu_code ?>)</option>
-                            <?php endforeach; ?>
-                        </select>
+                        
                     </div>
                 </div>
                 <div class="card-body">
@@ -221,10 +222,10 @@ $nec_names = array_column($nec_counts, 'nec_name');
             }]
         };
 
-        // Bar Chart: NEC (first row)
-        new Chart(document.getElementById('barChartNEC'), {
+        // Bar Chart: Assessor by uni (first row)
+        new Chart(document.getElementById('barChartUni'), {
             type: 'bar',
-            data: NECData,
+            data: uniBarData,
             options: {
                 responsive: true,
                 plugins: {
@@ -293,37 +294,6 @@ $nec_names = array_column($nec_counts, 'nec_name');
             }
         });
 
-        // Bar Chart: University
-        new Chart(document.getElementById('barChartUni'), {
-            type: 'bar',
-            data: uniBarData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return 'Assessors: ' + context.parsed.y;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: { beginAtZero: true },
-                    y: { 
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0,
-                            stepSize: 1,
-                            callback: function(value) {
-                                return Number.isInteger(value) ? value : null;
-                            }
-                        }
-                    }
-                }
-            }
-        });
 
         // Donut Chart: Gender (first row)
         new Chart(document.getElementById('pieChartGender'), {
