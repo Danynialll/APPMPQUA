@@ -230,12 +230,12 @@
                                 <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilter') ?>" data-bs-toggle="tooltip" title="Search Assessors by NEC">
                                     <i class="fas fa-magnifying-glass"></i>&nbsp; Search by NEC
                                 </a>
-                                <select id="selectFilter" class="form-control select2">
+                                <!-- <select id="selectFilter" class="form-control select2">
                                     <option value="">All</option>
                                     <?php foreach ($university_list as $uni): ?>
                                         <option value="<?= $uni->qu_name ?>"><?= $uni->qu_name ?> (<?= $uni->qu_code ?>)</option>
                                     <?php endforeach; ?>
-                                </select>
+                                </select> -->
                             </div>
                         </div>
                     </div>
