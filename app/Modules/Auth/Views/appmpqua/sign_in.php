@@ -6,6 +6,7 @@
     <title>Login - Welcome Back</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -147,7 +148,7 @@
                 <p>Sign in to your account</p>
             </div>
             <div class="card-body">
-                <form action="<?= site_url('auth/appmpqua/attempt_login') ?>" method="post">
+                <form action="<?= site_url('auth/appmpqua/attempt_login_MPQUA') ?>" method="post">
                   <?= csrf_field() ?>
                     <div class="form-floating">
                         <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
@@ -195,27 +196,6 @@
             alert('Forgot password functionality would be implemented here');
         }
         
-        // document.getElementById('loginForm').addEventListener('submit', function(e) {
-        //     e.preventDefault();
-            
-        //     const username = document.getElementById('username').value;
-        //     const password = document.getElementById('password').value;
-            
-        //     if (username && password) {
-        //         // Show loading state
-        //         const submitBtn = document.querySelector('.btn-login');
-        //         const originalText = submitBtn.innerHTML;
-        //         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing In...';
-        //         submitBtn.disabled = true;
-                
-        //         // Simulate login process
-        //         setTimeout(() => {
-        //             alert('Login successful! (This is a demo)');
-        //             submitBtn.innerHTML = originalText;
-        //             submitBtn.disabled = false;
-        //         }, 2000);
-        //     }
-        // });
         
         // Add some interactive animations
         document.querySelectorAll('.form-control').forEach(input => {

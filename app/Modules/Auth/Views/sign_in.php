@@ -218,7 +218,7 @@
       width: 150px;
       z-index: 100;
       background: linear-gradient(90deg, rgb(242, 243, 248) 0%, rgba(242, 243, 248, 0) 100%);
-      pointer-event: none;
+      /* pointer-event: none; */
     }
 
     .slider:before {
@@ -229,7 +229,7 @@
       width: 150px;
       z-index: 100;
       background: linear-gradient(90deg, rgba(242, 243, 248, 0) 0%, rgba(242, 243, 248, 1) 100%);
-      pointer-event: none;
+      /* pointer-event: none; */
     }
 
     /* Embedded Map */

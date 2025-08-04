@@ -2,7 +2,6 @@
 
 namespace App\Modules\Auth\Controllers;
 
-use App\Models\MPQUAModel;
 use App\Models\AssessorModel;
 use App\Models\AuthUserModel;
 use App\Models\ProviderModel;
@@ -24,8 +23,6 @@ class LoginController extends BaseController
     // Provider
     protected $provider_model;
 
-    //MPQUA
-    protected $MPQUA_model;
 
     public function __construct()
     {
@@ -39,8 +36,6 @@ class LoginController extends BaseController
         // Qvc Admin model
         $this->qvc_admin                      = new QvcAdminModel();
         $this->assessor_expertise_model       = new AssessorExpertiseFieldModel();
-        // MPQUA model
-        $this->MPQUA_model                    = new MPQUAModel();
 
     }
 
@@ -58,22 +53,6 @@ class LoginController extends BaseController
         ];
         $this->render_auth('sign_in', $data);
     }
-
-    public function sign_in_MPQUA()
-    {
-        $samc_field = $this->assessor_expertise_model
-            ->select('DISTINCT ON (aef_ef_id) aef_ef_id, ef_desc')
-            ->join('qvc_upsi.expertise_field', 'expertise_field.ef_id = assessor_expertise_field.aef_ef_id', 'left')
-            ->orderBy('aef_ef_id, ef_desc') // Ensures consistent selection
-            ->findAll();
-
-        $data = [
-            'samc_field'    => $samc_field
-        ];
-        $this->render_auth('appmpqua/sign_in', $data);
-    }
-
-
 
     public function attempt_login()
     {
@@ -98,10 +77,7 @@ class LoginController extends BaseController
                     ]);
                     $this->session->setFlashdata('success', 'Login successful!');
                     return redirect()->to('assessor/dashboard'); // Redirect to the dashboard
-
-
-
-
+                    
                 } elseif ($user->au_type == 'provider') {
                     $provider = $this->provider_model->where('pvd_id', $user->au_user_id)->first();
                     $this->session->set([
@@ -113,20 +89,6 @@ class LoginController extends BaseController
                     $this->session->setFlashdata('success', 'Login successful!');
                     return redirect()->to('provider/dashboard'); // Redirect to the dashboard
 
-
-
-                    
-                } elseif ($user->au_type == 'mpqua') {
-                    $mpqua = $this->MPQUA_model->where('mpq_id', $user->au_user_id)->first();
-                    $this->session->set([
-                        'user'   => $user,
-                        'user_id'   => $mpqua->mpq_id,
-                        'user_name'   => $mpqua->mpq_address,
-                        'mpq_qu_id' => $mpqua->mpq_qu_id,
-                        'logged_in' => true,
-                    ]);
-                    $this->session->setFlashdata('success', 'Login successful!');
-                    return redirect()->to('appmpqua/profile'); // Redirect to the dashboard
                 } elseif ($user->au_type == 'admin') {
                     $admin = $this->qvc_admin->where('qa_id', $user->au_user_id)->first();
                     $this->session->set([
