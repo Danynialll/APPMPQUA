@@ -387,25 +387,27 @@
         //     allowClear: false
         // });
 
+
+
         // Listen for change on Select2 dropdown
-        document.getElementById('selectFilter').addEventListener('change', function () {
-            const filterValue = this.value.toLowerCase();
-            console.log('Filter value:', filterValue);
+        
+        // document.getElementById('selectFilter').addEventListener('change', function () {
+        //     const filterValue = this.value.toLowerCase();
+        //     console.log('Filter value:', filterValue);
 
-            // Access the internal search input used by Vanilla-DataTables
-            const searchInput = document.querySelector('#datatable-search_filter input');
+        //     const searchInput = document.querySelector('#datatable-search_filter input');
 
-            // Set the input's value and dispatch an input event
-            if (searchInput) {
-                searchInput.value = filterValue;
-                searchInput.dispatchEvent(new Event('input'));
-            }
+        //     if (searchInput) {
+        //         searchInput.value = filterValue;
+        //         searchInput.dispatchEvent(new Event('input'));
+        //     }
 
-            // Optional: remove active class from buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-        });
+        //     document.querySelectorAll('.filter-btn').forEach(btn => {
+        //         btn.classList.remove('active');
+        //     });
+        // });
+
+
 
 
         // Export to Excel functionality
