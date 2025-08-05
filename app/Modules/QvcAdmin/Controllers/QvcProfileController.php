@@ -72,15 +72,18 @@ class QvcProfileController extends BaseController
             }
         }
 
-        $universities = $this->QVC_University_model->findAll();
         $university_list = $this->QVC_University_model->where('qu_type', 'Public University')->findAll();
-        $uni_labels = [];
-        $uni_data = [];
-        foreach ($universities as $uni) {
-            $count = $this->assessor_model->where('asr_qu_id', $uni->qu_id)->countAllResults();
-            if ($count > 0) {
-                $uni_labels[] = $uni->qu_code; // Use qu_code instead of qu_name
-                $uni_data[] = $count;
+        foreach ($university_list as $uni) {
+            $count = $this->assessor_model
+                ->where('asr_qu_id', $uni->qu_id)
+                ->countAllResults();
+
+            if ($count >= 0) {
+                $uni_summary[] = [
+                    'name' => $uni->qu_name,
+                    'code' => $uni->qu_code,
+                    'count' => $count,
+                ];
             }
         }
         
@@ -93,8 +96,7 @@ class QvcProfileController extends BaseController
             'active_assessors' => $active_assessors,
             'retired_assessors' => $retired_assessors,
             'nec_counts' => $nec_counts,
-            'uni_labels' => $uni_labels,
-            'uni_data' => $uni_data,
+            'uni_summary' => $uni_summary,
         ];
 
 

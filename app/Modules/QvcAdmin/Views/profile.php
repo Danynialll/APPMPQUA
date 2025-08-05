@@ -3,6 +3,26 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link href="<?= base_url(); ?>assets/css/select2override.css" rel="stylesheet" />
+<style>
+    #barChartNEC {
+        height: 100% !important;
+        width: 100% !important;
+    }
+    .card-body.full-height {
+        height: 100%;
+    }
+    
+    .hover-effect {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .hover-effect:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+
+        cursor: pointer;
+    }
+</style>
 
 <div class="container-fluid">
     <div class="page-header min-height-150 border-radius-xl mt-4" style="background-image: url('../../../assets/img/curved-images/curved0.jpg'); background-position-y: 50%;">
@@ -21,7 +41,7 @@
             <div class="col-auto my-auto">
                 <div class="h-100">
                     <h4 class="mb-1 fw-bold">
-                        Admin Profile
+                        Admin Dashboard
                     </h4>
                 </div>
             </div>
@@ -42,53 +62,68 @@
 </div>
 
 <div class="container-fluid py-4">
-    <div class="row mt-3">
-        <!-- First Row: Bar Chart + Donut Chart -->
-        <div class="col-12 col-lg-8 mb-4">
+    <div class="row">
+        <!-- Bar Chart (Left) -->
+        <div class="col-lg-6 mb-4">
             <div class="card h-100 shadow">
                 <div class="card-header p-3 bg-gradient-secondary text-white rounded-top">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0">Assessors by NEC Field</h6>
-                    </div>
+                    <h6 class="mb-0">Assessors by NEC Field</h6>
                 </div>
                 <div class="card-body">
                     <canvas id="barChartNEC"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-lg-4 mb-4">
-            <div class="card h-100 shadow">
-                <div class="card-header pb-0 p-3 bg-gradient-info text-white rounded-top">
-                    <h6 class="mb-3">Assessor Gender Distribution</h6>
+
+        <!-- Pie Charts (Middle: Stacked Squares) -->
+        <div class="col-lg-3 mb-4 d-flex flex-column justify-content-between">
+            <!-- Gender Pie -->
+            <div class="card mb-3 shadow flex-fill">
+                <div class="card-header p-3 bg-gradient-info text-white rounded-top">
+                    <h6 class="mb-0">Assessor Gender Distribution</h6>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex align-items-center justify-content-center" >
                     <canvas id="pieChartGender"></canvas>
                 </div>
             </div>
-        </div>
-        <!-- Second Row: Bar Chart + Donut Chart -->
-        <div class="col-12 col-lg-8 mb-4">
-            <div class="card h-100 shadow">
-                <div class="card-header pb-0 p-3 bg-gradient-warning text-white rounded-top">
-                    <h6 class="mb-3">Assessors by University</h6>
+
+            <!-- Active Pie -->
+            <div class="card shadow flex-fill">
+                <div class="card-header p-3 bg-gradient-success text-white rounded-top">
+                    <h6 class="mb-0">Active Assessors Distribution</h6>
                 </div>
-                <div class="card-body">
-                    <canvas id="barChartUni"></canvas>
+                <div class="card-body d-flex align-items-center justify-content-center" >
+                    <canvas id="pieChartActive"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-lg-4 mb-4">
+
+        <!-- University List (Right) -->
+        <div class="col-lg-3 mb-4">
             <div class="card h-100 shadow">
-                <div class="card-header pb-0 p-3 bg-gradient-success text-white rounded-top">
-                    <h6 class="mb-3">Active Assessors Distribution</h6>
+                <div class="card-header p-3 bg-gradient-warning text-white rounded-top">
+                    <h6 class="mb-0">Assessors by University</h6>
                 </div>
-                <div class="card-body">
-                    <canvas id="pieChartActive"></canvas>
+                <div class="card-body overflow-auto" style="max-height: 600px;">
+                    <?php foreach ($uni_summary as $uni): ?>
+                        <div class="card mb-2 hover-effect">
+                            <div class="card-body py-2 px-3 ">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h6 class="mb-0"><?= esc($uni['code']) ?></h6>
+                                    <div class="icon icon-shape bg-gradient-info shadow text-center rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
+                                        <span class="text-black fw-bold"><?= esc($uni['count'] ?? 0) ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 
 <!-- Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileLabel" aria-hidden="true">
@@ -132,11 +167,9 @@
 </div>
 
 <script src="<?= base_url() ?>assets/js/plugins/datatables.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 
 <!-- Edit Profile Script -->
 <script>
@@ -236,19 +269,10 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            title: function(context) {
-                                const idx = context[0].dataIndex;
-                                return necNames[idx] || context[0].label;
-                            },
-                            label: function(context) {
-                                return 'Assessors: ' + context.parsed.y;
-                            }
-                        }
-                    }
+                    tooltip: true
                 },
                 scales: {
                     x: { beginAtZero: true },
@@ -321,56 +345,7 @@
                 necChart.data.datasets[0].data = <?= json_encode(array_column($nec_counts, 'count') ?? 'count') ?>;
                 necChart.update();
             }
-        });
-
-        const uniBarData = {
-            labels: <?= json_encode($uni_labels ?? 'label') ?>,
-            datasets: [{
-                label: 'Number of Assessors',
-                data: <?= json_encode($uni_data ?? 'label') ?>,
-                backgroundColor: '#36A2EB'
-            }]
-        };
-
-        // Bar Chart: Assessor by uni (first row)
-        new Chart(document.getElementById('barChartUni'), {
-            type: 'bar',
-            data: uniBarData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            title: function(context) {
-                                const idx = context[0].dataIndex;
-                                return necNames[idx] || context[0].label;
-                            },
-                            label: function(context) {
-                                return 'Assessors: ' + context.parsed.y;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: { beginAtZero: true },
-                    y: { 
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0,
-                            stepSize: 1,
-                            callback: function(value) {
-                                return Number.isInteger(value) ? value : null;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        
-
-        // Donut Chart: Active (second row)
-        
+        });        
     });
 
     document.getElementById('profile_image').addEventListener('change', function(e) {
@@ -381,8 +356,3 @@
     });
 </script>
 
-<script>
-    document.getElementById('selectFilter').addEventListener('change', function(e) {
-        console.log('Filter changed:', e.target.value);
-    });
-</script>
