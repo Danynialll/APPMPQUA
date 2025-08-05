@@ -39,6 +39,7 @@ $routes->group('qvcAdmin', function ($routes) {
     });
 
     $routes->get('profile',                                  [QvcProfileController::class,     'profile']);
+    $routes->post('filterData',                              [QvcProfileController::class,     'filterData']);
 
 
 

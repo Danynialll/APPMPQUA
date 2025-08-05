@@ -31,9 +31,10 @@
                     <select id="selectFilter" class="form-control select2 w-auto" style="min-width: max-content;">
                         <option value="">All</option>
                         <?php foreach ($university_list as $uni): ?>
-                            <option value="<?= $uni->qu_name ?>"><?= $uni->qu_name ?> (<?= $uni->qu_code ?>)</option>
+                            <option value="<?= $uni->qu_id ?>"><?= $uni->qu_name ?> (<?= $uni->qu_code ?>)</option>
                         <?php endforeach; ?>
                     </select>
+                    <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
                 </div>
             </div>
         </div>
@@ -73,7 +74,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="barChartNEC2"></canvas>
+                    <canvas id="barChartNEC"></canvas>
                 </div>
             </div>
         </div>
@@ -135,12 +136,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<?php
-$nec_labels = array_column($nec_counts, 'nec_code');
-$nec_data = array_column($nec_counts, 'count');
-$nec_names = array_column($nec_counts, 'nec_name');
-?>
 
 <!-- Edit Profile Script -->
 <script>
@@ -185,39 +182,153 @@ $nec_names = array_column($nec_counts, 'nec_name');
             });
     });
 
+    let genderChart, necChart, activeChart;
+
     document.addEventListener('DOMContentLoaded', function() {
-        // Example data, replace with PHP variables or AJAX as needed
-        const genderData = {
-            labels: ['<?= $male_assessors ?? 0 ?> Male', '<?= $female_assessors ?? 0 ?> Female'],
-            datasets: [{
-                data: [<?= $male_assessors ?? 0 ?>, <?= $female_assessors ?? 0 ?>],
-                backgroundColor: ['#36A2EB', '#FF6384'],
-            }]
-        };
+        genderChart = new Chart(document.getElementById('pieChartGender'), {
+            type: 'doughnut',
+            data: {
+                labels: ['<?= $male_assessors ?? 0 ?> Male', '<?= $female_assessors ?? 0 ?> Female'],
+                datasets: [{
+                    data: [<?= $male_assessors ?? 0 ?>, <?= $female_assessors ?? 0 ?>], // default values
+                    backgroundColor: ['#36A2EB', '#FF6384'],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { 
+                    legend: { position: 'bottom' },
+                    tooltip: { enabled: false }
+                },
+            }
+        });
 
-        const activeData = {
-            labels: ['<?= $active_assessors ?? 0 ?> Active', '<?= $retired_assessors ?? 0 ?> Retired'],
-            datasets: [{
-                data: [<?= $active_assessors ?? 0 ?>, <?= $retired_assessors ?? 0 ?>],
-                backgroundColor: ['#4BC0C0', '#9966FF'],
-            }]
-        };
+        activeChart = new Chart(document.getElementById('pieChartActive'), {
+            type: 'doughnut',
+            data: {
+                labels: ['<?= $active_assessors ?? 0 ?> Active', '<?= $retired_assessors ?? 0 ?> Retired'],
+                datasets: [{
+                    data: [<?= $active_assessors ?? 0 ?>, <?= $retired_assessors ?? 0 ?>],
+                    backgroundColor: ['#4BC0C0', '#9966FF'],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { 
+                    legend: { 
+                        position: 'bottom' 
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+            }
+        });
 
-        const NECData = {
-            labels: <?= json_encode($nec_labels) ?>,
-            datasets: [{
-                label: 'Number of Assessors',
-                data: <?= json_encode($nec_data) ?>,
-                backgroundColor: '#36A2EB'
-            }]
-        };
-        const necNames = <?= json_encode($nec_names) ?>;
+        necChart = new Chart(document.getElementById('barChartNEC'), {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode(array_column($nec_counts, 'nec_code') ?? 'label') ?>,
+                datasets: [{
+                    label: 'Number of Assessors',
+                    data: <?= json_encode(array_column($nec_counts, 'count') ?? 'count') ?>,
+                    backgroundColor: '#36A2EB'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                const idx = context[0].dataIndex;
+                                return necNames[idx] || context[0].label;
+                            },
+                            label: function(context) {
+                                return 'Assessors: ' + context.parsed.y;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            stepSize: 1,
+                            callback: function(value) {
+                                return Number.isInteger(value) ? value : null;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('selectFilter').addEventListener('change', function() {
+            var qu_id = jQuery(this).val();
+
+            var csrfName = jQuery('input[name="<?= csrf_token() ?>"]').attr('name');
+            var csrfHash = jQuery('input[name="<?= csrf_token() ?>"]').val();
+
+            if (qu_id) {
+                jQuery.ajax({
+                    url: "<?= base_url('qvcAdmin/filterData') ?>",
+                    type: "POST",
+                    data: {
+                        qu_id: qu_id,
+                    },
+                    dataType: "json",
+                    beforeSend: function(xhr, settings) {
+                        // Add CSRF token to the headers or data (preferably data)
+                        settings.data += `&${csrfName}=${csrfHash}`;
+                    },
+                    success: function(response) {
+                        if (response.success) {
+
+                            genderChart.data.datasets[0].data = [response.male, response.female];
+                            genderChart.data.labels = [response.male +' '+ 'Male', response.female +' '+ 'Female'];
+                            genderChart.update();
+
+                            activeChart.data.datasets[0].data = [response.active, response.retired];
+                            activeChart.data.labels = [response.active +' '+ 'Active', response.retired +' '+ 'Retired'];
+                            activeChart.update();
+
+                            necChart.data.labels = response.nec_labels;
+                            necChart.data.datasets[0].data = response.nec_counts;
+                            necChart.update();
+
+                            // Example in success callback
+                            jQuery('input[name="<?= csrf_token() ?>"]').val(response.csrfHash);
+                            
+
+                        } else {
+                            console.error('Error fetching response:', response.message);
+                        }
+                    }
+                });
+            } else {
+                genderChart.data.datasets[0].data = [<?= $male_assessors ?? 0 ?>, <?= $female_assessors ?? 0 ?>];
+                genderChart.data.labels = ['<?= $male_assessors ?? 0 ?> Male', '<?= $female_assessors ?? 0 ?> Female'];
+                genderChart.update();
+
+                activeChart.data.datasets[0].data = [<?= $active_assessors ?? 0 ?>, <?= $retired_assessors ?? 0 ?>];
+                activeChart.data.labels = ['<?= $active_assessors ?? 0 ?> Active', '<?= $retired_assessors ?? 0 ?> Retired'];
+                activeChart.update();
+
+                necChart.data.labels = <?= json_encode(array_column($nec_counts, 'nec_code') ?? 'label') ?>;
+                necChart.data.datasets[0].data = <?= json_encode(array_column($nec_counts, 'count') ?? 'count') ?>;
+                necChart.update();
+            }
+        });
 
         const uniBarData = {
-            labels: <?= json_encode($uni_labels) ?>,
+            labels: <?= json_encode($uni_labels ?? 'label') ?>,
             datasets: [{
                 label: 'Number of Assessors',
-                data: <?= json_encode($uni_data) ?>,
+                data: <?= json_encode($uni_data ?? 'label') ?>,
                 backgroundColor: '#36A2EB'
             }]
         };
@@ -257,77 +368,10 @@ $nec_names = array_column($nec_counts, 'nec_name');
                 }
             }
         });
-
-        // Bar Chart: NEC (second row, duplicate)
-        new Chart(document.getElementById('barChartNEC2'), {
-            type: 'bar',
-            data: NECData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            title: function(context) {
-                                const idx = context[0].dataIndex;
-                                return necNames[idx] || context[0].label;
-                            },
-                            label: function(context) {
-                                return 'Assessors: ' + context.parsed.y;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: { beginAtZero: true },
-                    y: { 
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0,
-                            stepSize: 1,
-                            callback: function(value) {
-                                return Number.isInteger(value) ? value : null;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-
-        // Donut Chart: Gender (first row)
-        new Chart(document.getElementById('pieChartGender'), {
-            type: 'doughnut',
-            data: genderData,
-            options: {
-                responsive: true,
-                plugins: { 
-                    legend: { 
-                        position: 'bottom' 
-                    },
-                    tooltip: {
-                        enabled: false
-                    }
-                },
-            }
-        });
+        
 
         // Donut Chart: Active (second row)
-        new Chart(document.getElementById('pieChartActive'), {
-            type: 'doughnut',
-            data: activeData,
-            options: {
-                responsive: true,
-                plugins: { 
-                    legend: { 
-                        position: 'bottom' 
-                    },
-                    tooltip: {
-                        enabled: false
-                    }
-                },
-            }
-        });
+        
     });
 
     document.getElementById('profile_image').addEventListener('change', function(e) {
@@ -335,5 +379,11 @@ $nec_names = array_column($nec_counts, 'nec_name');
         if (file) {
             document.getElementById('profilePreview').src = URL.createObjectURL(file);
         }
+    });
+</script>
+
+<script>
+    document.getElementById('selectFilter').addEventListener('change', function(e) {
+        console.log('Filter changed:', e.target.value);
     });
 </script>
