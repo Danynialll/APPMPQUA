@@ -46,11 +46,13 @@
         <!-- First Row: Bar Chart + Donut Chart -->
         <div class="col-12 col-lg-8 mb-4">
             <div class="card h-100 shadow">
-                <div class="card-header pb-0 p-3 bg-gradient-warning text-white rounded-top">
-                    <h6 class="mb-3">Assessors by University</h6>
+                <div class="card-header p-3 bg-gradient-secondary text-white rounded-top">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Assessors by NEC Field</h6>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="barChartUni"></canvas>
+                    <canvas id="barChartNEC"></canvas>
                 </div>
             </div>
         </div>
@@ -67,14 +69,11 @@
         <!-- Second Row: Bar Chart + Donut Chart -->
         <div class="col-12 col-lg-8 mb-4">
             <div class="card h-100 shadow">
-                <div class="card-header p-3 bg-gradient-secondary text-white rounded-top">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0">Assessors by NEC Field</h6>
-                        
-                    </div>
+                <div class="card-header pb-0 p-3 bg-gradient-warning text-white rounded-top">
+                    <h6 class="mb-3">Assessors by University</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="barChartNEC"></canvas>
+                    <canvas id="barChartUni"></canvas>
                 </div>
             </div>
         </div>
