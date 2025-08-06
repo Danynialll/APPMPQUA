@@ -24,7 +24,7 @@ class QvcAdminController extends BaseController
         $this->samc_model                       = new SamcModel();
     }
 
-    public function dashboard()
+    public function home()
     {
         $qa_id = session()->get('user_id');
         // Fetch Notifications Data
@@ -49,7 +49,7 @@ class QvcAdminController extends BaseController
             'admin_info'                => $admin_info
         ];
 
-        $this->render_admin('dashboard', $data);
+        $this->render_admin('home', $data);
     }
 
     // Get samc x expertise bar chart

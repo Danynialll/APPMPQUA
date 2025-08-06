@@ -102,7 +102,7 @@ class LoginController extends BaseController
                     if ($admin->qa_level == 'super_admin') {
                         return redirect()->to('qvcSuperAdmin/dashboard'); // Redirect to the dashboard
                     } elseif ($admin->qa_level == 'admin') {
-                        return redirect()->to('qvcAdmin/dashboard'); // Redirect to the dashboard
+                        return redirect()->to('qvcAdmin/home'); // Redirect to the dashboard
                     }
                 }
             } else {

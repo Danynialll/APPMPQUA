@@ -3,10 +3,14 @@
 namespace App\Modules\QvcAdmin\Controllers;
 
 use App\Models\AssessorModel;
+use App\Models\NECBroadModel;
 use App\Models\NECDetailModel;
+use App\Models\NECNarrowModel;
 use App\Models\AsrNECMappingModel;
 use App\Models\QvcUniversityModel;
 use App\Controllers\BaseController;
+use App\Models\AssessorExpertiseFieldModel;
+use App\Models\ExpertiseFieldModel;
 
 class QvcProfileController extends BaseController
 {
@@ -16,6 +20,10 @@ class QvcProfileController extends BaseController
     protected $QVC_University_model;
     protected $NECDetail_model;
     protected $asrNECMapping_model;
+    protected $expertise_model;
+    protected $NECBroad_model;
+    protected $NECNarrow_model;
+    protected $assessorExpertiseModel;
 
     public function __construct()
     {
@@ -24,9 +32,13 @@ class QvcProfileController extends BaseController
         $this->NECDetail_model = new NECDetailModel();
         $this->asrNECMapping_model = new AsrNECMappingModel();
         $this->QVC_University_model = new QvcUniversityModel();
+        $this->expertise_model = new ExpertiseFieldModel();
+        $this->NECBroad_model = new NECBroadModel();
+        $this->NECNarrow_model = new NECNarrowModel();
+        $this->assessorExpertiseModel = new AssessorExpertiseFieldModel();
     }
 
-    public function profile()
+    public function adminDashboard()
     {
         $now = date('Y-m-d');
 
@@ -80,6 +92,7 @@ class QvcProfileController extends BaseController
 
             if ($count >= 0) {
                 $uni_summary[] = [
+                    'id' => $uni->qu_id,
                     'name' => $uni->qu_name,
                     'code' => $uni->qu_code,
                     'count' => $count,
@@ -100,14 +113,12 @@ class QvcProfileController extends BaseController
         ];
 
 
-        $this->render_admin('profile', $data);
+        $this->render_admin('dashboard/adminDashboard', $data);
     }
 
     public function filterData()
     {
         $qu_id = $this->request->getPost('qu_id');
-        log_message('debug', 'qu_id received: ' . $qu_id);
-
 
         if (!$this->request->isAJAX()) {
             return $this->response->setJSON(['success' => false]);
@@ -185,5 +196,96 @@ class QvcProfileController extends BaseController
             'csrfHash' => csrf_hash()
         ]);
     }
+
+    public function assessors_list()
+    {
+        $qu_id = $this->request->getPost('qu_id');
+
+        if (!$qu_id) {
+            return redirect()->back()->with('error', 'University ID is required.');
+        }
+
+        $expertise_list = $this->expertise_model->findAll();
+        $nec_broad = $this->NECBroad_model->findAll();
+        $nec_narrow = $this->NECNarrow_model->findAll();
+        $nec_detail = $this->NECDetail_model->findAll();
+
+        $totalAssessors = $this->assessor_model
+            ->where('asr_qu_id', $qu_id)
+            ->where('asr_deleted_at', null)
+            ->countAllResults();
+        $maleAssessors = $this->assessor_model
+            ->where('asr_gender', 'Male')
+            ->where('asr_qu_id', $qu_id)
+            ->where('asr_deleted_at', null)
+            ->countAllResults();
+        $femaleAssessors = $this->assessor_model
+            ->where('asr_gender', 'Female')
+            ->where('asr_qu_id', $qu_id)
+            ->where('asr_deleted_at', null)
+            ->countAllResults();
+
+        // Filter assessors by the same university and exclude soft-deleted
+        $builder = $this->assessor_model->table('assessor');
+        $builder->select('assessor.*, qvc_university.qu_name');
+        $builder->join('qvc_university', 'qvc_university.qu_id = assessor.asr_qu_id', 'left');
+        if ($qu_id) {
+            $builder->where('assessor.asr_qu_id', $qu_id);
+        }
+        $builder->where('assessor.asr_deleted_at', null); // Exclude soft-deleted
+
+        $assessor_list = $builder->get()->getResult();
+
+        foreach ($assessor_list as &$assessor) {
+            // Get all expertise for this assessor
+            $expertise = $this->assessorExpertiseModel
+                ->select('expertise_field.ef_desc')
+                ->join('qvc_upsi.expertise_field', 'expertise_field.ef_id = assessor_expertise_field.aef_ef_id', 'left')
+                ->where('aef_asr_id', $assessor->asr_id)
+                ->findAll();
+            $assessor->expertise_list = array_column($expertise, 'ef_desc');
+
+            // Get all NEC mappings for this assessor
+            $nec_mappings = $this->asrNECMapping_model->where('anm_asr_id', $assessor->asr_id)->findAll();
+            $nec_detail_list = [];
+            foreach ($nec_mappings as $nec) {
+                $detail = $this->NECDetail_model->find($nec->anm_nd_id);
+                if ($detail) {
+                    $nec_detail_list[] = [
+                        'nd_id' => $detail->nd_id,
+                        'nd_desc' => $detail->nd_code . ' ' . $detail->nd_name
+                    ];
+                }
+            }
+            $assessor->nec_detail_list = $nec_detail_list;
+        }
+        unset($assessor);
+
+        $data = [
+            'total_assessors'      => $totalAssessors,
+            'male_assessors'      => $maleAssessors,
+            'female_assessors'    => $femaleAssessors,
+            'assessor_list'        => $assessor_list,
+            'expertise_list'       => $expertise_list,
+            'nec_broad'            => $nec_broad,
+            'nec_narrow'           => $nec_narrow,
+            'nec_detail'           => $nec_detail,
+            'qu_name'              => get_university_name($qu_id),
+            'qu_id'                => $qu_id,
+        ];
+
+        session()->set('assessors_data', $data);
+        return redirect()->to(base_url('qvcAdmin/adminDashboard/assessors_list_page'));
+    }
+
+    public function assessors_list_page()
+    {
+        $data = session()->get('assessors_data');
+        if (!$data) {
+            return redirect()->to('/dashboard')->with('error', 'No data available.');
+        }
+        $this->render_admin('dashboard\assessors_list', $data);
+    }
+
 
 }

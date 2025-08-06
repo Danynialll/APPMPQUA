@@ -38,19 +38,17 @@ $routes->group('qvcAdmin', function ($routes) {
         $routes->get('listNew',                             [QvcAdminMPQUAController::class,      'listNew']);
     });
 
-    $routes->get('profile',                                  [QvcProfileController::class,     'profile']);
-    $routes->post('filterData',                              [QvcProfileController::class,     'filterData']);
-
-
-
-
-
-
+    $routes->group('adminDashboard', function ($routes) {
+        $routes->get('/',                                   [QvcProfileController::class,     'adminDashboard']);
+        $routes->post('filterData',                         [QvcProfileController::class,     'filterData']);
+        $routes->post('assessors_list',                     [QvcProfileController::class,     'assessors_list']);
+        $routes->get('assessors_list_page',                 [QvcProfileController::class,     'assessors_list_page']);
+    });
 
 
 
     // Display Home Page
-    $routes->get('dashboard',                           [QvcAdminController::class,     'dashboard']);
+    $routes->get('home',                           [QvcAdminController::class,     'home']);
     $routes->get('getSamcExpertiseData',                [QvcAdminController::class,     'getSamcExpertiseData']);
     // Admin SAMC Dashboard
     // $routes->get('samc_management',                     [QvcAdminSAMCController::class,     'samc_management']);

@@ -2,6 +2,11 @@
 <!-- Select 2 -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
 <link href="<?= base_url(); ?>assets/css/select2override.css" rel="stylesheet" />
 <style>
     #barChartNEC {
@@ -22,9 +27,26 @@
 
         cursor: pointer;
     }
+
+    .breadcrumb-item {
+        font-size: medium;
+    }
+    
+    .breadcrumb-item a{
+        text-decoration: none;
+        color: #a279e5ff;
+    }
 </style>
 
+
 <div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="<?=base_url()?>/qvcAdmin/home">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Admin Dashboard</li>
+        </ol>
+    </nav>
+
     <div class="page-header min-height-150 border-radius-xl mt-4" style="background-image: url('../../../assets/img/curved-images/curved0.jpg'); background-position-y: 50%;">
         <span class="mask bg-gradient-primary opacity-6"></span>
     </div>
@@ -104,9 +126,13 @@
                 <div class="card-header p-3 bg-gradient-warning text-white rounded-top">
                     <h6 class="mb-0">Assessors by University</h6>
                 </div>
-                <div class="card-body overflow-auto" style="max-height: 600px;">
-                    <?php foreach ($uni_summary as $uni): ?>
-                        <div class="card mb-2 hover-effect">
+                <div class="card-body overflow-auto" style="max-height: 800px;">
+                    <?php foreach ($uni_summary as $index => $uni): ?>
+                        <div class="card mb-2 hover-effect" onclick="showUniAsr('showAssessors<?= $index ?>')">
+                            <form id="showAssessors<?= $index ?>" method="post" action="<?= base_url('qvcAdmin/adminDashboard/assessors_list')?>">
+                                <input type="hidden" name="qu_id" value="<?= esc($uni['id']) ?>">
+                                <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
+                            </form>
                             <div class="card-body py-2 px-3 ">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <h6 class="mb-0"><?= esc($uni['code']) ?></h6>
@@ -176,6 +202,15 @@
     function showEditModal() {
         const editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
         editProfileModal.show();
+    }
+
+    function showUniAsr(formId) {
+        const form = document.getElementById(formId);
+        if (form) {
+            form.submit();
+        }else{
+            console.error('Form not found:', formId);
+        }
     }
 
     document.getElementById('editProfileForm').addEventListener('submit', function(e) {
@@ -298,7 +333,7 @@
 
             if (qu_id) {
                 jQuery.ajax({
-                    url: "<?= base_url('qvcAdmin/filterData') ?>",
+                    url: "<?= base_url('qvcAdmin/adminDashboard/filterData') ?>",
                     type: "POST",
                     data: {
                         qu_id: qu_id,
@@ -355,4 +390,14 @@
         }
     });
 </script>
+
+<?php if (session()->getFlashdata('error')): ?>
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '<?= session()->getFlashdata('error') ?>',
+    });
+</script>
+<?php endif; ?>
 

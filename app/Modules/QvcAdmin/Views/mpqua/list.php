@@ -200,8 +200,10 @@
                 </div>
             </div>
 
-            <!-- Filter & Controls -->
-            <div class="card mb-4 mt-4">
+            
+
+            <!-- User Table -->
+            <div class="card mb-3">
                 <div class="card-body p-3">
                     <div class="row align-items-center">
                         <div class="col-lg-8 col-md-7">
@@ -220,10 +222,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- User Table -->
-            <div class="card mb-3">
                 <div class="card-body p-3">
                     <div class="table-responsive">
                         <table class="table" id="datatable-search">
