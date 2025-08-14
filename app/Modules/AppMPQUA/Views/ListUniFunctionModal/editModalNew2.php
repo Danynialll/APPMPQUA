@@ -447,7 +447,10 @@
                         <button type="button" class="btn btn-outline-secondary btn-step" id="prevBtnEdit" style="display: none;">
                             <i class="fas fa-arrow-left me-2"></i>Previous
                         </button>
-                        <div class="ms-auto">
+                        <div class="ms-auto d-flex gap-2">
+                            <button type="button" class="btn btn-danger btn-step" id="deleteAssessorBtn">
+                                <i class="fas fa-trash-alt me-2"></i>Delete
+                            </button>
                             <button type="button" class="btn btn-gradient btn-step" id="nextBtnEdit">
                                 Next<i class="fas fa-arrow-right ms-2"></i>
                             </button>
@@ -808,6 +811,7 @@
         $('#editAssessorForm').on('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
+            formData.append('csrf_test_name', $('input[name="csrf_test_name"]').val());
             Swal.fire({
                 title: 'Saving Assessor...',
                 text: 'Please wait while we save the assessor information.',
@@ -852,5 +856,53 @@
         $('#cvFileAreaEdit .cv-preview').remove();
     });
 
+</script>
+<script>
+    $('#deleteAssessorBtn').on('click', function() {
+    const assessorId = $('#modalIdInput').val();
+    if (!assessorId) return;
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This will permanently delete the assessor.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch("<?= base_url('appmpqua/deleteAssessor/') ?>" + assessorId, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': $("input[name='csrf_test_name']").val()
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: data.message,
+                    }).then(() => { location.reload(); });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Failed to delete assessor.',
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An unexpected error occurred.',
+                });
+            });
+        }
+    });
+});
 </script>
 

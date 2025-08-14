@@ -296,6 +296,7 @@
                 </div>
 
                 <form id="addAssessorForm">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="csrf_test_name" value="csrf_token_here">
                     
                     <!-- Step 1: Basic Information -->
@@ -808,6 +809,7 @@
             e.preventDefault();
 
             const formData = new FormData(this);
+            formData.append('csrf_test_name', $('input[name="csrf_test_name"]').val());
             
             Swal.fire({
                 title: 'Saving Assessor...',

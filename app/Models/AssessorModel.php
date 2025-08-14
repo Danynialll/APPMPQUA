@@ -9,6 +9,7 @@ class AssessorModel extends Model
     protected $table = 'qvc_upsi.assessor'; // Schema name included
     protected $returnType = 'object';
     protected $primaryKey = 'asr_id';
+    protected $useAutoIncrement = true;
     protected $allowedFields = [
         'asr_name',
         'asr_email',
