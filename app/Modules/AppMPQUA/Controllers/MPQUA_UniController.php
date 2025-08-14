@@ -372,6 +372,13 @@ class MPQUA_UniController extends BaseController
             }
         }
 
+        if (!empty($assessor->asr_image)) {
+            $imgFullPath = FCPATH . $assessor->asr_image;
+            if (file_exists($imgFullPath)) {
+                @unlink($imgFullPath);
+            }
+        }
+
         // Delete the assessor
         $this->assessor_model->delete($id);
 
