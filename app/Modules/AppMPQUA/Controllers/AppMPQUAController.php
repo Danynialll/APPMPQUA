@@ -3,6 +3,7 @@
 namespace App\Modules\AppMPQUA\Controllers;
 
 use App\Models\MPQUAModel;
+use App\Models\AsrTypesModel;
 use App\Models\AssessorModel;
 use App\Models\AuthUserModel;
 use App\Models\NECBroadModel;
@@ -11,6 +12,7 @@ use App\Models\NECNarrowModel;
 use App\Models\AsrNECMappingModel;
 use App\Models\QvcUniversityModel;
 use App\Controllers\BaseController;
+use App\Models\AsrTypeMappingModel;
 use App\Models\ExpertiseFieldModel;
 use App\Models\AssessorExpertiseFieldModel;
 
@@ -20,6 +22,8 @@ class AppMPQUAController extends BaseController
     protected $auth_user_model;
     protected $expertise_model;
     protected $asrNECMapping_model;
+    protected $asrTypeMapping_model;
+    protected $asrType_model;
     protected $NECDetail_model;
     protected $NECBroad_model;
     protected $NECNarrow_model;
@@ -34,6 +38,8 @@ class AppMPQUAController extends BaseController
         $this->assessorExpertiseModel           = new AssessorExpertiseFieldModel();
         $this->expertise_model                  = new ExpertiseFieldModel();
         $this->asrNECMapping_model              = new AsrNECMappingModel();
+        $this->asrTypeMapping_model             = new AsrTypeMappingModel();
+        $this->asrType_model                    = new AsrTypesModel();
         $this->NECBroad_model                   = new NECBroadModel();
         $this->NECNarrow_model                  = new NECNarrowModel();
         $this->NECDetail_model                  = new NECDetailModel();

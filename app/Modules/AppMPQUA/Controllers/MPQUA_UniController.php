@@ -9,6 +9,8 @@ use App\Models\NECNarrowModel;
 use App\Models\AsrNECMappingModel;
 use App\Models\MPQUAModel;
 use App\Controllers\BaseController;
+use App\Models\AsrTypeMappingModel;
+use App\Models\AsrTypesModel;
 use App\Models\ExpertiseFieldModel;
 use App\Models\AssessorExpertiseFieldModel;
 
@@ -17,6 +19,8 @@ class MPQUA_UniController extends BaseController
     protected $assessor_model;
     protected $expertise_model;
     protected $asrNECMapping_model;
+    protected $asrTypeMapping_model;
+    protected $asrType_model;
     protected $NECBroad_model;
     protected $NECNarrow_model;
     protected $NECDetail_model;
@@ -26,6 +30,8 @@ class MPQUA_UniController extends BaseController
     public function __construct()
     {
         $this->assessor_model                   = new AssessorModel();
+        $this->asrTypeMapping_model             = new AsrTypeMappingModel();
+        $this->asrType_model                    = new AsrTypesModel();
         $this->assessorExpertiseModel           = new AssessorExpertiseFieldModel();
         $this->expertise_model                  = new ExpertiseFieldModel();
         $this->expertise_model                  = new ExpertiseFieldModel();
@@ -97,6 +103,7 @@ class MPQUA_UniController extends BaseController
                 }
             }
             $assessor->nec_detail_list = $nec_detail_list;
+
         }
         unset($assessor);
 
@@ -442,6 +449,7 @@ class MPQUA_UniController extends BaseController
         $asr_retirement_date   = $this->request->getPost('asr_retirement_date');
         $expertise             = $this->request->getPost('expertise');
         $nec_detail_id         = $this->request->getPost('nec_detail');
+        $asr_type              = $this->request->getPost('asr_type');
 
         // --- Handle file upload ---
         $cvPath = null;
@@ -485,6 +493,7 @@ class MPQUA_UniController extends BaseController
             'asr_retirement_date' => $asr_retirement_date,
             'asr_cv_path'         => $cvPath,
             'asr_image'           => $imgPath,
+            'asr_type'            => $asr_type,
         ];
 
         $this->assessor_model->update($assessor_id, $data);

@@ -23,6 +23,7 @@ class AssessorModel extends Model
         'asr_gender',
         'asr_cv_path',
         'asr_title_desc',
+        'asr_type',
     ];
     
     protected $useSoftDeletes = true;

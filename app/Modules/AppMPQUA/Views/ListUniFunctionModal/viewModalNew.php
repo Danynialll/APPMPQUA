@@ -222,32 +222,40 @@
                         
                             <div class="info-row bg-light mb-2">
                                 <div class="info-label fw-semibold text-muted">
+                                    APP Type:&nbsp;
+                                </div>
+                                <div class="info-value" id="modalUniType"></div>
+                            </div>
+
+                            <div class="info-row row mb-2">
+                                <div class="info-label fw-semibold text-muted">
                                     Service Address:&nbsp;
                                 </div>
                                 <div class="info-value" id="modalUniAddress"></div>
                             </div>
-                            <div class="info-row row mb-2">
+
+                            <div class="info-row bg-light mb-2">
                                 <div class="info-label fw-semibold text-muted">
                                     Expertise:
                                 </div>
                                 <div class="info-value" id="modalUniExpertise"></div>
                             </div>
                             
-                            <div class="info-row bg-light mb-2">
+                            <div class="info-row row mb-2">
                                 <div class="info-label fw-semibold text-muted">
                                     Retirement Date:&nbsp;
                                 </div>
                                 <div class="info-value" id="modalUniRetirement"></div>
                             </div>
                             
-                            <div class="info-row row mb-2">
+                            <div class="info-row bg-light mb-2">
                                 <div class="info-label fw-semibold text-muted">
                                     NEC Field:
                                 </div>
                                 <div class="info-value" id="modalUniNEC"></div>
                             </div>
                             
-                            <div class="info-row bg-light mb-2">
+                            <div class="info-row row mb-2">
                                 <div class="info-label fw-semibold text-muted">
                                     CV:
                                 </div>

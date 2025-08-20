@@ -225,6 +225,15 @@
                                 <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilterUni') ?>" data-bs-toggle="tooltip" title="Search Assessors by NEC">
                                     <i class="fas fa-magnifying-glass"></i>&nbsp; Search by NEC
                                 </a>
+                                <button id="all-btn" class="btn bg-gradient-primary me-2" style="font-size: 12px;" data-bs-toggle="tooltip" title="All">
+                                    </i>&nbsp; All
+                                </button>
+                                <button id="mqa-btn" class="btn bg-gradient-secondary me-2" style="font-size: 12px;" data-bs-toggle="tooltip" title="Filter by MQA">
+                                    </i>&nbsp; MQA
+                                </button>
+                                <button id="swa-btn" class="btn bg-gradient-secondary me-2" style="font-size: 12px;" data-bs-toggle="tooltip" title="Filter by SWA">
+                                    </i>&nbsp; SWA
+                                </button>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
@@ -246,6 +255,7 @@
                                     <th class="text-center" style="width:60px;">No.</th>
                                     <th>Image</th>
                                     <th>Name</th>
+                                    <th>APP Type</th>
                                     <th>Expertise</th>
                                     <th>NEC Field</th>
                                     <th style="width:120px;" class="text-center">Details</th>
@@ -263,7 +273,18 @@
                                                     <img src="<?= base_url() ?>assets/img/default-profile.jpg" alt="Default Profile" class="img-thumbnail" style="width:50px; height:50px; object-fit:cover;">
                                                 <?php endif; ?>
                                             </td>
-                                            <td><h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->asr_title_desc) ?> <?= esc($asr->asr_name) ?></h6></td>
+                                            <td>
+                                                <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->asr_title_desc) ?> <?= esc($asr->asr_name) ?></h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="mb-0 text-sm">
+                                                    <?php if (!empty($asr->asr_type)): ?>
+                                                            <span class="badge bg-info text-white mb-1" style="word-break:break-word;"><?= esc($asr->asr_type)  ?></span><br>
+                                                    <?php else: ?>
+                                                        <span>-</span>  
+                                                    <?php endif; ?>
+                                                </h6>
+                                            </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm">
                                                     <?php if (!empty($asr->expertise_list)): ?>
@@ -326,7 +347,7 @@
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
-        // Initialize DataTable with more options
+        // Initialize DataTable and store the instance
         const dataTable = new DataTable("#datatable-search", {
             responsive: true,
             dom: '<"top"fl>rt<"bottom"ip><"clear">',
@@ -355,16 +376,29 @@
             ],
             columnDefs: [{
                     orderable: false,
-                    targets: [5]
+                    targets: [6]
                 }, // Disable sorting on the Actions column
                 {
                     className: "text-center",
-                    targets: [0, 5]
+                    targets: [0, 6]
                 } // Center align these columns
             ],
             order: [
                 [0, 'asc']
             ] // Default sort by the first column (No.)
+        });
+
+        // Use the same instance for filtering
+        document.getElementById('mqa-btn').addEventListener('click', function() {
+            dataTable.column(3).search('MQA').draw();
+        });
+
+        document.getElementById('swa-btn').addEventListener('click', function() {
+            dataTable.column(3).search('SWA').draw();
+        });
+
+        document.getElementById('all-btn').addEventListener('click', function() {
+            dataTable.column(3).search('').draw();
         });
 
         // Filter button functionality
@@ -509,6 +543,18 @@
                             document.getElementById('modalUniCV').innerText = '-';
                         }
 
+                        // Type
+                        const type = document.getElementById('modalUniType');
+                        type.innerHTML = '';
+                        if (data.asr_type) {
+                            const badge = document.createElement('span');
+                            badge.className = 'badge bg-info text-white m-1';
+                            badge.innerText = data.asr_type;
+                            type.appendChild(badge);
+                        } else {
+                            type.innerText = '-';
+                        }
+
                         // Expertise
                         const expertiseContainer = document.getElementById('modalUniExpertise');
                         expertiseContainer.innerHTML = '';
@@ -541,17 +587,4 @@
     });
 </script>
 
-<!-- <script>
-    jQuery(document).ready(function($) {
-        $(function () {
-            // Add title attributes for tooltips (buttons)
-            $('.btn-view-details').attr('title', 'View details of this assessor');
-            $('#add-btn').attr('title', 'Add a new assessor');
-            $('#export-btn').attr('title', 'Export assessor data to Excel');
-
-            // Initialize Bootstrap tooltip
-            $('[title]').tooltip({container: 'body', trigger: 'hover'});
-        });
-    });
-</script> -->
 

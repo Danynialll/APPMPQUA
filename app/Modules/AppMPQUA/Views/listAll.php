@@ -231,6 +231,15 @@
                                 <a id="nec-btn" class="btn bg-gradient-warning me-2" style="font-size: 12px;" href="<?= base_url('appmpqua/necFilter') ?>" data-bs-toggle="tooltip" title="Search Assessors by NEC">
                                     <i class="fas fa-magnifying-glass"></i>&nbsp; Search by NEC
                                 </a>
+                                <button id="all-btn" class="btn bg-gradient-primary me-2" style="font-size: 12px;" data-bs-toggle="tooltip" title="All">
+                                    </i>&nbsp; All
+                                </button>
+                                <button id="mqa-btn" class="btn bg-gradient-secondary me-2" style="font-size: 12px;" data-bs-toggle="tooltip" title="Filter by MQA">
+                                    </i>&nbsp; MQA
+                                </button>
+                                <button id="swa-btn" class="btn bg-gradient-secondary me-2" style="font-size: 12px;" data-bs-toggle="tooltip" title="Filter by SWA">
+                                    </i>&nbsp; SWA
+                                </button>
                                 <!-- <select id="selectFilter" class="form-control select2">
                                     <option value="">All</option>
                                     <?php foreach ($university_list as $uni): ?>
@@ -250,6 +259,7 @@
                                     <th>Image</th>
                                     <th>Name</th>
                                     <th>University</th>
+                                    <th>APP Type</th>
                                     <th>Expertise</th>
                                     <th>NEC Field</th>
                                     <th style="width:120px;" class="text-center">Details</th>
@@ -281,6 +291,15 @@
                                             </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm" style="word-break:break-word;"><?= esc($asr->qu_name) ?> (<?= esc($asr->qu_code) ?>)</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="mb-0 text-sm">
+                                                    <?php if (!empty($asr->asr_type)): ?>
+                                                            <span class="badge bg-info text-white mb-1" style="word-break:break-word;"><?= esc($asr->asr_type) ?></span><br>
+                                                    <?php else: ?>
+                                                        <span>-</span>  
+                                                    <?php endif; ?>
+                                                </h6>
                                             </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm">
@@ -338,6 +357,24 @@
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
+        document.getElementById('mqa-btn').addEventListener('click', function() {
+            // Filter by "MQA" in the APP Type column (index 4, zero-based)
+            const dataTableApi = $('#datatable-search').DataTable();
+            dataTableApi.column(4).search('MQA').draw();
+        });
+
+        document.getElementById('swa-btn').addEventListener('click', function() {
+            // Filter by "SWA" in the APP Type column (index 4, zero-based)
+            const dataTableApi = $('#datatable-search').DataTable();
+            dataTableApi.column(4).search('SWA').draw();
+        });
+
+        document.getElementById('all-btn').addEventListener('click', function() {
+            // Clear filter in the APP Type column
+            const dataTableApi = $('#datatable-search').DataTable();
+            dataTableApi.column(4).search('').draw();
+        });
+
         // Initialize DataTable with more options
         const dataTable = new DataTable("#datatable-search", {
             responsive: true,
@@ -367,11 +404,11 @@
             ],
             columnDefs: [{
                     orderable: false,
-                    targets: [1, 5]
+                    targets: [1, 6]
                 }, // Disable sorting on the Actions column
                 {
                     className: "text-center",
-                    targets: [0, 5]
+                    targets: [0, 6]
                 } // Center align these columns
             ],
             order: [
@@ -523,6 +560,18 @@
                             cvContainer.appendChild(link);
                         } else {
                             cvContainer.innerText = '-';
+                        }
+
+                        // Type
+                        const type = document.getElementById('modalType');
+                        type.innerHTML = '';
+                        if (data.asr_type) {
+                            const badge = document.createElement('span');
+                            badge.className = 'badge bg-info text-white m-1';
+                            badge.innerText = data.asr_type;
+                            type.appendChild(badge);
+                        } else {
+                            type.innerText = '-';
                         }
 
                         // Expertise

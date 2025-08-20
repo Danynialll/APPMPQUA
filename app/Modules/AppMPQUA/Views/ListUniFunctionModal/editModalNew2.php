@@ -293,7 +293,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label required-field">Gender</label>
-                                    <select name="asr_gender" id="modalGenderInput" class="form-select" readonly>
+                                    <select name="asr_gender" id="modalGenderInput" class="form-select" readonly disabled>
                                         <option value="">Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -304,6 +304,23 @@
                                     <input type="date" name="asr_retirement_date" id="modalRetirementInput" class="form-control">
                                 </div>
                                 <input type="text" name="asr_qu_id" class="form-control" required style="display: none;" value="<?= esc($qu_id) ?>">
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fas fa-user"></i>
+                                Assessor Type
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label required-field">Type</label>
+                                    <select name="asr_type" id="modalTypeInput" class="form-select">
+                                        <option value="">Select Type</option>
+                                        <option value="MQA">MQA</option>
+                                        <option value="SWA">SWA</option>
+                                        <option value="MQA & SWA">MQA & SWA</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div class="form-section">
@@ -738,10 +755,13 @@
                     $('#modalTitleInput').val(data.asr_title_desc || '');
                     $('#modalNameInput').val(data.asr_name || '');
                     $('#modalGenderInput').val(data.asr_gender || '');
+                    $('#modalTypeInput').val(data.asr_type || '');
                     if(!data.asr_gender){ 
                         $('#modalGenderInput').removeAttr('readonly');
+                        $('#modalGenderInput').removeAttr('disabled');
                     } else {
                         $('#modalGenderInput').attr('readonly', true);
+                        $('#modalGenderInput').attr('disabled', true);
                     }
                     $('#modalRetirementInput').val(data.asr_retirement_date || '');
                     $('#modalEmailInput').val(data.asr_email || '');

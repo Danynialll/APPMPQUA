@@ -222,6 +222,12 @@
                         
                             <div class="info-row bg-light mb-2">
                                 <div class="info-label fw-semibold text-muted">
+                                    APP Type:&nbsp;
+                                </div>
+                                <div class="info-value" id="modalType"></div>
+                            </div>
+                            <div class="info-row row mb-2">
+                                <div class="info-label fw-semibold text-muted">
                                     Service Address:&nbsp;
                                 </div>
                                 <div class="info-value" id="modalAddress"></div>
