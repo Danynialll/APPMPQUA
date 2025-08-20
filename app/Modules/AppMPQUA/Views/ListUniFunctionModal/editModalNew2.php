@@ -738,6 +738,11 @@
                     $('#modalTitleInput').val(data.asr_title_desc || '');
                     $('#modalNameInput').val(data.asr_name || '');
                     $('#modalGenderInput').val(data.asr_gender || '');
+                    if(!data.asr_gender){ 
+                        $('#modalGenderInput').removeAttr('readonly');
+                    } else {
+                        $('#modalGenderInput').attr('readonly', true);
+                    }
                     $('#modalRetirementInput').val(data.asr_retirement_date || '');
                     $('#modalEmailInput').val(data.asr_email || '');
                     $('#modalTelephoneInput').val(data.asr_phone || '');
