@@ -11,6 +11,7 @@ class AsrTypesModel extends Model
     protected $primaryKey = 'at_id';
     protected $allowedFields = [
         'at_type',
+        'at_desc',
     ];
 
     protected $useSoftDeletes = true;
