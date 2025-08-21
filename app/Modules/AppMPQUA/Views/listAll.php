@@ -1,4 +1,12 @@
-
+<!-- Add this just after <body> or at the top of your main container -->
+<div id="pageLoadingSpinner" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2000;background:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;">
+    <div class="text-center">
+        <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="mt-3 fw-bold text-primary">Loading data...</div>
+    </div>
+</div>
 
 <!-- Modern CSS Libraries -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -603,6 +611,17 @@
                         }
                     });
             });
+
+        // Hide spinner when DataTable is fully initialized and data is rendered
+        const spinner = document.getElementById('pageLoadingSpinner');
+        if (spinner) {
+            // Wait for DataTable to finish drawing (for async data, use ajax event)
+            $('#datatable-search').on('draw.dt', function() {
+                spinner.style.display = 'none';
+            });
+            // If table is already drawn (no ajax), hide after DOMContentLoaded
+            setTimeout(() => { spinner.style.display = 'none'; }, 1000);
+        }
     });
 </script>
 
